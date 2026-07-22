@@ -1041,69 +1041,48 @@
         const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbw2k8wYrEX_l9_XnD4Tjyd7ma3nip7nY6rzDdtRSq-q23DUKRUGmAOe0A4D8nmZCsa7cg/exec';
 
         window.fetchData = function() {
+            // JSONP Helper
+            window.jsonpCallback = function(data) {
+                if (data && data.success) {
+                    allData = {
+                        researchers: data.researchers || [],
+                        projects: data.projects || [],
+                        coordinators: data.coordinators || [],
+                        news: data.news || []
+                    };
+                    const cs = get('connection-status');
+                    if(cs) cs.innerHTML = `<span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse inline-block mr-1"></span> Online`;
+                    setLoader(false);
+                    window.refreshDashboard();
+                    setTimeout(window.showNewsPopup, 1000);
+                }
+            };
+
             // Fetch System Link
-            fetch(GAS_API_URL + '?path=system-link')
-                .then(r => r.json())
-                .then(data => {
-                    if (data && data.success && data.link) {
-                        GLOBAL_SYSTEM_LINK = data.link;
-                        document.querySelectorAll('.sys-link').forEach(btn => btn.href = data.link);
-                    }
-                })
-                .catch(e => console.error("System Link Error:", e));
+            var systemLinkScript = document.createElement('script');
+            systemLinkScript.src = GAS_API_URL + '?path=system-link&callback=jsonpSystemLink';
+            window.jsonpSystemLink = function(data) {
+                if (data && data.success && data.link) {
+                    GLOBAL_SYSTEM_LINK = data.link;
+                    document.querySelectorAll('.sys-link').forEach(btn => btn.href = data.link);
+                }
+            };
+            document.head.appendChild(systemLinkScript);
 
             // Fetch Dashboard Data
-            fetch(GAS_API_URL + '?path=dashboard')
-                .then(r => r.json())
-                .then(response => {
-                    try {
-                        if (response && response.success) {
-                            allData = {
-                                researchers: response.researchers || [],
-                                projects: response.projects || [],
-                                coordinators: response.coordinators || [],
-                                news: response.news || []
-                            };
-                            const cs = get('connection-status');
-                            if(cs) cs.innerHTML = `<span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse inline-block mr-1"></span> Online`;
-
-                            setLoader(false);
-                            window.refreshDashboard();
-                            setTimeout(window.showNewsPopup, 1000);
-                        } else {
-                            throw new Error(response.message || 'ไม่สามารถดึงข้อมูลได้');
-                        }
-                    } catch (e) {
-                        console.error("Parse Error:", e);
-                        setLoader(false);
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'การโหลดข้อมูลผิดพลาด',
-                            text: e.message,
-                            confirmButtonColor: '#3B82F6'
-                        });
-                    }
-                })
-                .catch(e => {
-                    console.error("Dashboard Fetch Error:", e);
-                    setLoader(false);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'เชื่อมต่อเซิร์ฟเวอร์ไม่ได้',
-                        text: 'กรุณาตรวจสอบการตั้งค่า GAS API URL',
-                        confirmButtonColor: '#3B82F6'
-                    });
-                });
+            var dashboardScript = document.createElement('script');
+            dashboardScript.src = GAS_API_URL + '?path=dashboard&callback=jsonpCallback';
+            document.head.appendChild(dashboardScript);
 
             // Fetch MOU Data
-            fetch(GAS_API_URL + '?path=mou')
-                .then(r => r.json())
-                .then(response => {
-                    if (response && response.success) {
-                        window.processMouRawData(response.data);
-                    }
-                })
-                .catch(e => console.error("MOU Fetch Error:", e));
+            var mouScript = document.createElement('script');
+            mouScript.src = GAS_API_URL + '?path=mou&callback=jsonpMouCallback';
+            window.jsonpMouCallback = function(data) {
+                if (data && data.success && data.data) {
+                    window.processMouRawData(data.data);
+                }
+            };
+            document.head.appendChild(mouScript);
         }
 
         window.refreshDashboard = function() {
