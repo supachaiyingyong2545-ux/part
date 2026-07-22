@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="th" class="h-full transition-colors duration-300">
+<head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RIMS Manage - Executive Strategic Dashboard</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- External Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-main: #F4F7F6; }
+        * { font-family: 'Sarabun', sans-serif; transition: all 0.2s ease; }
+        body { background-color: var(--bg-main); color: #1E293B; overflow-y: scroll; }
+
+        .executive-card {
+            background: #FFFFFF; border-radius: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            border: 1px solid #E2E8F0; position: relative; overflow: hidden;
+            display: flex; flex-direction: column; height: 100%;
+        }
+        .executive-card:hover {
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.08);
+            border-color: #EC4899; transform: translateY(-3px);
+        }
+
+        .skeleton-box {
+            background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+            background-size: 200% 100%;
+            animation: skeleton-shimmer 1.5s infinite;
+        }
+        @keyframes skeleton-shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .tab-btn { position: relative; color: #64748B; font-weight: 600; white-space: nowrap; cursor: pointer; padding-bottom: 0.5rem;}
+        .tab-btn.active { font-weight: 800; }
+        .tab-btn.active::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; border-radius: 10px 10px 0 0; }
+
+        .tab-btn[data-tab="home"].active { color: #10B981; }
+        .tab-btn[data-tab="home"].active::after { background-color: #10B981; }
+        .tab-btn[data-tab="search-res"].active { color: #3B82F6; }
+        .tab-btn[data-tab="search-res"].active::after { background-color: #3B82F6; }
+        .tab-btn[data-tab="search-proj"].active { color: #A855F7; }
+        .tab-btn[data-tab="search-proj"].active::after { background-color: #A855F7; }
+        .tab-btn[data-tab="coord"].active { color: #F97316; }
+        .tab-btn[data-tab="coord"].active::after { background-color: #F97316; }
+        .tab-btn[data-tab="mou"].active { color: #06B6D4; }
+        .tab-btn[data-tab="mou"].active::after { background-color: #06B6D4; }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.4s ease-out; }
+
+        /* สไตล์สำหรับ Sub-tabs ภายในหน้าแรก */
+        .sub-tab-content { display: none; animation: fadeIn 0.3s ease-out forwards; }
+        .sub-tab-content.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+        #loading-overlay {
+            position: fixed; inset: 0; background: #FFFFFF; z-index: 1000;
+            display: flex; align-items: center; justify-content: center;
+            transition: opacity 0.3s ease;
+        }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        .chart-container { position: relative; width: 100%; flex-grow: 1; }
+
+        .dashboard-row-label {
+            font-size: 0.85rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;
+            color: #475569; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;
+            padding-bottom: 0.5rem; border-bottom: 2px solid #E2E8F0;
+        }
+
+        .filter-select, .search-input {
+            background-color: #ffffff; border: 1px solid #CBD5E1; border-radius: 0.75rem;
+            padding: 0.75rem 1rem; font-size: 0.875rem; outline: none; width: 100%;
+        }
+        .filter-select:focus, .search-input:focus { border-color: #EC4899; box-shadow: 0 0 0 2px #FDF2F8; }
+
+        .kpi-border-blue { border-top: 4px solid #3B82F6; }
+        .kpi-border-indigo { border-top: 4px solid #6366F1; }
+        .kpi-border-purple { border-top: 4px solid #A855F7; }
+        .kpi-border-orange { border-top: 4px solid #F97316; }
+        .kpi-border-teal { border-top: 4px solid #14B8A6; }
+        .kpi-border-pink { border-top: 4px solid #EC4899; }
+        .kpi-border-yellow { border-top: 4px solid #EAB308; }
+        .kpi-border-cyan { border-top: 4px solid #06B6D4; }
+
+        .list-card-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0.5rem 0; border-bottom: 1px dashed #E2E8F0; font-size: 0.8rem; gap: 0.5rem;
+        }
+        .list-card-item:last-child { border-bottom: none; }
+
+        .rank-badge {
+            width: 22px; height: 22px; border-radius: 4px; display: inline-flex; flex-shrink: 0;
+            align-items: center; justify-content: center; font-size: 0.65rem; font-weight: bold;
+            background: #F1F5F9; color: #64748B; margin-right: 0.25rem;
+        }
+        .rank-1 { background: #FEF3C7; color: #D97706; }
+        .rank-2 { background: #F1F5F9; color: #475569; }
+        .rank-3 { background: #FFEDD5; color: #92400E; }
+
+        .kpi-clickable { cursor: pointer; }
+        .kpi-clickable:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1); }
+
+        .acc-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out, padding 0.3s ease; }
+        .acc-content.open { max-height: 1000px; padding-bottom: 1rem; }
+
+        .swal2-popup.news-popup { border-radius: 1.5rem !important; border: 1px solid #E2E8F0; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1) !important; }
+
+        /* Funnel Chart Styles */
+        .funnel-stage { transition: width 1s ease-out; }
+    </style>
+</head>
+<body class="h-full overflow-x-hidden flex flex-col min-h-screen">
+
+    <div id="loading-overlay">
+        <div class="text-center">
+            <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-emerald-500 border-t-transparent mb-3"></div>
+            <p class="text-slate-500 text-xs font-bold tracking-widest uppercase" id="loading-text">กำลังเชื่อมต่อข้อมูล...</p>
+        </div>
+    </div>
+
+    <div id="app-wrapper" class="flex-1 flex flex-col">
+        <header class="bg-white border-b border-slate-200 sticky top-0 z-40 transition-colors duration-300">
+            <div class="max-w-[1800px] mx-auto px-4 md:px-6 min-h-[4rem] flex flex-wrap md:flex-nowrap items-center justify-between py-2 md:py-0 gap-y-2 md:gap-y-0">
+                <div class="flex items-center gap-4 order-1 cursor-pointer group" onclick="window.switchTab('home')">
+                    <div class="w-10 h-10 flex items-center justify-center bg-white rounded-full group-hover:scale-105 transition-transform">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Seal_of_the_Department_of_Medical_Sciences.svg/500px-Seal_of_the_Department_of_Medical_Sciences.svg.png" alt="DMSC Logo" class="max-w-full max-h-full object-contain drop-shadow-sm">
+                    </div>
+                    <h1 class="text-lg font-black text-slate-800 tracking-tight italic hidden sm:block group-hover:text-emerald-700 transition-colors">RIMS<span class="text-emerald-600 font-bold not-italic ml-1 group-hover:text-emerald-500 transition-colors">Manage</span></h1>
+                </div>
+
+                <nav class="flex w-full md:w-auto order-3 md:order-2 gap-5 lg:gap-6 md:h-full items-end overflow-x-auto no-scrollbar pt-3 pb-1 md:pt-0 md:pb-0 border-t border-slate-100 md:border-t-0" id="nav-tabs">
+                    <button class="tab-btn active text-[12px] font-bold uppercase tracking-widest shrink-0" data-tab="home" onclick="window.switchTab('home')">หน้าแรก</button>
+                    <button class="tab-btn text-[12px] font-bold uppercase tracking-widest shrink-0" data-tab="search-res" onclick="window.switchTab('search-res')">ค้นหานักวิจัย</button>
+                    <button class="tab-btn text-[12px] font-bold uppercase tracking-widest shrink-0" data-tab="search-proj" onclick="window.switchTab('search-proj')">ค้นหาผลงานวิจัย</button>
+                    <button class="tab-btn text-[12px] font-bold uppercase tracking-widest shrink-0" data-tab="coord" onclick="window.switchTab('coord')">ผู้ประสานงานวิจัย</button>
+                    <button class="tab-btn text-[12px] font-bold uppercase tracking-widest shrink-0" data-tab="mou" onclick="window.switchTab('mou')">ความร่วมมือ (MOU)</button>
+
+                    <a href="#" target="_blank" rel="noopener noreferrer" class="sys-link text-[12px] uppercase tracking-widest text-indigo-600 hover:text-indigo-800 font-bold pb-[0.5rem] flex items-center gap-1 transition no-underline shrink-0">
+                        <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> เพิ่มนักวิจัยใหม่
+                    </a>
+                </nav>
+
+                <div class="flex items-center gap-4 order-2 md:order-3">
+                    <a href="#" target="_blank" rel="noopener noreferrer" class="sys-link px-4 py-2 rounded-full bg-white border border-slate-200 text-slate-600 font-bold text-[12px] uppercase hover:text-emerald-600 hover:border-emerald-200 transition flex items-center gap-1.5 shadow-sm cursor-pointer no-underline">
+                        <i data-lucide="log-in" class="w-4 h-4"></i> เข้าสู่ระบบ
+                    </a>
+
+                    <div class="text-right hidden sm:block pl-4 border-l border-slate-200">
+                        <p class="text-[12px] font-bold text-emerald-500 flex items-center justify-end gap-1 mb-0.5" id="connection-status">
+                            <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span> Online
+                        </p>
+                        <p class="text-[9.5px] font-medium text-slate-400 flex items-center justify-end gap-1 tracking-wide">
+                            <i data-lucide="clock" class="w-3 h-3"></i> <span id="last-updated-time">กำลังโหลด...</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div id="global-filter" class="bg-white/90 backdrop-blur-sm border-b border-slate-200 sticky top-16 z-30 flex transition-colors duration-300">
+            <div class="max-w-[1800px] mx-auto px-6 py-3 flex flex-wrap gap-4 items-center justify-between w-full">
+                <div class="flex items-center gap-2 text-slate-500 font-bold text-[12px] uppercase tracking-wider"><i data-lucide="filter" class="w-4 h-4"></i> Global Filters</div>
+                <div class="flex gap-3">
+                    <select id="global-year" class="filter-select !w-36 font-bold text-emerald-700 text-[13px] !py-1.5" onchange="window.refreshDashboard()">
+                        <option value="all">ทุกปีงบประมาณ</option>
+                    </select>
+                    <select id="global-dept" class="filter-select !w-64 font-semibold text-[13px] !py-1.5" onchange="window.refreshDashboard()">
+                        <option value="all">ทุกหน่วยงาน</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <main class="max-w-[1800px] mx-auto w-full p-4 md:p-6 space-y-10 pb-10">
+
+            <!-- ================= SECTION: HOME TAB ================= -->
+            <section id="home-tab" class="tab-content active space-y-10">
+                <!-- 1. ส่วนของ KPI -->
+                <div>
+                    <div class="dashboard-row-label"><i data-lucide="target" class="w-4 h-4 text-slate-400"></i> ตัวชี้วัดเชิงกลยุทธ์ (Strategic KPI)</div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3" id="kpi-grid"></div>
+                </div>
+
+                <!-- 2. เมนูเลือกมิติย่อย -->
+                <div class="flex flex-wrap justify-center gap-2 p-1.5 bg-slate-100/80 rounded-2xl w-fit mx-auto border border-slate-200/60 shadow-inner backdrop-blur-sm">
+                    <button onclick="window.switchSubTab('perf')" class="sub-tab-btn bg-white text-blue-600 shadow-sm border-blue-200 border px-6 py-2.5 rounded-xl text-[13px] font-black transition-all flex items-center gap-2" data-subtab="perf">
+                        <i data-lucide="trending-up" class="w-4 h-4"></i> มิติผลงานและประสิทธิภาพ
+                    </button>
+                    <button onclick="window.switchSubTab('hr')" class="sub-tab-btn text-slate-500 border-transparent hover:bg-slate-200/50 border px-6 py-2.5 rounded-xl text-[13px] font-black transition-all flex items-center gap-2" data-subtab="hr">
+                        <i data-lucide="users" class="w-4 h-4"></i> มิติกำลังคนและศักยภาพ
+                    </button>
+                    <button onclick="window.switchSubTab('mou')" class="sub-tab-btn text-slate-500 border-transparent hover:bg-slate-200/50 border px-6 py-2.5 rounded-xl text-[13px] font-black transition-all flex items-center gap-2" data-subtab="mou">
+                        <i data-lucide="handshake" class="w-4 h-4"></i> มิติเครือข่ายความร่วมมือ
+                    </button>
+                </div>
+
+                <!-- 🚀 มิติที่ 1: ผลสัมฤทธิ์และประสิทธิภาพ (Sub-tab: perf) -->
+                <div id="sub-perf" class="sub-tab-content active space-y-6">
+                    <div class="p-6 bg-emerald-50/50 rounded-[2rem] border border-emerald-100 shadow-sm space-y-6">
+                        <div class="flex items-center gap-3 border-b border-emerald-200 pb-4">
+                            <div class="p-2.5 bg-emerald-100 text-emerald-600 rounded-xl"><i data-lucide="trending-up" class="w-6 h-6"></i></div>
+                            <div>
+                                <h2 class="text-xl font-black text-slate-800 tracking-tight">มิติผลสัมฤทธิ์และประสิทธิภาพการวิจัย</h2>
+                                <p class="text-xs font-medium text-slate-500 mt-1">วิเคราะห์ผลผลิต การตีพิมพ์ และเจาะลึกสมรรถนะรายหน่วยงานเชิงเปรียบเทียบ</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                            <div class="col-span-12 lg:col-span-4 executive-card p-6 bg-white flex flex-col">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h3 class="text-[13px] font-bold text-slate-600 uppercase">กรวยกรองผลผลิตนักวิจัย (Pipeline Funnel)</h3>
+                                </div>
+                                <p class="text-[10px] text-slate-400 mb-6 font-medium">วิเคราะห์อัตราการลดลงจากจำนวนนักวิจัยทั้งหมด สู่ผู้ที่มีโครงการ และผู้ที่ตีพิมพ์สำเร็จ</p>
+
+                                <div id="funnel-container" class="flex-grow flex flex-col justify-center items-center gap-4 py-2"></div>
+                            </div>
+
+                            <div class="col-span-12 lg:col-span-8 executive-card p-6 bg-white">
+                                <div class="flex flex-col xl:flex-row items-start xl:items-center justify-between mb-2 gap-2">
+                                    <h3 class="text-[13px] font-bold text-slate-600 uppercase" id="title-perf-group">ประสิทธิภาพการสร้างผลงาน จำแนกตามวุฒิการศึกษา</h3>
+                                    <div class="flex gap-1 p-1 bg-slate-100 rounded-lg shrink-0">
+                                        <button onclick="window.togglePerfGroup('edu', this)" class="btn-perf-group px-3 py-1 text-[11px] font-bold rounded-md bg-indigo-100 text-indigo-700 ring-1 ring-indigo-300 transition-all">วุฒิการศึกษา</button>
+                                        <button onclick="window.togglePerfGroup('pos', this)" class="btn-perf-group px-3 py-1 text-[11px] font-bold rounded-md bg-slate-50 text-slate-500 hover:bg-white transition-all">ตำแหน่ง (Top 5)</button>
+                                    </div>
+                                </div>
+                                <p class="text-[10px] text-slate-400 mb-4 font-medium">เปรียบเทียบสัดส่วน <span class="text-indigo-500 font-bold">ตีพิมพ์แล้ว</span> ต่อ <span class="text-slate-300 font-bold">โครงการทั้งหมด</span> พร้อมอัตราความสำเร็จ (Success Rate)</p>
+                                <div class="chart-container h-64"><canvas id="chart-multi-perf"></canvas></div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                            <div class="col-span-12 lg:col-span-8 executive-card p-6 bg-white">
+                                <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-4 gap-2 border-b border-slate-100 pb-3">
+                                    <h3 class="text-[13px] font-bold text-slate-600 uppercase">แนวโน้มภาพรวมโครงการและการตีพิมพ์ตามปีงบประมาณ</h3>
+                                    <div class="flex gap-1 p-1 bg-slate-100 rounded-lg">
+                                        <button onclick="window.togglePipeline('all', this)" class="btn-pipe px-3 py-1 text-[11px] font-bold rounded-md bg-blue-100 text-blue-700 ring-1 ring-blue-300 transition-all">เปรียบเทียบ</button>
+                                        <button onclick="window.togglePipeline('pub', this)" class="btn-pipe px-3 py-1 text-[11px] font-bold rounded-md bg-slate-50 text-slate-500 hover:bg-white transition-all">เฉพาะตีพิมพ์</button>
+                                        <button onclick="window.togglePipeline('proj', this)" class="btn-pipe px-3 py-1 text-[11px] font-bold rounded-md bg-slate-50 text-slate-500 hover:bg-white transition-all">เฉพาะโครงการ</button>
+                                    </div>
+                                </div>
+                                <div class="chart-container h-64"><canvas id="chart-pipeline"></canvas></div>
+                            </div>
+                            <div class="col-span-12 lg:col-span-4 executive-card p-8 bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex flex-col justify-center items-center text-center">
+                                <p class="text-[12px] font-bold uppercase tracking-widest opacity-90 mb-3">ระยะเวลาเฉลี่ยสู่การตีพิมพ์</p>
+                                <div class="flex items-baseline gap-2 mb-2">
+                                    <h2 class="text-7xl font-black animate-number" id="kpi-avg-time" data-target="1.8" data-decimals="1" data-suffix="">0</h2>
+                                    <span class="text-2xl font-bold opacity-80">ปี</span>
+                                </div>
+                                <div class="bg-white/20 px-3 py-1 rounded-full text-[10px] font-medium backdrop-blur-sm mt-2">ค่าเฉลี่ยจากข้อมูลย้อนหลัง</div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                            <div class="col-span-12 lg:col-span-6 executive-card p-6 bg-white">
+                                <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-4 gap-2 border-b border-slate-100 pb-3">
+                                    <div>
+                                        <h3 class="text-[13px] font-bold text-slate-600 uppercase mb-1">ผลงานวิจัยจำแนกตามหน่วยงาน (Top 15)</h3>
+                                        <p class="text-[10px] text-slate-400 font-medium">สัดส่วน <span class="text-blue-500 font-bold">ผลงานตีพิมพ์</span> ต่อ <span class="text-slate-400 font-bold">โครงการทั้งหมด</span></p>
+                                    </div>
+                                    <div class="flex gap-1 p-1 bg-slate-100 rounded-lg shrink-0">
+                                        <button onclick="window.toggleDeptPerf('stacked', this)" class="btn-dept px-3 py-1 text-[11px] font-bold rounded-md bg-emerald-100 text-emerald-700 ring-1 ring-emerald-300 transition-all">สัดส่วน (Stacked)</button>
+                                        <button onclick="window.toggleDeptPerf('grouped', this)" class="btn-dept px-3 py-1 text-[11px] font-bold rounded-md bg-slate-50 text-slate-500 hover:bg-white transition-all">เปรียบเทียบ (Group)</button>
+                                    </div>
+                                </div>
+                                <div class="chart-container h-[420px]"><canvas id="chart-res-dept-main"></canvas></div>
+                            </div>
+
+                            <div class="col-span-12 lg:col-span-6 flex flex-col gap-5">
+                                <div class="executive-card p-6 bg-emerald-500/10 border-emerald-200 h-1/2">
+                                    <h3 class="text-[13px] font-bold text-emerald-700 uppercase mb-3 flex items-center gap-1"><i data-lucide="zap" class="w-4 h-4 text-emerald-500"></i> หน่วยงานประสิทธิภาพสูงสุด (TOP 5)</h3>
+                                    <p class="text-[10px] text-slate-500 mb-3 font-medium leading-tight">คำนวณจาก: โครงการทั้งหมด / จำนวนนักวิจัย</p>
+                                    <div class="overflow-y-auto pr-1 flex-grow custom-scrollbar" id="list-top-eff-dept"></div>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-5 h-1/2">
+                                    <div class="executive-card p-6 bg-white">
+                                        <h3 class="text-[12px] font-bold text-slate-600 uppercase mb-3 flex items-center gap-1 border-b border-slate-100 pb-2"><i data-lucide="user-check" class="w-3.5 h-3.5 text-indigo-500"></i> นักวิจัยตีพิมพ์สูงสุด</h3>
+                                        <div class="overflow-y-auto pr-1 flex-grow custom-scrollbar" id="list-top-researchers"></div>
+                                    </div>
+                                    <div class="executive-card p-6 bg-white">
+                                        <h3 class="text-[12px] font-bold text-slate-600 uppercase mb-3 flex items-center gap-1 border-b border-slate-100 pb-2"><i data-lucide="library" class="w-3.5 h-3.5 text-blue-500"></i> วารสารตีพิมพ์สูงสุด</h3>
+                                        <div class="overflow-y-auto pr-1 flex-grow custom-scrollbar" id="list-top-journals"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 🌟 มิติที่ 2: ทุนมนุษย์และศักยภาพ (Sub-tab: hr) -->
+                <div id="sub-hr" class="sub-tab-content space-y-6">
+                    <div class="p-6 bg-blue-50/50 rounded-[2rem] border border-blue-100 shadow-sm space-y-6">
+                        <div class="flex items-center gap-3 border-b border-blue-200 pb-4">
+                            <div class="p-2.5 bg-blue-100 text-blue-600 rounded-xl"><i data-lucide="users" class="w-6 h-6"></i></div>
+                            <div>
+                                <h2 class="text-xl font-black text-slate-800 tracking-tight">มิติทุนมนุษย์และโครงสร้างกำลังคน</h2>
+                                <p class="text-xs font-medium text-slate-500 mt-1">วิเคราะห์ศักยภาพ ความเชี่ยวชาญ และเจาะลึกมิติความเสี่ยงด้านบุคลากรวิจัย</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                            <div class="col-span-12 lg:col-span-3 executive-card p-6 flex flex-col items-center justify-center bg-white">
+                                <div class="w-14 h-14 bg-orange-50 rounded-full flex items-center justify-center mb-4"><span class="text-2xl">🎂</span></div>
+                                <p class="text-[12px] font-bold text-slate-500 uppercase tracking-widest">อายุเฉลี่ยนักวิจัย</p>
+                                <div class="text-5xl font-black text-slate-800 my-2 animate-number" id="avg-age-display" data-target="0" data-decimals="0" data-suffix="">0</div>
+                                <p class="text-[13px] font-bold text-slate-500">ปี</p>
+                            </div>
+                            <div class="col-span-12 lg:col-span-3 executive-card p-6 bg-gradient-to-br from-rose-500 to-rose-600 text-white flex flex-col justify-center items-center text-center">
+                                <p class="text-[12px] font-bold uppercase tracking-widest opacity-90 mb-3">เสี่ยงเกษียณใน 5 ปี</p>
+                                <h2 class="text-6xl font-black mb-2 animate-number" id="risk-percent" data-target="0" data-decimals="1" data-suffix="%">0%</h2>
+                                <p class="text-[14px] font-bold opacity-100 animate-number mb-2" id="risk-count" data-target="0" data-decimals="0" data-suffix=" ท่าน">0 ท่าน</p>
+                                <div class="bg-white/20 px-3 py-1 rounded-full text-[10px] font-medium backdrop-blur-sm">จากจำนวนบุคลากรทั้งหมด</div>
+                            </div>
+                            <div class="col-span-12 lg:col-span-6 executive-card p-6 bg-white">
+                                <h3 class="text-[13px] font-bold text-slate-600 uppercase mb-4 flex items-center gap-2 border-l-4 border-rose-500 pl-3">แนวโน้มการเกษียณอายุราชการ (พ.ศ. 2569 – 2588)</h3>
+                                <div class="chart-container h-52"><canvas id="chart-retire-trend"></canvas></div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                            <div class="col-span-12 lg:col-span-4 executive-card p-6 bg-white border-t-4 border-t-blue-500">
+                                <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-2">
+                                    <h3 class="text-[13px] font-bold text-slate-600 uppercase">สัดส่วนประเภทบุคลากร</h3>
+                                    <button onclick="window.toggleChartType('pType', this)" class="p-1.5 bg-slate-100 text-slate-500 hover:text-blue-600 rounded-md transition-colors"><i data-lucide="bar-chart-2" class="w-3.5 h-3.5"></i></button>
+                                </div>
+                                <div class="chart-container h-52"><canvas id="chart-personnel-type"></canvas></div>
+                            </div>
+                            <div class="col-span-12 lg:col-span-4 executive-card p-6 bg-white border-t-4 border-t-indigo-500">
+                                <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-2">
+                                    <h3 class="text-[13px] font-bold text-slate-600 uppercase">ระดับการศึกษา</h3>
+                                    <button onclick="window.toggleChartType('edu', this)" class="p-1.5 bg-slate-100 text-slate-500 hover:text-indigo-600 rounded-md transition-colors"><i data-lucide="pie-chart" class="w-3.5 h-3.5"></i></button>
+                                </div>
+                                <div class="chart-container h-52"><canvas id="chart-edu-level"></canvas></div>
+                            </div>
+
+                            <!-- 🕸️ Bullet/Progress Bar Risk -->
+                            <div class="col-span-12 lg:col-span-4 executive-card p-6 bg-white border-t-4 border-t-rose-500">
+                                <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-2">
+                                    <div>
+                                        <h3 class="text-[13px] font-bold text-slate-600 uppercase">เฝ้าระวัง: สูญเสียความเชี่ยวชาญ</h3>
+                                        <p class="text-[9px] text-rose-500 font-bold tracking-wider">สัดส่วนผู้ที่จะเกษียณใน 5 ปี เทียบกับคนทั้งหมด</p>
+                                    </div>
+                                </div>
+                                <div id="risk-bullet-container" class="space-y-3.5 overflow-y-auto h-52 custom-scrollbar pr-2 pt-1"></div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                            <div class="col-span-12 lg:col-span-8 executive-card p-6 bg-white">
+                                <h3 class="text-[13px] font-bold text-slate-600 uppercase mb-4 flex items-center gap-2 pl-2"><i data-lucide="alert-triangle" class="w-4 h-4 text-rose-500"></i> หน่วยงานเสี่ยงขาดแคลนกำลังคน (เกษียณ 5 ปี >= 30%)</h3>
+                                <div class="chart-container h-48"><canvas id="chart-risk-dept"></canvas></div>
+                            </div>
+                            <div class="col-span-12 lg:col-span-4 executive-card p-8 bg-gradient-to-br from-slate-700 to-slate-800 text-white flex flex-col justify-center items-center text-center">
+                                <p class="text-[13px] font-bold uppercase tracking-widest opacity-90 mb-4">บุคลากรวิจัยที่ไม่มีผลงานเกิน 3 ปี</p>
+                                <h2 class="text-7xl font-black mb-3 animate-number text-rose-400" id="kpi-inactive-percent" data-target="0" data-decimals="1" data-suffix="%">0%</h2>
+                                <p class="text-[14px] font-medium opacity-80 mt-2">สัดส่วนนักวิจัยที่ควรได้รับการกระตุ้นผลงาน</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 🤝 มิติที่ 3: เครือข่ายยุทธศาสตร์ (Sub-tab: mou) -->
+                <div id="sub-mou" class="sub-tab-content space-y-6">
+                    <div class="p-6 bg-cyan-50/50 rounded-[2rem] border border-cyan-100 shadow-sm space-y-6">
+                        <div class="flex items-center gap-3 border-b border-cyan-200 pb-4">
+                            <div class="p-2.5 bg-cyan-100 text-cyan-600 rounded-xl"><i data-lucide="handshake" class="w-6 h-6"></i></div>
+                            <div>
+                                <h2 class="text-xl font-black text-slate-800 tracking-tight">มิติเครือข่ายความร่วมมือ (MOU)</h2>
+                                <p class="text-xs font-medium text-slate-500 mt-1">เจาะลึกทิศทางพันธมิตร และระบบแจ้งเตือนสถานะสัญญาความร่วมมืออัตโนมัติ</p>
+                            </div>
+                        </div>
+
+                        <div class="executive-card p-6 bg-white border-t-4 border-t-cyan-500">
+                            <h3 class="text-[13px] font-bold text-slate-600 uppercase mb-4"><i data-lucide="bell-ring" class="w-4 h-4 inline pb-0.5 text-cyan-500"></i> ภาพรวมสถานะ MOU (Tracking & Renewal)</h3>
+                            <div id="mou-status-card" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="flex justify-center items-center h-20 text-slate-400 text-sm col-span-full">
+                                    <div class="animate-spin rounded-full h-6 w-6 border-2 border-slate-300 border-t-slate-600 mr-2"></div> กำลังคำนวณข้อมูล...
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-5">
+                            <div class="col-span-12 lg:col-span-8 executive-card p-6 bg-white">
+                                <h3 class="text-[13px] font-bold text-slate-600 uppercase mb-4 text-center border-b border-slate-100 pb-3">ประเภทองค์กรคู่สัญญา แยกตามหน่วยงานภายใน</h3>
+                                <div class="chart-container h-[300px] relative mt-2">
+                                    <canvas id="chart-mou-partner-types"></canvas>
+                                    <div id="mou-partner-loader" class="absolute inset-0 flex items-center justify-center bg-white/90 z-10"><div class="animate-spin h-8 w-8 border-2 border-slate-300 border-t-cyan-500 rounded-full"></div></div>
+                                </div>
+                            </div>
+                            <div class="col-span-12 lg:col-span-4 executive-card p-6 bg-white">
+                                <h3 class="text-[13px] font-bold text-slate-600 uppercase mb-4 text-center border-b border-slate-100 pb-3">สัดส่วนวัตถุประสงค์เชิงยุทธศาสตร์</h3>
+                                <div class="chart-container h-[250px] relative mb-4 mt-2">
+                                    <canvas id="chart-mou-objectives"></canvas>
+                                    <div id="mou-obj-loader" class="absolute inset-0 flex items-center justify-center bg-white/90 z-10"><div class="animate-spin h-8 w-8 border-2 border-slate-300 border-t-cyan-500 rounded-full"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= SECTION: SEARCH RESEARCHER ================= -->
+            <section id="search-res-tab" class="tab-content space-y-6">
+                 <div class="bg-white rounded-[1.5rem] border border-slate-200 shadow-sm p-6 md:p-8 transition-colors">
+                    <div class="flex items-center gap-2 mb-6"><i data-lucide="search" class="w-6 h-6 text-blue-500"></i><h2 class="text-[20px] font-bold text-slate-800">ค้นหาข้อมูลนักวิจัย</h2></div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-[14px] font-bold text-slate-700 mb-2 ml-1">ค้นหาด้วยชื่อ - นามสกุล</label>
+                            <input type="text" id="search-res-name" class="search-input shadow-sm" placeholder="ระบุชื่อหรือนามสกุลเพื่อค้นหา..." onkeyup="if(event.key==='Enter') window.handleSearch('res')">
+                        </div>
+                        <div>
+                            <label class="block text-[14px] font-bold text-slate-700 mb-2 ml-1">ค้นหาด้วยหน่วยงานสังกัด</label>
+                            <select id="search-res-dept" class="filter-select shadow-sm">
+                                <option value="all">ทุกหน่วยงาน</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="flex justify-end gap-3 flex-wrap pt-2 border-t border-slate-100">
+                        <button onclick="window.clearSearch('res')" class="px-6 py-3 rounded-xl border border-slate-200 text-slate-600 font-bold text-[14px] hover:bg-slate-100 transition-colors">ล้างค่า</button>
+                        <button onclick="window.handleSearch('res')" class="px-8 py-3 rounded-xl bg-blue-600 text-white font-bold text-[14px] shadow-md hover:bg-blue-700 hover:shadow-lg transition-all flex items-center gap-2 transform active:scale-95"><i data-lucide="search" class="w-4 h-4"></i> ค้นหา</button>
+                    </div>
+                </div>
+                <div id="res-results" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            </section>
+
+            <!-- ================= SECTION: SEARCH PROJECT ================= -->
+            <section id="search-proj-tab" class="tab-content space-y-6">
+                <div class="bg-white rounded-[1.5rem] border border-slate-200 shadow-sm p-6 md:p-8 transition-colors">
+                    <div class="flex items-center gap-2 mb-6"><i data-lucide="book-open" class="w-6 h-6 text-purple-500"></i><h2 class="text-[20px] font-bold text-slate-800">ค้นหาผลงานวิจัย</h2></div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-[14px] font-bold text-slate-700 mb-2 ml-1">ค้นหาด้วยชื่อผลงาน / นักวิจัย</label>
+                            <input type="text" id="search-proj-name" class="search-input shadow-sm" placeholder="พิมพ์ชื่อผลงานวิจัย หรือ ชื่อผู้วิจัย..." onkeyup="if(event.key==='Enter') window.handleSearch('proj')">
+                        </div>
+                        <div>
+                            <label class="block text-[14px] font-bold text-slate-700 mb-2 ml-1">ค้นหาด้วยหน่วยงานสังกัด</label>
+                            <select id="search-proj-dept" class="filter-select shadow-sm">
+                                <option value="all">ทุกหน่วยงาน</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="flex justify-end gap-3 flex-wrap pt-2 border-t border-slate-100">
+                        <button onclick="window.clearSearch('proj')" class="px-6 py-3 rounded-xl border border-slate-200 text-slate-600 font-bold text-[14px] hover:bg-slate-100 transition-colors">ล้างค่า</button>
+                        <button onclick="window.handleSearch('proj')" class="px-8 py-3 rounded-xl bg-purple-600 text-white font-bold text-[14px] shadow-md hover:bg-purple-700 hover:shadow-lg transition-all flex items-center gap-2 transform active:scale-95"><i data-lucide="search" class="w-4 h-4"></i> ค้นหา</button>
+                    </div>
+                </div>
+                <div id="proj-results" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            </section>
+
+            <!-- ================= SECTION: COORDINATOR ================= -->
+            <section id="coord-tab" class="tab-content space-y-6">
+                <div class="bg-white rounded-[1.5rem] border border-slate-200 shadow-sm p-6 md:p-8 transition-colors">
+                    <div class="flex items-center gap-2 mb-6"><i data-lucide="users" class="w-6 h-6 text-orange-500"></i><h2 class="text-[20px] font-bold text-slate-800">ค้นหาผู้ประสานงานวิจัย</h2></div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-[14px] font-bold text-slate-700 mb-2 ml-1">ค้นหาด้วยชื่อผู้ประสานงาน</label>
+                            <input type="text" id="filter-coord-name" class="search-input shadow-sm" placeholder="ระบุชื่อผู้ประสานงาน..." onkeyup="if(event.key==='Enter') window.handleSearch('coord')">
+                        </div>
+                        <div>
+                            <label class="block text-[14px] font-bold text-slate-700 mb-2 ml-1">ค้นหาด้วยหน่วยงานสังกัด</label>
+                            <select id="filter-coord-dept" class="filter-select shadow-sm">
+                                <option value="all">ทุกหน่วยงาน</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="flex justify-end gap-3 flex-wrap pt-2 border-t border-slate-100">
+                        <button onclick="window.clearSearch('coord')" class="px-6 py-3 rounded-xl border border-slate-200 text-slate-600 font-bold text-[14px] hover:bg-slate-100 transition-colors">ล้างค่า</button>
+                        <button onclick="window.handleSearch('coord')" class="px-8 py-3 rounded-xl bg-orange-600 text-white font-bold text-[14px] shadow-md hover:bg-orange-700 hover:shadow-lg transition-all flex items-center gap-2 transform active:scale-95"><i data-lucide="search" class="w-4 h-4"></i> ค้นหา</button>
+                    </div>
+                </div>
+                <div id="coord-results" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+            </section>
+
+            <!-- ================= SECTION: MOU ================= -->
+            <section id="mou-tab" class="tab-content space-y-6">
+                <div class="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-6 md:p-10">
+                    <div class="flex items-center gap-3 mb-8">
+                        <div class="p-3 bg-cyan-50 rounded-2xl text-cyan-600 shadow-sm">
+                            <i data-lucide="handshake" class="w-8 h-8"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-extrabold text-slate-800 tracking-tight">สืบค้นความร่วมมือ (MOU)</h2>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700 ml-1">ชื่อความร่วมมือ / หน่วยงานพันธมิตร</label>
+                            <div class="relative">
+                                <i data-lucide="search" class="absolute left-4 top-3.5 w-4 h-4 text-slate-400"></i>
+                                <input type="text" id="search-mou-name" class="search-input pl-11 py-3.5" placeholder="พิมพ์คำค้นหาที่ต้องการ..." onkeyup="if(event.key==='Enter') window.performMouSearch()">
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700 ml-1">หน่วยงานภายในกรม (DMSC)</label>
+                            <select id="search-mou-dept" class="filter-select py-3.5 cursor-pointer">
+                                <option value="all">แสดงทุกหน่วยงาน</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700 ml-1">สถานะของความร่วมมือ</label>
+                            <select id="filter-mou-status" class="filter-select py-3.5 cursor-pointer">
+                                <option value="all">ทุกสถานะ</option>
+                                <option value="active">กำลังดำเนินการ (Active)</option>
+                                <option value="expiring_this_year">หมดอายุภายในปีนี้</option>
+                                <option value="expiring">ใกล้หมดอายุ (ภายใน 90 วัน)</option>
+                                <option value="expired">สิ้นสุดแล้ว (Expired)</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700 ml-1">ประเภทองค์กรพันธมิตร</label>
+                            <select id="filter-mou-org" class="filter-select py-3.5 cursor-pointer">
+                                <option value="all">ทุกประเภทองค์กร</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end gap-3 mt-8 pt-6 border-t border-slate-100">
+                        <button onclick="window.clearMouSearch()" class="px-8 py-3 rounded-xl border border-slate-200 text-slate-600 font-bold text-[14px] hover:bg-slate-100 transition-colors">ล้างค่าตัวกรอง</button>
+                        <button onclick="window.performMouSearch()" class="px-10 py-3 rounded-xl bg-cyan-600 text-white font-bold text-[14px] shadow-md hover:bg-cyan-700 hover:shadow-lg transition-all flex items-center gap-2 transform active:scale-95">
+                            <i data-lucide="search" class="w-4 h-4"></i> ค้นหาข้อมูล
+                        </button>
+                    </div>
+                </div>
+
+                <div id="mou-view-initial" class="py-24 text-center bg-white border-2 border-dashed border-slate-200 rounded-[3rem] flex flex-col items-center transition-all">
+                    <div class="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mb-6 text-slate-300">
+                        <i data-lucide="search" class="w-12 h-12"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">พร้อมสำหรับการค้นหา</h3>
+                    <p class="text-slate-500">ระบุข้อมูลด้านบนเพื่อดึงข้อมูล MOU จากระบบ</p>
+                </div>
+
+                <div id="mou-view-loading" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6"></div>
+                <div id="mou-view-results" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6"></div>
+            </section>
+
+        </main>
+
+        <footer class="mt-auto py-8 border-t border-slate-200 text-center bg-white transition-colors">
+            <div class="max-w-[1800px] mx-auto px-6">
+                <p class="text-[11px] font-semibold uppercase tracking-wider mb-1.5 text-slate-400">© 2026 Research Information Management System of the Department of Medical Sciences (RIMS Manage)</p>
+                <p class="text-[11px] font-medium text-slate-400">กองแผนงานและวิชาการ กรมวิทยาศาสตร์การแพทย์</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Master Modal -->
+    <div id="master-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6">
+        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="window.closeModal()"></div>
+        <div class="executive-card w-full max-w-5xl bg-slate-50 relative z-10 max-h-[90vh] flex flex-col shadow-2xl overflow-hidden rounded-[1.5rem]">
+            <div class="p-6 border-b border-slate-200 flex justify-between items-center bg-white z-10 shadow-sm rounded-t-[1.5rem]">
+                <h3 id="modal-title" class="text-[18px] md:text-xl font-black text-slate-800 flex items-center gap-2 tracking-wide">รายละเอียด</h3>
+                <button onclick="window.closeModal()" class="p-2 hover:bg-slate-100 rounded-full transition text-slate-500 hover:text-rose-500"><i data-lucide="x" class="w-6 h-6"></i></button>
+            </div>
+            <div id="modal-content" class="p-6 md:p-8 overflow-y-auto flex-1 custom-scrollbar space-y-6"></div>
+            <div id="modal-footer" class="p-5 border-t border-slate-200 bg-white flex justify-end gap-3 items-center shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] relative z-10 rounded-b-[1.5rem]">
+                <button onclick="window.closeModal()" class="px-6 py-3 rounded-xl border border-slate-300 text-slate-700 font-bold hover:bg-slate-50 transition text-[14px] cursor-pointer">ปิดหน้าต่าง</button>
+                <div id="modal-action-btns" class="flex gap-2"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= JAVASCRIPT ================= -->
+    <script>
+        const get = id => document.getElementById(id);
+
+        const DMSC_DEPTS = ["สำนักเลขานุการกรม", "กองแผนงานและวิชาการ", "ศูนย์เทคโนโลยีสารสนเทศและการสื่อสาร", "กองบริหารการคลัง", "กองประชาสัมพันธ์และสื่อสารสารสาธารณะ", "กองบริหารทรัพยากรบุคคล", "สำนักมาตรฐานห้องปฏิบัติการ", "สำนักผู้ทรงคุณวุฒิกรมวิทยาศาสตร์การแพทย์", "สถาบันชีววัตถุ", "สถาบันชีววิทยาศาสตร์ทางการแพทย์", "สถาบันวิจัยวิทยาศาสตร์สาธารณสุข", "สถาบันวิจัยสมุนไพร", "สำนักเครื่องสำอางและวัตถุอันตราย", "สำนักยาและวัตถุเสพติด", "สำนักรังสีและเครื่องมือแพทย์", "สำนักคุณภาพและความปลอดภัยอาหาร", "กองทดสอบความชำนาญ", "กองความร่วมมือระหว่างประเทศ", "ศูนย์รวมบริการ", "ศูนย์วิทยาศาสตร์การแพทย์ที่ 1 เชียงใหม่", "ศูนย์วิทยาศาสตร์การแพทย์ที่ 1/1 เชียงราย", "ศูนย์วิทยาศาสตร์การแพทย์ที่ 2 พิษณุโลก", "ศูนย์วิทยาศาสตร์การแพทย์ที่ 3 นครสวรรค์", "ศูนย์วิทยาศาสตร์การแพทย์ที่ 4 สระบุรี", "ศูนย์วิทยาศาสตร์การแพทย์ที่ 5 สมุทรสงคราม", "ศูนย์วิทยาศาสตร์การแพทย์ที่ 6 ชลบุรี", "ศูนย์วิทยาศาสตร์การแพทย์ที่ 7 ขอนแก่น", "ศูนย์วิทยาศาสตร์การแพทย์ที่ 8 อุดรธานี", "ศูนย์วิทยาศาสตร์การแพทย์ที่ 9 นครราชสีมา", "ศูนย์วิทยาศาสตร์การแพทย์ที่ 10 อุบลราชธานี", "ศูนย์วิทยาศาสตร์การแพทย์ที่ 11 สุราษฎร์ธานี", "ศูนย์วิทยาศาสตร์การแพทย์ที่ 11/1 ภูเก็ต", "ศูนย์วิทยาศาสตร์การแพทย์ที่ 12 สงขลา", "ศูนย์วิทยาศาสตร์การแพทย์ที่ 12/1 ตรัง"];
+
+        // ข้างต้นคือกำหนดข้อมูลและตัวแปรพื้นฐาน
+        // JavaScript ส่วนที่เหลือจะทำงานสำหรับการแสดง UI แต่จำกัดไว้เฉพาะฟังก์ชันที่จำเป็นสำหรับการทำงาน
+
+        window.closeModal = () => document.getElementById('master-modal')?.classList.add('hidden');
+        window.switchTab = (tabId) => {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId + '-tab')?.classList.add('active');
+            document.querySelector(`[data-tab="${tabId}"]`)?.classList.add('active');
+        };
+        window.switchSubTab = (subTabId) => {
+            document.querySelectorAll('.sub-tab-content').forEach(el => el.classList.remove('active'));
+            document.getElementById('sub-' + subTabId)?.classList.add('active');
+        };
+    </script>
+</body>
+</html>
