@@ -2435,7 +2435,7 @@
             
             const modalActionBtnsEl = get('modal-action-btns');
             if (modalActionBtnsEl) {
-                modalActionBtnsEl.innerHTML = `<a href="#" onclick="window.open(GLOBAL_SYSTEM_LINK, '_blank')" rel="noopener noreferrer" class="px-6 py-3 rounded-xl bg-amber-500 text-white font-bold hover:bg-amber-600 shadow-md transition text-[14px] uppercase flex items-center gap-2 no-underline cursor-pointer"><i data-lucide="edit" class="w-4 h-4"></i> แก้ไขข้อมูลนักวิจัย</a>`;
+                modalActionBtnsEl.innerHTML = `<a href="#" onclick="window.openDevModal()" rel="noopener noreferrer" class="px-6 py-3 rounded-xl bg-amber-500 text-white font-bold hover:bg-amber-600 shadow-md transition text-[14px] uppercase flex items-center gap-2 no-underline cursor-pointer"><i data-lucide="edit" class="w-4 h-4"></i> แก้ไขข้อมูลนักวิจัย</a>`;
             }
             
             works.sort((a,b) => {
