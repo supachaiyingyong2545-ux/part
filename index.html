@@ -1263,15 +1263,17 @@
                 if(p >= 30) riskDepts[d] = p;
             });
 
-            const deptStats = {}; 
-            const deptPubStats = {}; 
-            uniqueProj.forEach(p => { 
-                const d = p['หน่วยงาน_derived'] || 'ไม่ระบุ'; 
-                deptStats[d] = (deptStats[d] || 0) + 1; 
+            const deptStats = {};
+            const deptPubStats = {};
+            uniqueProj.forEach(p => {
+                const d = p['หน่วยงาน_derived'] || 'ไม่ระบุ';
+                deptStats[d] = (deptStats[d] || 0) + 1;
                 if(isPublished(p)) {
                     deptPubStats[d] = (deptPubStats[d] || 0) + 1;
                 }
             });
+
+            const top15Depts = Object.entries(deptStats).sort((a, b) => b[1] - a[1]).slice(0, 15);
 
             const jStats = {}; 
             pubs.forEach(p => { 
