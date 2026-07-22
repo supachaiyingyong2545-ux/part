@@ -1037,66 +1037,73 @@
             }
         }
 
+        // GAS API Deployment URL
+        const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbwXx5bLa5NioAmbL8hBnEYAeBpljiw6bZUQ2sHIy1OsSn7mfhvpO3Uze1msSxyrlmvzeg/exec';
+
         window.fetchData = function() {
-            if (typeof google !== 'undefined' && google.script && google.script.run) {
-                google.script.run
-                    .withSuccessHandler(url => {
-                        if(url) {
-                            GLOBAL_SYSTEM_LINK = url;
-                            document.querySelectorAll('.sys-link').forEach(btn => btn.href = url);
-                        }
-                    })
-                    .getSystemLink();
+            // Fetch System Link
+            fetch(GAS_API_URL + '?path=system-link')
+                .then(r => r.json())
+                .then(data => {
+                    if (data && data.success && data.link) {
+                        GLOBAL_SYSTEM_LINK = data.link;
+                        document.querySelectorAll('.sys-link').forEach(btn => btn.href = data.link);
+                    }
+                })
+                .catch(e => console.error("System Link Error:", e));
 
-                google.script.run
-                    .withSuccessHandler(response => {
-                        try {
-                            const r = typeof response === 'string' ? JSON.parse(response) : response;
-                            if (r && r.success) {
-                                allData = { 
-                                    researchers: r.researchers || [], 
-                                    projects: r.projects || [], 
-                                    coordinators: r.coordinators || [],
-                                    news: r.news || []
-                                };
-                                const cs = get('connection-status');
-                                if(cs) cs.innerHTML = `<span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse inline-block mr-1"></span> Online`;
-                                
-                                setLoader(false);
-                                window.refreshDashboard();
-                                setTimeout(window.showNewsPopup, 1000);
-                            } else {
-                                throw new Error(r.message || 'ไม่สามารถดึงข้อมูลได้');
-                            }
-                        } catch (e) { 
-                            console.error("Parse Error:", e); 
-                            setLoader(false);
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'การโหลดข้อมูลผิดพลาด',
-                                text: e.message,
-                                confirmButtonColor: '#3B82F6'
-                            });
-                        } 
-                    })
-                    .withFailureHandler(e => {
-                        console.error("GS Error:", e);
-                        setLoader(false); 
-                    })
-                    .getDashboardData(); 
-
-                google.script.run
-                    .withSuccessHandler(response => {
+            // Fetch Dashboard Data
+            fetch(GAS_API_URL + '?path=dashboard')
+                .then(r => r.json())
+                .then(response => {
+                    try {
                         if (response && response.success) {
-                            window.processMouRawData(response.data);
-                        }
-                    })
-                    .getMouData();
+                            allData = {
+                                researchers: response.researchers || [],
+                                projects: response.projects || [],
+                                coordinators: response.coordinators || [],
+                                news: response.news || []
+                            };
+                            const cs = get('connection-status');
+                            if(cs) cs.innerHTML = `<span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse inline-block mr-1"></span> Online`;
 
-            } else {
-                console.log("No Google Context. Loading Mock Data...");
-                window.loadMockData();
-            }
+                            setLoader(false);
+                            window.refreshDashboard();
+                            setTimeout(window.showNewsPopup, 1000);
+                        } else {
+                            throw new Error(response.message || 'ไม่สามารถดึงข้อมูลได้');
+                        }
+                    } catch (e) {
+                        console.error("Parse Error:", e);
+                        setLoader(false);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'การโหลดข้อมูลผิดพลาด',
+                            text: e.message,
+                            confirmButtonColor: '#3B82F6'
+                        });
+                    }
+                })
+                .catch(e => {
+                    console.error("Dashboard Fetch Error:", e);
+                    setLoader(false);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'เชื่อมต่อเซิร์ฟเวอร์ไม่ได้',
+                        text: 'กรุณาตรวจสอบการตั้งค่า GAS API URL',
+                        confirmButtonColor: '#3B82F6'
+                    });
+                });
+
+            // Fetch MOU Data
+            fetch(GAS_API_URL + '?path=mou')
+                .then(r => r.json())
+                .then(response => {
+                    if (response && response.success) {
+                        window.processMouRawData(response.data);
+                    }
+                })
+                .catch(e => console.error("MOU Fetch Error:", e));
         }
 
         window.refreshDashboard = function() {
