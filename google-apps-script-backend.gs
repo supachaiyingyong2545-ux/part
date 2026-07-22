@@ -14,7 +14,7 @@
  */
 
 // รหัส Spreadsheet ล่าสุด
-const SPREADSHEET_ID = '1kzGil32hil6p9BB2LJIOYf21P6YJ7g5r2ZfrxHEjQVQ';
+const SPREADSHEET_ID = '1ZPvtaeiHVDEYjbqjYJR5KNCsFrFOQ3K9no8EfQNSAtI';
 
 /**
  * GET endpoint - รับข้อมูลจาก Google Sheet
