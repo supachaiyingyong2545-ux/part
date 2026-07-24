@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DMSc Future City - ร่วมสร้างกรมในอนาคต</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #ffffff 0%, #f0f8ff 100%);
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(to bottom, #ffffff 0%, #f5f9ff 50%, #e8f4ff 100%);
+    }
+
+    .header {
+      text-align: center;
+      padding: 30px 20px 20px;
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .header h1 {
+      color: #1a3a52;
+      font-size: 2.5em;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .header .tagline {
+      color: #4a90a4;
+      font-size: 1.1em;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+
+    .header .subtitle {
+      color: #7a9fb0;
+      font-size: 0.95em;
+      font-style: italic;
+    }
+
+    .canvas-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      padding: 20px;
+    }
+
+    #cityCanvas {
+      max-width: 100%;
+      max-height: 100%;
+      filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.1));
+    }
+
+    .footer {
+      text-align: center;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.9);
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
+      color: #666;
+      font-size: 0.9em;
+    }
+
+    .footer .stats {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin-bottom: 15px;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #1a3a52;
+    }
+
+    .stat-label {
+      color: #7a9fb0;
+      font-size: 0.85em;
+      margin-top: 5px;
+    }
+
+    .legend {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85em;
+    }
+
+    .legend-color {
+      width: 20px;
+      height: 20px;
+      border-radius: 3px;
+    }
+
+    /* Animated elements */
+    @keyframes droneFly {
+      0% { transform: translate(-100px, -50px); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translate(600px, -80px); opacity: 0; }
+    }
+
+    @keyframes carMove {
+      0% { transform: translateX(-100px); }
+      100% { transform: translateX(800px); }
+    }
+
+    @keyframes buildingGrow {
+      0% { opacity: 0; transform: scaleY(0); }
+      100% { opacity: 1; transform: scaleY(1); }
+    }
+
+    @keyframes lightBlink {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+
+    .drone {
+      position: absolute;
+      font-size: 2em;
+      animation: droneFly 8s infinite;
+      animation-delay: 2s;
+      z-index: 50;
+    }
+
+    .car {
+      position: absolute;
+      font-size: 1.5em;
+      animation: carMove 6s infinite;
+      animation-delay: 0.5s;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🏙️ DMSc Future City</h1>
+      <div class="tagline">ร่วมสร้างกรมในอนาคต</div>
+      <div class="subtitle">Every Idea Builds Our Future</div>
+    </div>
+
+    <div class="canvas-container">
+      <canvas id="cityCanvas"></canvas>
+      <div class="drone">🚁</div>
+      <div class="car">🚗</div>
+    </div>
+
+    <div class="footer">
+      <div class="stats">
+        <div class="stat-item">
+          <div class="stat-number">842</div>
+          <div class="stat-label">ความคิดเห็น</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">156</div>
+          <div class="stat-label">อาคารสร้าง</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">6</div>
+          <div class="stat-label">ประเภท</div>
+        </div>
+      </div>
+
+      <div class="legend">
+        <div class="legend-item">
+          <div class="legend-color" style="background: #4a90e2;"></div>
+          <span>บุคลากร</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color" style="background: #7b68ee;"></div>
+          <span>เทคโนโลยี</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color" style="background: #50c878;"></div>
+          <span>วิจัย</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color" style="background: #ffa500;"></div>
+          <span>คุณภาพ</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color" style="background: #ff6b9d;"></div>
+          <span>บริการ</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color" style="background: #00d4ff;"></div>
+          <span>Innovation</span>
+        </div>
+      </div>
+
+      <div style="margin-top: 15px; color: #999;">
+        เมืองแห่งนี้สร้างขึ้นจาก 842 ความคิดเห็น • ขอบคุณที่ร่วมสร้างอนาคตของกรมวิทยาศาสตร์การแพทย์
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('cityCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Responsive canvas
+    function resizeCanvas() {
+      const container = canvas.parentElement;
+      canvas.width = container.clientWidth;
+      canvas.height = container.clientHeight;
+      drawCity();
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    // Isometric projection helper
+    function isometric(x, y, z) {
+      const scale = 0.866; // cos(30°)
+      const isoX = (x - y) * scale;
+      const isoY = (x + y) * 0.5 - z;
+      return { x: isoX, y: isoY };
+    }
+
+    // Building data
+    const buildings = [
+      // Type 1: Personnel (Blue) - 5 buildings, heights vary
+      { x: -300, y: -100, z: 0, height: 120, width: 80, depth: 60, type: 'personnel', floors: 4, name: 'Admin' },
+      { x: -200, y: -150, z: 0, height: 150, width: 70, depth: 55, type: 'personnel', floors: 5, name: 'HR Center' },
+      { x: -400, y: -50, z: 0, height: 100, width: 75, depth: 60, type: 'personnel', floors: 3, name: 'Office' },
+
+      // Type 2: Technology (Purple) - 6 buildings
+      { x: 100, y: -200, z: 0, height: 200, width: 90, depth: 70, type: 'technology', floors: 7, name: 'Data Center' },
+      { x: 200, y: -150, z: 0, height: 160, width: 80, depth: 65, type: 'technology', floors: 5, name: 'IT Hub' },
+      { x: 150, y: -280, z: 0, height: 130, width: 75, depth: 60, type: 'technology', floors: 4, name: 'Cloud' },
+      { x: 250, y: -100, z: 0, height: 140, width: 80, depth: 60, type: 'technology', floors: 4, name: 'AI Lab' },
+
+      // Type 3: Research (Green) - 4 buildings
+      { x: -100, y: 150, z: 0, height: 170, width: 85, depth: 65, type: 'research', floors: 6, name: 'Research' },
+      { x: 0, y: 200, z: 0, height: 150, width: 80, depth: 60, type: 'research', floors: 5, name: 'Lab' },
+      { x: -200, y: 100, z: 0, height: 120, width: 75, depth: 55, type: 'research', floors: 4, name: 'Study' },
+
+      // Type 4: Quality (Orange) - 3 buildings
+      { x: 350, y: 100, z: 0, height: 110, width: 75, depth: 55, type: 'quality', floors: 3, name: 'QC' },
+      { x: 300, y: 180, z: 0, height: 130, width: 80, depth: 60, type: 'quality', floors: 4, name: 'Reference' },
+
+      // Type 5: Service (Pink) - 2 buildings
+      { x: -350, y: 200, z: 0, height: 100, width: 70, depth: 50, type: 'service', floors: 3, name: 'Service' },
+      { x: -250, y: 250, z: 0, height: 120, width: 75, depth: 55, type: 'service', floors: 4, name: 'Center' },
+
+      // Type 6: Innovation (Cyan) - 2 buildings
+      { x: 150, y: 100, z: 0, height: 180, width: 85, depth: 65, type: 'innovation', floors: 6, name: 'Innovation' },
+      { x: 100, y: 180, z: 0, height: 140, width: 80, depth: 60, type: 'innovation', floors: 5, name: 'Hub' }
+    ];
+
+    // Center building (DMSc)
+    const centerBuilding = {
+      x: 0, y: 0, z: 0,
+      height: 250, width: 120, depth: 100,
+      type: 'center', floors: 8, name: 'DMSc'
+    };
+
+    // Colors for different types
+    const colors = {
+      personnel: { main: '#4a90e2', dark: '#2e5c8a', light: '#7ab3ff' },
+      technology: { main: '#7b68ee', dark: '#5a4ab8', light: '#a88eff' },
+      research: { main: '#50c878', dark: '#2d7a4a', light: '#7ae8a8' },
+      quality: { main: '#ffa500', dark: '#c68500', light: '#ffbd4d' },
+      service: { main: '#ff6b9d', dark: '#c63d6e', light: '#ff99c0' },
+      innovation: { main: '#00d4ff', dark: '#0099cc', light: '#4de6ff' },
+      center: { main: '#1a3a52', dark: '#0f2640', light: '#2d5a7a' }
+    };
+
+    // Draw building
+    function drawBuilding(building, baseX, baseY) {
+      const iso = isometric(building.x, building.y, building.z);
+      const x = baseX + iso.x;
+      const y = baseY + iso.y;
+
+      const color = colors[building.type];
+      const w = building.width;
+      const d = building.depth;
+      const h = building.height;
+
+      // Front face
+      ctx.fillStyle = color.main;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + w, y);
+      ctx.lineTo(x + w, y + h);
+      ctx.lineTo(x, y + h);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = color.dark;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      // Top face
+      ctx.fillStyle = color.light;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + d * 0.6, y - d * 0.3);
+      ctx.lineTo(x + w + d * 0.6, y - d * 0.3);
+      ctx.lineTo(x + w, y);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // Right face
+      ctx.fillStyle = color.dark;
+      ctx.beginPath();
+      ctx.moveTo(x + w, y);
+      ctx.lineTo(x + w + d * 0.6, y - d * 0.3);
+      ctx.lineTo(x + w + d * 0.6, y + h - d * 0.3);
+      ctx.lineTo(x + w, y + h);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // Windows
+      const windowColor = 'rgba(255, 255, 100, 0.6)';
+      const windowSize = 8;
+      const spacing = 15;
+
+      for (let i = 0; i < building.floors; i++) {
+        for (let j = 0; j < 3; j++) {
+          const wx = x + 15 + j * spacing;
+          const wy = y + 20 + i * spacing;
+
+          ctx.fillStyle = windowColor;
+          ctx.fillRect(wx, wy, windowSize, windowSize);
+
+          // Window glow
+          ctx.fillStyle = 'rgba(255, 200, 100, 0.3)';
+          ctx.beginPath();
+          ctx.arc(wx + windowSize / 2, wy + windowSize / 2, 12, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      // Building label
+      ctx.fillStyle = color.dark;
+      ctx.font = 'bold 11px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText(building.name, x + w / 2, y + h + 20);
+    }
+
+    // Draw ground and landscape
+    function drawGround(centerX, centerY) {
+      // Ground base
+      ctx.fillStyle = 'rgba(200, 200, 200, 0.1)';
+      ctx.beginPath();
+      ctx.ellipse(centerX, centerY + 300, 600, 200, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Roads
+      ctx.strokeStyle = 'rgba(150, 150, 150, 0.4)';
+      ctx.lineWidth = 40;
+      ctx.lineCap = 'round';
+
+      // Horizontal road
+      ctx.beginPath();
+      ctx.moveTo(centerX - 500, centerY + 200);
+      ctx.lineTo(centerX + 500, centerY + 200);
+      ctx.stroke();
+
+      // Vertical road
+      ctx.beginPath();
+      ctx.moveTo(centerX, centerY - 300);
+      ctx.lineTo(centerX, centerY + 300);
+      ctx.stroke();
+    }
+
+    // Draw trees
+    function drawTrees() {
+      const treePositions = [
+        { x: -450, y: 300, size: 30 },
+        { x: -350, y: 350, size: 25 },
+        { x: 450, y: 280, size: 28 },
+        { x: 380, y: 320, size: 26 },
+        { x: -50, y: -280, size: 20 },
+        { x: 100, y: -320, size: 22 }
+      ];
+
+      treePositions.forEach(tree => {
+        const iso = isometric(tree.x, tree.y, 0);
+        const x = canvas.width / 2 + iso.x;
+        const y = canvas.height / 2 + iso.y;
+
+        // Trunk
+        ctx.fillStyle = '#8b6f47';
+        ctx.fillRect(x - 4, y - 10, 8, 15);
+
+        // Foliage
+        ctx.fillStyle = 'rgba(90, 180, 90, 0.8)';
+        ctx.beginPath();
+        ctx.arc(x, y - 15, tree.size, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Highlight
+        ctx.fillStyle = 'rgba(120, 200, 120, 0.6)';
+        ctx.beginPath();
+        ctx.arc(x - tree.size / 3, y - 18, tree.size / 2, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    }
+
+    // Draw skywalks
+    function drawSkywalks() {
+      ctx.strokeStyle = 'rgba(100, 150, 200, 0.3)';
+      ctx.lineWidth = 8;
+      ctx.setLineDash([10, 10]);
+
+      // Skywalk 1
+      const p1 = isometric(-150, 0, 100);
+      const p2 = isometric(150, 0, 100);
+      ctx.beginPath();
+      ctx.moveTo(canvas.width / 2 + p1.x, canvas.height / 2 + p1.y);
+      ctx.lineTo(canvas.width / 2 + p2.x, canvas.height / 2 + p2.y);
+      ctx.stroke();
+
+      ctx.setLineDash([]);
+    }
+
+    // Main drawing function
+    function drawCity() {
+      // Clear canvas
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+
+      // Draw elements
+      drawGround(centerX, centerY);
+      drawTrees();
+
+      // Sort buildings by Y coordinate for proper depth
+      const sortedBuildings = [...buildings].sort((a, b) => (a.y + a.x) - (b.y + b.x));
+
+      // Draw regular buildings
+      sortedBuildings.forEach(building => {
+        drawBuilding(building, centerX, centerY);
+      });
+
+      // Draw center building last (on top)
+      drawBuilding(centerBuilding, centerX, centerY);
+
+      drawSkywalks();
+
+      // Glow effect on ground
+      const gradient = ctx.createRadialGradient(centerX, centerY + 250, 100, centerX, centerY + 250, 400);
+      gradient.addColorStop(0, 'rgba(200, 220, 255, 0.1)');
+      gradient.addColorStop(1, 'rgba(200, 220, 255, 0)');
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY + 250, 400, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Initial draw
+    drawCity();
+
+    // Animate on scroll/interaction
+    document.addEventListener('wheel', (e) => {
+      if (e.deltaY !== 0) {
+        drawCity();
+      }
+    });
+  </script>
+</body>
+</html>
