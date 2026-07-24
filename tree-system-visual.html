@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tree System Design - Visual</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f5f5;
+      color: #333;
+    }
+
+    #root {
+      width: 100%;
+      height: 100vh;
+    }
+
+    .app-container {
+      display: flex;
+      height: 100vh;
+      gap: 20px;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+
+    .left-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .text-input-section {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .text-input-section h3 {
+      margin-bottom: 15px;
+      color: #2c3e50;
+      font-size: 16px;
+    }
+
+    .text-input-section textarea {
+      width: 100%;
+      height: 150px;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 14px;
+      resize: vertical;
+    }
+
+    .text-input-section textarea:focus {
+      outline: none;
+      border-color: #3498db;
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+    }
+
+    .drag-hint {
+      font-size: 12px;
+      color: #7f8c8d;
+      margin-top: 10px;
+      font-style: italic;
+    }
+
+    .tree-section {
+      flex: 1;
+      background: linear-gradient(135deg, #87CEEB 0%, #E0F6FF 100%);
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      overflow: auto;
+      position: relative;
+    }
+
+    .tree-section h3 {
+      margin-bottom: 15px;
+      color: #2c3e50;
+      font-size: 16px;
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 10;
+    }
+
+    #treeCanvas {
+      display: block;
+      margin: 0 auto;
+      cursor: grab;
+    }
+
+    #treeCanvas:active {
+      cursor: grabbing;
+    }
+
+    .right-panel {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .notes-section {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      min-height: 100%;
+    }
+
+    .notes-section h3 {
+      margin-bottom: 15px;
+      color: #2c3e50;
+      font-size: 16px;
+    }
+
+    .note-card {
+      background: linear-gradient(135deg, #fff9e6 0%, #fff0cc 100%);
+      border: 2px solid #ffd700;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 6px rgba(255, 215, 0, 0.2);
+      cursor: grab;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .note-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(255, 215, 0, 0.3);
+    }
+
+    .note-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 10px;
+    }
+
+    .note-title {
+      font-weight: bold;
+      color: #8b7500;
+      flex: 1;
+    }
+
+    .note-remove-btn {
+      background: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .note-remove-btn:hover {
+      background: #c0392b;
+    }
+
+    .note-content {
+      color: #5d4e37;
+      margin-bottom: 10px;
+      line-height: 1.4;
+      word-break: break-word;
+    }
+
+    .note-info {
+      font-size: 12px;
+      color: #a0826d;
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .note-node-label {
+      display: inline-block;
+      background: rgba(60, 100, 150, 0.2);
+      color: #3c6496;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 11px;
+      margin-right: 5px;
+    }
+
+    .comments-section {
+      margin-top: 10px;
+    }
+
+    .comments-title {
+      font-size: 12px;
+      font-weight: bold;
+      color: #8b7500;
+      margin-bottom: 8px;
+    }
+
+    .comment {
+      background: rgba(255, 255, 255, 0.7);
+      border-left: 3px solid #ffd700;
+      padding: 8px;
+      margin-bottom: 8px;
+      border-radius: 3px;
+      font-size: 12px;
+    }
+
+    .comment-text {
+      color: #5d4e37;
+      margin-bottom: 4px;
+    }
+
+    .comment-time {
+      font-size: 11px;
+      color: #a0826d;
+    }
+
+    .comment-form {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .comment-input {
+      flex: 1;
+      padding: 6px 8px;
+      border: 1px solid #e0c9a0;
+      border-radius: 3px;
+      font-size: 12px;
+      font-family: inherit;
+    }
+
+    .comment-input:focus {
+      outline: none;
+      border-color: #ffd700;
+      box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.1);
+    }
+
+    .comment-btn {
+      background: #3498db;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      padding: 6px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .comment-btn:hover {
+      background: #2980b9;
+    }
+
+    .cancel-btn {
+      background: #95a5a6;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      padding: 6px 12px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .empty-state {
+      text-align: center;
+      color: #95a5a6;
+      padding: 30px;
+      font-size: 14px;
+    }
+
+    .add-comment-link {
+      background: transparent;
+      color: #3498db;
+      border: none;
+      cursor: pointer;
+      font-size: 12px;
+      text-decoration: underline;
+      margin-top: 8px;
+      padding: 0;
+    }
+
+    .add-comment-link:hover {
+      color: #2980b9;
+    }
+
+    .node-tooltip {
+      position: fixed;
+      background: white;
+      border: 2px solid #3498db;
+      border-radius: 8px;
+      padding: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      display: none;
+      z-index: 1000;
+      font-size: 12px;
+    }
+
+    .node-tooltip button {
+      background: #3498db;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      padding: 4px 8px;
+      font-size: 11px;
+      cursor: pointer;
+      margin-top: 5px;
+      margin-right: 5px;
+    }
+
+    .node-tooltip button:hover {
+      background: #2980b9;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <div class="left-panel">
+      <div class="text-input-section">
+        <h3>✏️ พิมพ์ข้อความ</h3>
+        <textarea
+          id="textInput"
+          placeholder="พิมพ์ข้อความที่นี่ แล้วลากไปวางที่โหนดต้นไม้"
+          draggable="true"
+        ></textarea>
+        <div class="drag-hint">
+          💡 ลากข้อความจากที่นี่ไปวางที่โหนดต้นไม้เพื่อสร้างบันทึก
+        </div>
+      </div>
+      <div class="tree-section">
+        <h3>🌳 ต้นไม้</h3>
+        <canvas id="treeCanvas"></canvas>
+      </div>
+    </div>
+    <div class="right-panel">
+      <div class="notes-section">
+        <h3>📋 บันทึก</h3>
+        <div id="notesContainer"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="node-tooltip" id="nodeTooltip">
+    <div id="tooltipContent"></div>
+  </div>
+
+  <script>
+    // State management
+    const state = {
+      textInput: '',
+      treeData: {
+        id: 'root',
+        label: 'ต้นไม้',
+        x: 0,
+        y: 0,
+        children: [
+          {
+            id: 'branch1',
+            label: 'กิ่งที่ 1',
+            x: 0,
+            y: 0,
+            children: [
+              { id: 'leaf1', label: 'ใบไม้ 1', x: 0, y: 0, children: [] },
+              { id: 'leaf2', label: 'ใบไม้ 2', x: 0, y: 0, children: [] }
+            ]
+          },
+          {
+            id: 'branch2',
+            label: 'กิ่งที่ 2',
+            x: 0,
+            y: 0,
+            children: [
+              { id: 'leaf3', label: 'ใบไม้ 3', x: 0, y: 0, children: [] }
+            ]
+          },
+          {
+            id: 'branch3',
+            label: 'กิ่งที่ 3',
+            x: 0,
+            y: 0,
+            children: []
+          }
+        ]
+      },
+      notes: [],
+      draggedText: '',
+      hoveredNodeId: null
+    };
+
+    const canvas = document.getElementById('treeCanvas');
+    const ctx = canvas.getContext('2d');
+    const textInput = document.getElementById('textInput');
+
+    // Setup canvas
+    function resizeCanvas() {
+      const container = canvas.parentElement;
+      canvas.width = container.clientWidth - 40;
+      canvas.height = container.clientHeight - 60;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    // Calculate tree positions (tree layout algorithm)
+    function calculatePositions(node, x, y, offsetX) {
+      node.x = x;
+      node.y = y;
+
+      if (node.children.length === 0) return;
+
+      const childCount = node.children.length;
+      const angle = Math.PI / (childCount + 1);
+      const radius = 80;
+
+      node.children.forEach((child, index) => {
+        const childAngle = angle * (index + 1);
+        const childX = x + Math.sin(childAngle) * radius;
+        const childY = y + Math.cos(childAngle) * radius;
+        calculatePositions(child, childX, childY, offsetX);
+      });
+    }
+
+    // Draw tree
+    function drawTree() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Center the tree
+      const centerX = canvas.width / 2;
+      const centerY = 80;
+
+      calculatePositions(state.treeData, centerX, centerY, 0);
+
+      // Draw branches and nodes
+      drawNode(state.treeData);
+    }
+
+    function drawBranch(fromX, fromY, toX, toY) {
+      ctx.strokeStyle = '#8b6914';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(fromX, fromY);
+      ctx.lineTo(toX, toY);
+      ctx.stroke();
+    }
+
+    function drawNode(node) {
+      // Draw branches to children
+      node.children.forEach(child => {
+        drawBranch(node.x, node.y, child.x, child.y);
+        drawNode(child);
+      });
+
+      // Draw node circle
+      const isHovered = state.hoveredNodeId === node.id;
+      const radius = isHovered ? 20 : 16;
+
+      ctx.fillStyle = isHovered ? '#27ae60' : '#2ecc71';
+      ctx.beginPath();
+      ctx.arc(node.x, node.y, radius, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Draw node border
+      ctx.strokeStyle = isHovered ? '#229954' : '#27ae60';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(node.x, node.y, radius, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Draw label
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 12px Arial';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(node.label.substring(0, 3), node.x, node.y);
+    }
+
+    // Find node at coordinates
+    function findNodeAt(x, y) {
+      function search(node) {
+        const dist = Math.hypot(node.x - x, node.y - y);
+        if (dist < 20) return node;
+
+        for (let child of node.children) {
+          const found = search(child);
+          if (found) return found;
+        }
+        return null;
+      }
+      return search(state.treeData);
+    }
+
+    // Find node in tree
+    function findNode(node, nodeId) {
+      if (node.id === nodeId) return node;
+      for (let child of node.children) {
+        const found = findNode(child, nodeId);
+        if (found) return found;
+      }
+      return null;
+    }
+
+    // Add note
+    function addNote(nodeId, content) {
+      if (!content.trim()) return;
+      const node = findNode(state.treeData, nodeId);
+      if (!node) return;
+
+      const note = {
+        id: `note-${Date.now()}`,
+        nodeId,
+        nodeLabel: node.label,
+        content,
+        timestamp: new Date().toLocaleString('th-TH'),
+        comments: []
+      };
+      state.notes.unshift(note);
+      state.textInput = '';
+      textInput.value = '';
+      render();
+    }
+
+    // Add comment
+    function addComment(noteId, comment) {
+      if (!comment.trim()) return;
+      const note = state.notes.find(n => n.id === noteId);
+      if (!note) return;
+
+      note.comments.push({
+        id: `comment-${Date.now()}`,
+        text: comment,
+        timestamp: new Date().toLocaleString('th-TH')
+      });
+      render();
+    }
+
+    // Remove note
+    function removeNote(noteId) {
+      state.notes = state.notes.filter(n => n.id !== noteId);
+      render();
+    }
+
+    // Render note card
+    function renderNoteCard(note) {
+      let html = `<div class="note-card">`;
+      html += `<div class="note-header">`;
+      html += `<div class="note-title">📝 บันทึก</div>`;
+      html += `<button class="note-remove-btn" onclick="removeNote('${note.id}')">ลบ</button>`;
+      html += `</div>`;
+      html += `<div class="note-content">${escapeHtml(note.content)}</div>`;
+      html += `<div class="note-info">`;
+      html += `<span class="note-node-label">📍 ${note.nodeLabel}</span>`;
+      html += `<span>${note.timestamp}</span>`;
+      html += `</div>`;
+
+      html += `<div class="comments-section">`;
+      html += `<div class="comments-title">💬 ความเห็น (${note.comments.length})</div>`;
+
+      for (let comment of note.comments) {
+        html += `<div class="comment">`;
+        html += `<div class="comment-text">${escapeHtml(comment.text)}</div>`;
+        html += `<div class="comment-time">${comment.timestamp}</div>`;
+        html += `</div>`;
+      }
+
+      html += `<div id="comment-form-${note.id}" style="display: none;">
+        <div class="comment-form">
+          <input type="text"
+                 id="comment-input-${note.id}"
+                 class="comment-input"
+                 placeholder="พิมพ์ความเห็น..." />
+          <button class="comment-btn" onclick="submitComment('${note.id}')">ส่ง</button>
+          <button class="cancel-btn" onclick="cancelComment('${note.id}')">ยกเลิก</button>
+        </div>
+      </div>`;
+
+      html += `<button class="add-comment-link"
+               onclick="showCommentForm('${note.id}')">เพิ่มความเห็น</button>`;
+      html += `</div>`;
+      html += `</div>`;
+
+      return html;
+    }
+
+    // Helper functions
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function showCommentForm(noteId) {
+      document.getElementById(`comment-form-${noteId}`).style.display = 'block';
+      setTimeout(() => {
+        document.getElementById(`comment-input-${noteId}`).focus();
+      }, 0);
+    }
+
+    function cancelComment(noteId) {
+      document.getElementById(`comment-form-${noteId}`).style.display = 'none';
+      document.getElementById(`comment-input-${noteId}`).value = '';
+    }
+
+    function submitComment(noteId) {
+      const input = document.getElementById(`comment-input-${noteId}`);
+      const text = input.value;
+      if (text.trim()) {
+        addComment(noteId, text);
+        input.value = '';
+        document.getElementById(`comment-form-${noteId}`).style.display = 'none';
+      }
+    }
+
+    // Main render function
+    function render() {
+      drawTree();
+
+      // Render notes
+      const notesHtml = state.notes.length === 0
+        ? '<div class="empty-state">ยังไม่มีบันทึก ลากข้อความจากพื้นที่พิมพ์ไปวางที่โหนดต้นไม้เพื่อสร้างบันทึก</div>'
+        : state.notes.map(note => renderNoteCard(note)).join('');
+
+      document.getElementById('notesContainer').innerHTML = notesHtml;
+    }
+
+    // Canvas events
+    canvas.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      const node = findNodeAt(x, y);
+      state.hoveredNodeId = node ? node.id : null;
+      drawTree();
+
+      // Show tooltip
+      if (node) {
+        const tooltip = document.getElementById('nodeTooltip');
+        tooltip.style.left = e.clientX + 10 + 'px';
+        tooltip.style.top = e.clientY + 10 + 'px';
+        tooltip.style.display = 'block';
+        tooltip.innerHTML = `
+          <div style="margin-bottom: 5px;"><strong>${node.label}</strong></div>
+          <div style="font-size: 11px; margin-bottom: 8px; color: #666;">
+            ${node.children.length} กิ่ง / ใบไม้
+          </div>
+          <button onclick="addNoteToNode('${node.id}')" style="font-size: 11px;">
+            + เพิ่มบันทึก
+          </button>
+        `;
+      } else {
+        document.getElementById('nodeTooltip').style.display = 'none';
+      }
+    });
+
+    canvas.addEventListener('mouseleave', () => {
+      state.hoveredNodeId = null;
+      document.getElementById('nodeTooltip').style.display = 'none';
+      drawTree();
+    });
+
+    canvas.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'copy';
+    });
+
+    canvas.addEventListener('drop', (e) => {
+      e.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      const node = findNodeAt(x, y);
+      if (node) {
+        const text = e.dataTransfer.getData('text/plain');
+        if (text.trim()) {
+          addNote(node.id, text);
+        }
+      }
+    });
+
+    textInput.addEventListener('input', (e) => {
+      state.textInput = e.target.value;
+    });
+
+    textInput.addEventListener('dragstart', (e) => {
+      const selectedText = window.getSelection().toString() || state.textInput;
+      if (selectedText.trim()) {
+        e.dataTransfer.effectAllowed = 'copy';
+        e.dataTransfer.setData('text/plain', selectedText);
+        state.draggedText = selectedText;
+      }
+    });
+
+    function addNoteToNode(nodeId) {
+      if (state.textInput.trim()) {
+        addNote(nodeId, state.textInput);
+      } else {
+        alert('กรุณาพิมพ์ข้อความในพื้นที่พิมพ์ก่อน');
+      }
+    }
+
+    // Initial render
+    render();
+  </script>
+</body>
+</html>
