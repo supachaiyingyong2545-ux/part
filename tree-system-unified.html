@@ -13,107 +13,176 @@
 
     body {
       font-family: 'Segoe UI', 'Tahoma', 'Geneva', 'Verdana', sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: #1a1a1a;
       min-height: 100vh;
       display: flex;
+      overflow: hidden;
+    }
+
+    .tree-container {
+      flex: 1;
+      position: relative;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: auto;
+    }
+
+    .tree-wrapper {
+      position: relative;
+      display: inline-flex;
       justify-content: center;
       align-items: center;
       padding: 20px;
     }
 
-    .container {
-      background: white;
-      border-radius: 15px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-      overflow: hidden;
-      max-width: 1200px;
-      width: 100%;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0;
+    .tree-image {
+      max-width: 90vw;
+      max-height: 90vh;
+      object-fit: contain;
+      filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.3));
+      cursor: crosshair;
     }
 
-    @media (max-width: 768px) {
-      .container {
-        grid-template-columns: 1fr;
+    .nodes-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .node {
+      position: absolute;
+      pointer-events: auto;
+      cursor: pointer;
+      transform: translate(-50%, -50%);
+      animation: nodeAppear 0.3s ease-out;
+    }
+
+    @keyframes nodeAppear {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.5);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
       }
     }
 
-    .tree-section {
-      padding: 40px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-      min-height: 500px;
-    }
-
-    .tree-section h2 {
-      color: #333;
-      margin-bottom: 20px;
-      text-align: center;
-      font-size: 1.5em;
-    }
-
-    .tree-image-container {
-      position: relative;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-      height: 350px;
-    }
-
-    .tree-image-container img {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-      filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.1));
-      transition: transform 0.3s ease;
-    }
-
-    .tree-image-container img:hover {
-      transform: scale(1.05);
-    }
-
-    .controls-section {
-      padding: 40px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
+    .node-circle {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
       background: white;
-      overflow-y: auto;
-      max-height: 600px;
+      border: 3px solid;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      font-size: 24px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s;
+      user-select: none;
     }
 
-    .controls-section h2 {
+    .node:hover .node-circle {
+      transform: scale(1.15);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .node-tooltip {
+      position: absolute;
+      bottom: 70px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: white;
+      padding: 10px 15px;
+      border-radius: 8px;
+      white-space: nowrap;
+      font-size: 0.9em;
       color: #333;
-      margin-bottom: 10px;
-      font-size: 1.5em;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 10;
     }
 
-    .control-group {
+    .node:hover .node-tooltip {
+      opacity: 1;
+    }
+
+    .sidebar {
+      width: 380px;
+      background: white;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      box-shadow: -2px 0 20px rgba(0, 0, 0, 0.1);
+      overflow-y: auto;
     }
 
-    .control-group label {
+    @media (max-width: 1024px) {
+      .sidebar {
+        width: 320px;
+      }
+    }
+
+    .sidebar-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 25px;
+      text-align: center;
+      font-size: 1.4em;
+      font-weight: 600;
+      border-bottom: 3px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .sidebar-content {
+      padding: 25px;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .form-section {
+      margin-bottom: 25px;
+    }
+
+    .form-section h3 {
+      color: #333;
+      margin-bottom: 15px;
+      font-size: 1.1em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group label {
       color: #666;
       font-weight: 600;
+      margin-bottom: 8px;
       font-size: 0.95em;
     }
 
     input[type="text"],
     input[type="color"],
     select {
-      padding: 10px 15px;
+      padding: 12px;
       border: 2px solid #e0e0e0;
       border-radius: 8px;
       font-size: 0.95em;
-      transition: border-color 0.3s;
       font-family: inherit;
+      transition: border-color 0.3s, box-shadow 0.3s;
     }
 
     input[type="text"]:focus,
@@ -121,16 +190,23 @@
     select:focus {
       outline: none;
       border-color: #667eea;
-      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 25px;
     }
 
     button {
-      padding: 12px 20px;
+      flex: 1;
+      padding: 12px 16px;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
       border: none;
       border-radius: 8px;
-      font-size: 1em;
+      font-size: 0.95em;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s;
@@ -138,98 +214,31 @@
 
     button:hover {
       transform: translateY(-2px);
-      box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
     }
 
     button:active {
       transform: translateY(0);
     }
 
-    .nodes-list {
-      background: #f9f9f9;
-      border: 2px solid #e0e0e0;
-      border-radius: 8px;
-      padding: 15px;
-      max-height: 300px;
-      overflow-y: auto;
-    }
-
-    .node-item {
-      background: white;
-      padding: 12px;
-      margin-bottom: 10px;
-      border-left: 4px solid #667eea;
-      border-radius: 4px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      transition: all 0.3s;
-    }
-
-    .node-item:hover {
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      border-left-color: #764ba2;
-    }
-
-    .node-item.important {
-      border-left-color: #ff6b6b;
-      background: #fff5f5;
-    }
-
-    .node-text {
-      flex: 1;
-    }
-
-    .node-text strong {
-      color: #333;
-      display: block;
-      margin-bottom: 3px;
-    }
-
-    .node-text small {
-      color: #999;
-    }
-
-    .node-actions {
-      display: flex;
-      gap: 8px;
-    }
-
-    .node-actions button {
-      padding: 6px 12px;
-      font-size: 0.85em;
-      min-width: auto;
-    }
-
-    .delete-btn {
+    .clear-btn {
       background: #ff6b6b;
     }
 
-    .delete-btn:hover {
+    .clear-btn:hover {
       background: #ff5252;
-      box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
-    }
-
-    .edit-btn {
-      background: #51cf66;
-    }
-
-    .edit-btn:hover {
-      background: #40c057;
-      box-shadow: 0 10px 20px rgba(81, 207, 102, 0.3);
+      box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
     }
 
     .stats {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
+      background: linear-gradient(135deg, #f0f0f0 0%, #e8e8e8 100%);
       padding: 15px;
       border-radius: 8px;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 15px;
+      gap: 12px;
       text-align: center;
-      font-size: 0.95em;
+      margin-bottom: 20px;
     }
 
     .stat-item {
@@ -241,33 +250,117 @@
     .stat-number {
       font-size: 1.8em;
       font-weight: bold;
+      color: #667eea;
     }
 
     .stat-label {
-      font-size: 0.85em;
-      opacity: 0.9;
+      font-size: 0.8em;
+      color: #999;
+      font-weight: 600;
     }
 
-    .tree-description {
-      background: #f0f7ff;
-      border-left: 4px solid #667eea;
-      padding: 15px;
-      border-radius: 4px;
-      margin-bottom: 15px;
-      font-size: 0.95em;
+    .nodes-list {
+      background: #f9f9f9;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .nodes-list-label {
+      color: #666;
+      font-weight: 600;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .node-list-item {
+      padding: 12px 15px;
+      border-bottom: 1px solid #e0e0e0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      transition: background 0.3s;
+    }
+
+    .node-list-item:last-child {
+      border-bottom: none;
+    }
+
+    .node-list-item:hover {
+      background: #f0f0f0;
+    }
+
+    .node-list-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .node-list-name {
       color: #333;
-      line-height: 1.6;
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+
+    .node-list-desc {
+      color: #999;
+      font-size: 0.85em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .node-list-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .node-list-actions button {
+      padding: 6px 10px;
+      font-size: 0.8em;
+      min-width: auto;
+      flex: none;
+    }
+
+    .delete-btn {
+      background: #ff6b6b;
+    }
+
+    .delete-btn:hover {
+      background: #ff5252;
+    }
+
+    .edit-btn {
+      background: #51cf66;
+    }
+
+    .edit-btn:hover {
+      background: #40c057;
+    }
+
+    .info-box {
+      background: #e7f5ff;
+      border-left: 4px solid #667eea;
+      padding: 12px;
+      border-radius: 4px;
+      font-size: 0.9em;
+      color: #1c7ed6;
+      line-height: 1.5;
+      margin-bottom: 20px;
     }
 
     .modal {
       display: none;
       position: fixed;
-      z-index: 1000;
+      z-index: 2000;
       left: 0;
       top: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
+      background-color: rgba(0, 0, 0, 0.6);
       align-items: center;
       justify-content: center;
     }
@@ -280,7 +373,7 @@
       background-color: white;
       padding: 30px;
       border-radius: 12px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
       max-width: 400px;
       width: 90%;
     }
@@ -293,13 +386,14 @@
 
     .modal-content label {
       display: block;
-      margin-bottom: 5px;
+      margin-bottom: 8px;
       color: #666;
       font-weight: 600;
       font-size: 0.95em;
     }
 
-    .modal-content input {
+    .modal-content input,
+    .modal-content select {
       width: 100%;
       margin-bottom: 20px;
     }
@@ -319,25 +413,82 @@
 
     .cancel-btn:hover {
       background: #888;
+      box-shadow: 0 8px 20px rgba(153, 153, 153, 0.3);
+    }
+
+    .emoji-selector {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+      gap: 8px;
+      padding: 12px;
+      background: #f9f9f9;
+      border-radius: 8px;
+      border: 2px solid #e0e0e0;
+    }
+
+    .emoji-option {
+      width: 40px;
+      height: 40px;
+      border: 2px solid transparent;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.5em;
+      transition: all 0.3s;
+    }
+
+    .emoji-option:hover {
+      border-color: #667eea;
+      background: white;
+      transform: scale(1.1);
+    }
+
+    .emoji-option.selected {
+      border-color: #667eea;
+      background: #f0f7ff;
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #667eea;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #764ba2;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <!-- Tree Image Section -->
-    <div class="tree-section">
-      <h2>🌳 ต้นไม้ของคุณ</h2>
-      <div class="tree-image-container">
-        <img src="https://i.ibb.co/bMY1tBGx/pngtree-nice-tree-png-image-18122362.png" alt="Tree Image" loading="lazy">
-      </div>
+  <!-- Tree Container -->
+  <div class="tree-container">
+    <div class="tree-wrapper">
+      <img
+        id="treeImage"
+        src="https://i.ibb.co/bMY1tBGx/pngtree-nice-tree-png-image-18122362.png"
+        alt="Interactive Tree"
+        class="tree-image"
+      >
+      <div class="nodes-overlay" id="nodesOverlay"></div>
     </div>
+  </div>
 
-    <!-- Controls Section -->
-    <div class="controls-section">
-      <h2>🎯 จัดการข้อมูล</h2>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-header">🌳 ต้นไม้ของคุณ</div>
 
-      <div class="tree-description">
-        ✨ ระบบนี้ช่วยให้คุณจัดการและติดตามข้อมูลเกี่ยวกับต้นไม้ของคุณได้อย่างมีประสิทธิภาพ
+    <div class="sidebar-content">
+      <div class="info-box">
+        💡 คลิกบนต้นไม้เพื่อเพิ่มข้อมูลใหม่ หรือใช้แบบฟอร์มด้านล่างนี้
       </div>
 
       <div class="stats">
@@ -346,57 +497,67 @@
           <div class="stat-label">โหนดทั้งหมด</div>
         </div>
         <div class="stat-item">
-          <div class="stat-number" id="importantNodes">0</div>
-          <div class="stat-label">โหนดสำคัญ</div>
+          <div class="stat-number" id="nodeCount">0</div>
+          <div class="stat-label">ข้อมูล</div>
         </div>
       </div>
 
-      <div class="control-group">
-        <label for="nodeName">📝 ชื่อโหนด</label>
-        <input type="text" id="nodeName" placeholder="เช่น: สาขาหลัก, ผลไม้, ราก">
+      <!-- Form Section -->
+      <div class="form-section">
+        <h3>➕ เพิ่มข้อมูลใหม่</h3>
+
+        <div class="form-group">
+          <label for="nodeName">📝 ชื่อ</label>
+          <input type="text" id="nodeName" placeholder="เช่น: สาขาหลัก, ราก, ผลไม้">
+        </div>
+
+        <div class="form-group">
+          <label>🎨 สัญลักษณ์</label>
+          <div class="emoji-selector" id="emojiSelector"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="nodeColor">🌈 สี</label>
+          <input type="color" id="nodeColor" value="#667eea">
+        </div>
+
+        <div class="form-group">
+          <label for="nodeDescription">📋 คำอธิบาย</label>
+          <input type="text" id="nodeDescription" placeholder="รายละเอียดเพิ่มเติม">
+        </div>
+
+        <div class="button-group">
+          <button onclick="addNodeViaForm()">💾 บันทึก</button>
+          <button class="clear-btn" onclick="clearForm()">🔄 ล้าง</button>
+        </div>
       </div>
 
-      <div class="control-group">
-        <label for="nodeDescription">📋 คำอธิบาย</label>
-        <input type="text" id="nodeDescription" placeholder="รายละเอียดเพิ่มเติม">
-      </div>
-
-      <div class="control-group">
-        <label for="nodeColor">🎨 สี</label>
-        <input type="color" id="nodeColor" value="#667eea">
-      </div>
-
-      <div class="control-group">
-        <label for="importance">⭐ ความสำคัญ</label>
-        <select id="importance">
-          <option value="normal">ปกติ</option>
-          <option value="important">สำคัญ</option>
-          <option value="critical">วิกฤต</option>
-        </select>
-      </div>
-
-      <button onclick="addNode()">➕ เพิ่มโหนด</button>
-
-      <div class="control-group">
-        <label>📌 โหนดทั้งหมด</label>
+      <!-- Nodes List -->
+      <div class="form-section">
+        <div class="nodes-list-label">📌 โหนดทั้งหมด</div>
         <div class="nodes-list" id="nodesList"></div>
       </div>
 
-      <button onclick="exportData()">💾 ส่งออกข้อมูล</button>
-      <button onclick="clearAll()" style="background: #ff6b6b;">🗑️ ลบทั้งหมด</button>
+      <!-- Export/Clear Buttons -->
+      <div class="button-group">
+        <button onclick="exportData()">💾 ส่งออก</button>
+        <button class="clear-btn" onclick="clearAllNodes()">🗑️ ลบทั้งหมด</button>
+      </div>
     </div>
   </div>
 
   <!-- Edit Modal -->
   <div id="editModal" class="modal">
     <div class="modal-content">
-      <h3>แก้ไขโหนด</h3>
+      <h3>✏️ แก้ไขข้อมูล</h3>
       <label>ชื่อ</label>
       <input type="text" id="editName">
-      <label>คำอธิบาย</label>
-      <input type="text" id="editDescription">
+      <label>สัญลักษณ์</label>
+      <div class="emoji-selector" id="editEmojiSelector"></div>
       <label>สี</label>
       <input type="color" id="editColor">
+      <label>คำอธิบาย</label>
+      <input type="text" id="editDescription">
       <div class="modal-buttons">
         <button onclick="saveEdit()">💾 บันทึก</button>
         <button class="cancel-btn" onclick="closeEditModal()">ยกเลิก</button>
@@ -404,11 +565,60 @@
     </div>
   </div>
 
+  <!-- Position Modal -->
+  <div id="positionModal" class="modal">
+    <div class="modal-content">
+      <h3>📍 ตำแหน่งบนต้นไม้</h3>
+      <label>ชื่อ</label>
+      <input type="text" id="posName" placeholder="ชื่อข้อมูล">
+      <label>🎨 สัญลักษณ์</label>
+      <div class="emoji-selector" id="posEmojiSelector"></div>
+      <label>🌈 สี</label>
+      <input type="color" id="posColor" value="#667eea">
+      <label>📋 คำอธิบาย (ไม่บังคับ)</label>
+      <input type="text" id="posDescription" placeholder="อธิบายเพิ่มเติม">
+      <div class="modal-buttons">
+        <button onclick="confirmPosition()">✅ ยืนยัน</button>
+        <button class="cancel-btn" onclick="cancelPosition()">ยกเลิก</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     let nodes = [];
     let editingNodeIndex = -1;
+    let positioningMode = false;
+    let clickPos = { x: 0, y: 0 };
+    const emojis = ['🌿', '🍃', '🌳', '🌲', '🌱', '🍂', '🍁', '🌾', '🪵', '🍄', '🐛', '🦋', '🐝', '☀️'];
 
-    // Load from localStorage
+    // Initialize emoji selector
+    function initEmojiSelector(elementId, onSelect) {
+      const container = document.getElementById(elementId);
+      container.innerHTML = emojis.map((emoji, index) =>
+        `<div class="emoji-option" data-emoji="${emoji}" onclick="selectEmoji(event, '${elementId}')">${emoji}</div>`
+      ).join('');
+
+      if (elementId === 'emojiSelector') {
+        container.querySelector('[data-emoji="🌿"]').classList.add('selected');
+      }
+    }
+
+    function selectEmoji(event, elementId) {
+      const emoji = event.target.getAttribute('data-emoji');
+      document.getElementById(elementId).querySelectorAll('.emoji-option').forEach(el => {
+        el.classList.remove('selected');
+      });
+      event.target.classList.add('selected');
+      document.getElementById('nodeEmoji').value = emoji;
+    }
+
+    // Get selected emoji
+    function getSelectedEmoji(elementId) {
+      const selected = document.getElementById(elementId).querySelector('.emoji-option.selected');
+      return selected ? selected.getAttribute('data-emoji') : '🌿';
+    }
+
+    // Load data from localStorage
     function loadData() {
       const saved = localStorage.getItem('treeNodes');
       if (saved) {
@@ -418,84 +628,63 @@
       }
     }
 
-    // Save to localStorage
+    // Save data to localStorage
     function saveData() {
       localStorage.setItem('treeNodes', JSON.stringify(nodes));
     }
 
-    // Add new node
-    function addNode() {
-      const name = document.getElementById('nodeName').value.trim();
-      const description = document.getElementById('nodeDescription').value.trim();
-      const color = document.getElementById('nodeColor').value;
-      const importance = document.getElementById('importance').value;
+    // Update stats
+    function updateStats() {
+      document.getElementById('totalNodes').textContent = nodes.length;
+      document.getElementById('nodeCount').textContent = nodes.length;
+    }
 
-      if (!name) {
-        alert('⚠️ กรุณากรอกชื่อโหนด');
-        return;
-      }
+    // Render nodes on tree
+    function renderNodes() {
+      const overlay = document.getElementById('nodesOverlay');
+      overlay.innerHTML = '';
 
-      nodes.push({
-        id: Date.now(),
-        name,
-        description,
-        color,
-        importance,
-        createdAt: new Date().toLocaleString('th-TH')
+      nodes.forEach((node, index) => {
+        const nodeEl = document.createElement('div');
+        nodeEl.className = 'node';
+        nodeEl.style.left = node.x + '%';
+        nodeEl.style.top = node.y + '%';
+        nodeEl.innerHTML = `
+          <div class="node-circle" style="border-color: ${node.color}; background: ${node.color}40;">
+            ${node.emoji}
+          </div>
+          <div class="node-tooltip">${node.name}</div>
+        `;
+        nodeEl.onclick = (e) => {
+          e.stopPropagation();
+          openNodeMenu(index);
+        };
+        overlay.appendChild(nodeEl);
       });
 
-      // Clear inputs
-      document.getElementById('nodeName').value = '';
-      document.getElementById('nodeDescription').value = '';
-      document.getElementById('nodeColor').value = '#667eea';
-      document.getElementById('importance').value = 'normal';
-
-      saveData();
-      renderNodes();
+      updateNodesList();
       updateStats();
     }
 
-    // Render nodes list
-    function renderNodes() {
-      const nodesList = document.getElementById('nodesList');
-
-      if (nodes.length === 0) {
-        nodesList.innerHTML = '<div style="text-align: center; color: #999; padding: 20px;">ยังไม่มีโหนด</div>';
-        return;
-      }
-
-      nodesList.innerHTML = nodes.map((node, index) => `
-        <div class="node-item ${node.importance !== 'normal' ? 'important' : ''}" style="border-left-color: ${node.color}">
-          <div class="node-text">
-            <strong>${node.name}</strong>
-            ${node.description ? `<small>${node.description}</small>` : ''}
-            <small style="display: block; margin-top: 3px; opacity: 0.7;">${node.createdAt}</small>
-          </div>
-          <div class="node-actions">
-            <button class="edit-btn" onclick="openEditModal(${index})">✏️</button>
-            <button class="delete-btn" onclick="deleteNode(${index})">❌</button>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    // Delete node
-    function deleteNode(index) {
-      if (confirm('คุณแน่ใจหรือว่าต้องการลบโหนดนี้?')) {
-        nodes.splice(index, 1);
-        saveData();
-        renderNodes();
-        updateStats();
-      }
-    }
-
-    // Open edit modal
-    function openEditModal(index) {
+    // Open node menu (edit or delete)
+    function openNodeMenu(index) {
       editingNodeIndex = index;
       const node = nodes[index];
       document.getElementById('editName').value = node.name;
-      document.getElementById('editDescription').value = node.description;
       document.getElementById('editColor').value = node.color;
+      document.getElementById('editDescription').value = node.description || '';
+
+      // Initialize emoji selector
+      initEmojiSelector('editEmojiSelector', null);
+      const emojiSelectors = document.getElementById('editEmojiSelector').querySelectorAll('.emoji-option');
+      emojiSelectors.forEach(el => {
+        if (el.getAttribute('data-emoji') === node.emoji) {
+          el.classList.add('selected');
+        } else {
+          el.classList.remove('selected');
+        }
+      });
+
       document.getElementById('editModal').classList.add('show');
     }
 
@@ -509,26 +698,143 @@
     function saveEdit() {
       const node = nodes[editingNodeIndex];
       node.name = document.getElementById('editName').value.trim();
-      node.description = document.getElementById('editDescription').value.trim();
+      node.emoji = getSelectedEmoji('editEmojiSelector');
       node.color = document.getElementById('editColor').value;
+      node.description = document.getElementById('editDescription').value.trim();
 
       if (!node.name) {
-        alert('⚠️ กรุณากรอกชื่อโหนด');
+        alert('⚠️ กรุณากรอกชื่อ');
         return;
       }
 
       saveData();
       renderNodes();
-      updateStats();
       closeEditModal();
     }
 
-    // Update stats
-    function updateStats() {
-      document.getElementById('totalNodes').textContent = nodes.length;
-      const important = nodes.filter(n => n.importance !== 'normal').length;
-      document.getElementById('importantNodes').textContent = important;
+    // Update nodes list in sidebar
+    function updateNodesList() {
+      const list = document.getElementById('nodesList');
+      if (nodes.length === 0) {
+        list.innerHTML = '<div style="text-align: center; color: #999; padding: 20px;">ยังไม่มีข้อมูล</div>';
+        return;
+      }
+
+      list.innerHTML = nodes.map((node, index) => `
+        <div class="node-list-item">
+          <div class="node-list-info">
+            <div class="node-list-name">${node.emoji} ${node.name}</div>
+            ${node.description ? `<div class="node-list-desc">${node.description}</div>` : ''}
+          </div>
+          <div class="node-list-actions">
+            <button class="edit-btn" onclick="openNodeMenu(${index})">✏️</button>
+            <button class="delete-btn" onclick="deleteNode(${index})">❌</button>
+          </div>
+        </div>
+      `).join('');
     }
+
+    // Delete node
+    function deleteNode(index) {
+      if (confirm('คุณแน่ใจหรือว่าต้องการลบ?')) {
+        nodes.splice(index, 1);
+        saveData();
+        renderNodes();
+      }
+    }
+
+    // Add node via form
+    function addNodeViaForm() {
+      const name = document.getElementById('nodeName').value.trim();
+      if (!name) {
+        alert('⚠️ กรุณากรอกชื่อ');
+        return;
+      }
+
+      // Open position modal
+      document.getElementById('posName').value = name;
+      document.getElementById('posColor').value = document.getElementById('nodeColor').value;
+      document.getElementById('posDescription').value = document.getElementById('nodeDescription').value;
+
+      initEmojiSelector('posEmojiSelector', null);
+      const emojiSelectors = document.getElementById('posEmojiSelector').querySelectorAll('.emoji-option');
+      emojiSelectors.forEach(el => {
+        if (el.getAttribute('data-emoji') === getSelectedEmoji('emojiSelector')) {
+          el.classList.add('selected');
+        } else {
+          el.classList.remove('selected');
+        }
+      });
+
+      document.getElementById('positionModal').classList.add('show');
+    }
+
+    // Confirm position
+    function confirmPosition() {
+      const name = document.getElementById('posName').value.trim();
+      if (!name) {
+        alert('⚠️ กรุณากรอกชื่อ');
+        return;
+      }
+
+      // Use center of tree if not clicked
+      let x = 50;
+      let y = 50;
+
+      // Add node
+      nodes.push({
+        name,
+        emoji: getSelectedEmoji('posEmojiSelector'),
+        color: document.getElementById('posColor').value,
+        description: document.getElementById('posDescription').value,
+        x,
+        y,
+        createdAt: new Date().toLocaleString('th-TH')
+      });
+
+      saveData();
+      renderNodes();
+      clearForm();
+      document.getElementById('positionModal').classList.remove('show');
+    }
+
+    // Cancel position
+    function cancelPosition() {
+      document.getElementById('positionModal').classList.remove('show');
+    }
+
+    // Clear form
+    function clearForm() {
+      document.getElementById('nodeName').value = '';
+      document.getElementById('nodeDescription').value = '';
+      document.getElementById('nodeColor').value = '#667eea';
+      initEmojiSelector('emojiSelector', null);
+    }
+
+    // Tree click to add node
+    document.getElementById('treeImage').addEventListener('click', function(e) {
+      const rect = this.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+      clickPos = { x, y };
+
+      const name = prompt('📝 ชื่อข้อมูล:');
+      if (!name) return;
+
+      nodes.push({
+        name,
+        emoji: '🌿',
+        color: '#667eea',
+        description: '',
+        x: Math.min(Math.max(x, 5), 95),
+        y: Math.min(Math.max(y, 5), 95),
+        createdAt: new Date().toLocaleString('th-TH')
+      });
+
+      saveData();
+      renderNodes();
+    });
 
     // Export data
     function exportData() {
@@ -542,26 +848,17 @@
       URL.revokeObjectURL(url);
     }
 
-    // Clear all
-    function clearAll() {
-      if (confirm('⚠️ คุณแน่ใจหรือว่าต้องการลบข้อมูลทั้งหมด? การกระทำนี้ไม่สามารถย้อนกลับได้')) {
+    // Clear all nodes
+    function clearAllNodes() {
+      if (confirm('⚠️ ลบข้อมูลทั้งหมด? การกระทำนี้ไม่สามารถย้อนกลับได้')) {
         nodes = [];
         saveData();
         renderNodes();
-        updateStats();
       }
     }
 
-    // Allow Enter key to add node
-    document.getElementById('nodeName').addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') addNode();
-    });
-
-    document.getElementById('nodeDescription').addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') addNode();
-    });
-
     // Initialize
+    initEmojiSelector('emojiSelector', null);
     loadData();
   </script>
 </body>
