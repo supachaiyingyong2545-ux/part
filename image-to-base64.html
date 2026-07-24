@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image to Base64 Converter</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: white;
+      border-radius: 10px;
+      padding: 40px;
+      max-width: 600px;
+      width: 100%;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .upload-section {
+      margin-bottom: 30px;
+    }
+
+    .upload-box {
+      border: 3px dashed #667eea;
+      border-radius: 8px;
+      padding: 40px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .upload-box:hover {
+      border-color: #764ba2;
+      background: #f5f5f5;
+    }
+
+    .upload-box input {
+      display: none;
+    }
+
+    .upload-text {
+      color: #666;
+      font-size: 1.1em;
+      margin-bottom: 10px;
+    }
+
+    .upload-hint {
+      color: #999;
+      font-size: 0.9em;
+    }
+
+    .preview-section {
+      display: none;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .preview-section.show {
+      display: block;
+    }
+
+    #preview {
+      max-width: 100%;
+      max-height: 300px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .output-section {
+      display: none;
+    }
+
+    .output-section.show {
+      display: block;
+    }
+
+    .output-label {
+      color: #333;
+      font-weight: bold;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    #base64Output {
+      width: 100%;
+      height: 150px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.8em;
+      resize: none;
+      background: #f9f9f9;
+      overflow-y: auto;
+      word-break: break-all;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    button {
+      flex: 1;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: bold;
+    }
+
+    .btn-copy {
+      background: #667eea;
+      color: white;
+    }
+
+    .btn-copy:hover {
+      background: #764ba2;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-copy:active {
+      transform: translateY(0);
+    }
+
+    .btn-download {
+      background: #50c878;
+      color: white;
+    }
+
+    .btn-download:hover {
+      background: #3aa860;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(80, 200, 120, 0.4);
+    }
+
+    .status {
+      display: none;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 15px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .status.success {
+      display: block;
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .status.error {
+      display: block;
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .file-info {
+      color: #666;
+      font-size: 0.9em;
+      margin-top: 10px;
+    }
+
+    .size-indicator {
+      background: #f0f0f0;
+      padding: 10px;
+      border-radius: 8px;
+      margin-top: 10px;
+      font-size: 0.9em;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🖼️ Image to Base64</h1>
+
+    <div class="upload-section">
+      <div class="upload-box" onclick="document.getElementById('imageInput').click()">
+        <input type="file" id="imageInput" accept="image/*">
+        <div class="upload-text">📤 Upload รูปต้นไม้ของคุณ</div>
+        <div class="upload-hint">ลากรูปมาวางที่นี่ หรือคลิกเพื่อเลือก</div>
+      </div>
+    </div>
+
+    <div class="preview-section" id="previewSection">
+      <img id="preview" alt="Preview">
+      <div class="file-info" id="fileInfo"></div>
+    </div>
+
+    <div class="output-section" id="outputSection">
+      <div class="output-label">
+        ✨ Base64 Code
+        <span style="color: #999; font-size: 0.8em; margin-left: auto;"></span>
+      </div>
+      <textarea id="base64Output" readonly></textarea>
+
+      <div class="size-indicator" id="sizeIndicator"></div>
+
+      <div class="button-group">
+        <button class="btn-copy" onclick="copyToClipboard()">
+          📋 Copy
+        </button>
+        <button class="btn-download" onclick="downloadBase64()">
+          💾 Save as .txt
+        </button>
+      </div>
+
+      <div class="status" id="status"></div>
+    </div>
+  </div>
+
+  <script>
+    const imageInput = document.getElementById('imageInput');
+    const preview = document.getElementById('preview');
+    const base64Output = document.getElementById('base64Output');
+    const previewSection = document.getElementById('previewSection');
+    const outputSection = document.getElementById('outputSection');
+    const fileInfo = document.getElementById('fileInfo');
+    const status = document.getElementById('status');
+    const sizeIndicator = document.getElementById('sizeIndicator');
+
+    // Drag and drop
+    const uploadBox = document.querySelector('.upload-box');
+
+    uploadBox.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadBox.style.background = '#f0f0f0';
+      uploadBox.style.borderColor = '#764ba2';
+    });
+
+    uploadBox.addEventListener('dragleave', () => {
+      uploadBox.style.background = '';
+      uploadBox.style.borderColor = '#667eea';
+    });
+
+    uploadBox.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadBox.style.background = '';
+      uploadBox.style.borderColor = '#667eea';
+
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        imageInput.files = files;
+        handleImageUpload();
+      }
+    });
+
+    imageInput.addEventListener('change', handleImageUpload);
+
+    function handleImageUpload() {
+      const file = imageInput.files[0];
+      if (!file) return;
+
+      // Check file type
+      if (!file.type.startsWith('image/')) {
+        showStatus('❌ กรุณาเลือกไฟล์รูปภาพ', 'error');
+        return;
+      }
+
+      // Check file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        showStatus('❌ ไฟล์ใหญ่เกินไป (สูงสุด 5MB)', 'error');
+        return;
+      }
+
+      // Read file
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        const base64String = e.target.result;
+
+        // Show preview
+        preview.src = base64String;
+        fileInfo.innerHTML = `
+          <strong>ชื่อไฟล์:</strong> ${file.name}<br>
+          <strong>ขนาด:</strong> ${(file.size / 1024).toFixed(2)} KB<br>
+          <strong>ประเภท:</strong> ${file.type}
+        `;
+        previewSection.classList.add('show');
+
+        // Show base64
+        base64Output.value = base64String;
+        outputSection.classList.add('show');
+
+        const base64Length = base64String.length;
+        sizeIndicator.innerHTML = `
+          📊 Base64 ขนาด: <strong>${(base64Length / 1024).toFixed(2)} KB</strong>
+          (${base64Length.toLocaleString()} characters)
+        `;
+
+        showStatus('✅ แปลงเสร็จสิ้น! คัดลอกโค้ดด้านบน', 'success');
+      };
+
+      reader.onerror = () => {
+        showStatus('❌ เกิดข้อผิดพลาดในการอ่านไฟล์', 'error');
+      };
+
+      reader.readAsDataURL(file);
+    }
+
+    function copyToClipboard() {
+      base64Output.select();
+      document.execCommand('copy');
+      showStatus('✅ คัดลอกไปยังคลิปบอร์ดแล้ว!', 'success');
+    }
+
+    function downloadBase64() {
+      const element = document.createElement('a');
+      element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(base64Output.value));
+      element.setAttribute('download', 'tree-base64.txt');
+      element.style.display = 'none';
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
+      showStatus('✅ ดาวน์โหลดเสร็จสิ้น!', 'success');
+    }
+
+    function showStatus(message, type) {
+      status.textContent = message;
+      status.className = `status ${type}`;
+      setTimeout(() => {
+        status.className = `status ${type}`;
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
