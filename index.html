@@ -392,64 +392,79 @@
             top: 20%;
             width: 17.4%;
             bottom: 17%;
-            overflow: hidden;
             border: 2px solid rgba(41, 146, 226, 0.22);
             border-radius: 28px;
             background: #fff;
             box-shadow: 0 10px 28px rgba(28, 107, 174, 0.18);
-            text-align: center;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
         }
 
         aside h3 {
             margin: 0;
-            padding: 20px 8px 15px;
+            padding: 16px 12px;
             color: #fff;
             background: linear-gradient(135deg, #0b63c5, #087ee0);
-            font-size: clamp(15px, 1.35vw, 26px);
+            font-size: clamp(14px, 1.2vw, 20px);
+            line-height: 1.3;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .feedback-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .feedback-item {
+            background: linear-gradient(135deg, #f8fbff 0%, #f0f8ff 100%);
+            border-left: 4px solid #38BDF8;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: clamp(11px, 0.9vw, 14px);
             line-height: 1.35;
+            transition: all 0.3s ease;
         }
 
-        .robot {
-            position: absolute;
-            left: 50%;
-            bottom: -6px;
-            transform: translateX(-50%);
-            width: 105px;
-            height: 125px;
+        .feedback-item:hover {
+            background: linear-gradient(135deg, #e8f4ff 0%, #ddeeff 100%);
+            border-left-color: #0969d7;
+            transform: translateX(2px);
         }
 
-        .head {
-            width: 88px;
-            height: 72px;
-            margin: auto;
-            border-radius: 50%;
-            background: linear-gradient(145deg, #fff, #dcefff);
-            border: 4px solid #fff;
-            position: relative;
+        .feedback-item-text {
+            color: #163352;
+            font-weight: 600;
+            margin-bottom: 6px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
-        .eye {
-            position: absolute;
-            top: 24px;
-            width: 28px;
-            height: 24px;
-            border: 5px solid #1684d7;
-            border-radius: 50%;
-            background: #173654;
+        .feedback-item-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: clamp(10px, 0.8vw, 12px);
+            color: #94a6bb;
+            margin-top: 6px;
+            padding-top: 6px;
+            border-top: 1px solid rgba(56, 189, 248, 0.2);
         }
 
-        .eye.a { left: 12px; }
-        .eye.b { right: 12px; }
+        .feedback-item-author {
+            font-weight: 600;
+            color: #38BDF8;
+        }
 
-        .body {
-            width: 78px;
-            height: 66px;
-            margin: -1px auto;
-            background: linear-gradient(90deg, #e9f6ff, #fff, #cbe8fa);
-            border-radius: 20px 20px 5px 5px;
-            border-left: 10px solid #1174c3;
+        .feedback-item-time {
+            color: #999;
         }
 
         footer {
@@ -520,6 +535,23 @@
         @keyframes bounce {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.1); }
+        }
+
+        .feedback-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .feedback-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .feedback-list::-webkit-scrollbar-thumb {
+            background: rgba(56, 189, 248, 0.3);
+            border-radius: 3px;
+        }
+
+        .feedback-list::-webkit-scrollbar-thumb:hover {
+            background: rgba(56, 189, 248, 0.5);
         }
     </style>
 </head>
@@ -604,11 +636,8 @@
         </section>
 
         <aside>
-            <h3>🤖<br><strong>DMSc Bot</strong></h3>
-            <div class="robot" style="margin-top: 20px; flex: 1; display: flex; flex-direction: column; justify-content: center;">
-                <div class="head"><i class="eye a"></i><i class="eye b"></i></div>
-                <div class="body"></div>
-            </div>
+            <h3>💬 ความคิดเห็นล่าสุด</h3>
+            <div class="feedback-list" id="feedbackList"></div>
         </aside>
 
         <footer>
@@ -781,6 +810,7 @@
                     allFeedback = data.feedback;
                     renderFeaturedCard();
                     renderSurroundingCards();
+                    renderFeedbackList();
                     updateStats();
                 }
             } catch (error) {
@@ -836,6 +866,34 @@
                 `;
                 container.appendChild(card);
             });
+        }
+
+        function renderFeedbackList() {
+            const container = document.getElementById('feedbackList');
+            if (!container) return;
+
+            if (allFeedback.length === 0) {
+                container.innerHTML = '<div style="text-align: center; color: #999; padding: 20px; font-size: 13px;">รอความคิดเห็น...</div>';
+                return;
+            }
+
+            // Show latest 8 feedback items
+            const itemsToShow = allFeedback.slice(0, 8);
+
+            container.innerHTML = itemsToShow.map((item, idx) => {
+                const timeAgo = getTimeAgo(item.timestamp);
+                const authorName = (item.author || 'Anonymous').substring(0, 15);
+
+                return `
+                    <div class="feedback-item">
+                        <div class="feedback-item-text">${escapeHtml(item.text.substring(0, 80))}</div>
+                        <div class="feedback-item-meta">
+                            <span class="feedback-item-author">${escapeHtml(authorName)}</span>
+                            <span class="feedback-item-time">${timeAgo}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
 
         function rotateFeatured() {
