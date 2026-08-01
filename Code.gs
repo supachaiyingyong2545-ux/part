@@ -30,11 +30,26 @@ function doGet(e) {
 // รับ feedback จากฟอร์ม
 function doPost(e) {
   try {
-    const rawData = e.postData.contents;
-    Logger.log('📨 Raw POST data received: ' + rawData);
+    let data;
 
-    const data = JSON.parse(rawData);
-    Logger.log('✅ Parsed JSON: ' + JSON.stringify(data));
+    // ลองใช้ FormData ก่อน (ไม่ต้องกลัว CORS preflight)
+    if (e.parameter) {
+      Logger.log('📨 Received FormData parameters');
+      data = {
+        action: e.parameter.action,
+        text: e.parameter.text,
+        pillar: e.parameter.pillar,
+        staffType: e.parameter.staffType,
+        author: e.parameter.author
+      };
+      Logger.log('✅ Parsed FormData: ' + JSON.stringify(data));
+    } else {
+      // Fallback: ถ้าเป็น JSON
+      const rawData = e.postData.contents;
+      Logger.log('📨 Raw POST data received: ' + rawData);
+      data = JSON.parse(rawData);
+      Logger.log('✅ Parsed JSON: ' + JSON.stringify(data));
+    }
 
     if (data.action === 'addFeedback') {
       return addFeedbackToSheet(data);

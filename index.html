@@ -856,15 +856,14 @@
                 submitBtn.textContent = '⏳ กำลังส่ง...';
                 submitBtn.disabled = true;
 
-                const payload = {
-                    action: 'addFeedback',
-                    text: text.value,
-                    pillar: document.getElementById('pillar').value,
-                    staffType: document.getElementById('staffType').value,
-                    author: isAnon ? 'Anonymous' : author.value || 'Anonymous'
-                };
+                const formData = new FormData();
+                formData.append('action', 'addFeedback');
+                formData.append('text', text.value);
+                formData.append('pillar', document.getElementById('pillar').value);
+                formData.append('staffType', document.getElementById('staffType').value);
+                formData.append('author', isAnon ? 'Anonymous' : author.value || 'Anonymous');
 
-                console.log('📤 Sending to GAS:', payload);
+                console.log('📤 Sending to GAS with FormData');
 
                 try {
                     const controller = new AbortController();
@@ -872,7 +871,7 @@
 
                     const res = await fetch(GAS_URL, {
                         method: 'POST',
-                        body: JSON.stringify(payload),
+                        body: formData,
                         signal: controller.signal
                     });
 
@@ -903,8 +902,8 @@
                     console.error('Error message:', error.message);
                     if (error.name === 'AbortError') {
                         alert('⏱️ ส่งข้อมูลช้าเกินไป ลองอีกครั้ง');
-                    } else if (error.message === 'Failed to fetch') {
-                        alert('❌ ไม่สามารถติดต่อระบบได้\n\nตรวจสอบ:\n1. Internet connection\n2. Google Apps Script URL');
+                    } else if (error.message.includes('Failed to fetch')) {
+                        alert('❌ ไม่สามารถติดต่อระบบได้\n\nตรวจสอบการตั้ง GAS:\n1. Deploy เป็น Web App\n2. Execute as: [email]\n3. Access: Anyone');
                     } else {
                         alert(`⚠️ เกิดข้อผิดพลาด: ${error.message}`);
                     }
