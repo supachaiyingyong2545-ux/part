@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DMSc CONNECT 2026 - TV Display</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #1769C2;
+            --secondary-cyan: #38BDF8;
+            --mint-green: #38CFA7;
+            --accent-orange: #FFB547;
+            --bg-light: #F2F9FF;
+            --bg-gradient: linear-gradient(135deg, #FFFFFF 0%, #F2F9FF 50%, #E8F4FF 100%);
+            --card-white: #FFFFFF;
+            --text-dark: #15324B;
+            --text-light: #666666;
+            --shadow: 0 8px 32px rgba(23, 105, 194, 0.12);
+            --shadow-hover: 0 12px 48px rgba(23, 105, 194, 0.18);
+            --border-radius: 20px;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-dark);
+            overflow: hidden;
+        }
+
+        /* Background decorative elements */
+        .bg-decoration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 0;
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .dna-line {
+            position: absolute;
+            stroke: var(--secondary-cyan);
+            stroke-width: 2;
+            opacity: 0.2;
+        }
+
+        /* Main container */
+        .tv-display {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 40px;
+            gap: 30px;
+        }
+
+        /* ========== HEADER SECTION ========== */
+        .header-section {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .main-title {
+            font-size: 72px;
+            font-weight: 800;
+            color: var(--primary-blue);
+            letter-spacing: -2px;
+            margin: 0;
+            line-height: 1.1;
+        }
+
+        .main-subtitle {
+            font-size: 22px;
+            color: var(--secondary-cyan);
+            font-weight: 500;
+            margin: 12px 0 0 0;
+            letter-spacing: 0.5px;
+        }
+
+        .daily-question {
+            font-size: 28px;
+            color: var(--text-dark);
+            font-weight: 600;
+            margin-top: 20px;
+            padding: 16px 24px;
+            background: rgba(255, 255, 255, 0.5);
+            border-left: 5px solid var(--mint-green);
+            border-radius: 12px;
+        }
+
+        /* ========== MAIN CONTENT AREA ========== */
+        .content-section {
+            flex: 1;
+            display: flex;
+            gap: 30px;
+            min-height: 0;
+        }
+
+        .feedback-area {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 1000px;
+        }
+
+        /* Latest comment - CENTERED */
+        .latest-comment-wrapper {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .latest-comment-label {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: var(--mint-green);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            z-index: 10;
+        }
+
+        .latest-card {
+            width: 65%;
+            max-width: 800px;
+            background: var(--card-white);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            animation: zoomInLatest 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            z-index: 5;
+        }
+
+        .latest-card.hidden {
+            animation: zoomOutLatest 0.4s ease-in forwards;
+        }
+
+        .latest-card-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .latest-card-text {
+            font-size: 32px;
+            line-height: 1.5;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .latest-card-meta {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            font-size: 16px;
+            color: var(--text-light);
+            padding-top: 20px;
+            border-top: 2px solid var(--bg-light);
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .meta-badge {
+            background: var(--bg-light);
+            color: var(--primary-blue);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* Surrounding small cards carousel */
+        .carousel-wrapper {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            padding: 40px 20px;
+            z-index: 1;
+        }
+
+        .small-card {
+            width: 180px;
+            height: 240px;
+            background: var(--card-white);
+            border-radius: 14px;
+            padding: 16px;
+            box-shadow: 0 4px 16px rgba(23, 105, 194, 0.08);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            animation: slideIn 0.5s ease-out;
+            opacity: 0.8;
+        }
+
+        .small-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 24px rgba(23, 105, 194, 0.15);
+            opacity: 1;
+        }
+
+        .small-card-icon {
+            font-size: 32px;
+            line-height: 1;
+        }
+
+        .small-card-text {
+            font-size: 13px;
+            line-height: 1.4;
+            color: var(--text-dark);
+            flex: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .small-card-time {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+
+        /* ========== RIGHT SIDEBAR ========== */
+        .right-sidebar {
+            width: 280px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+            justify-content: flex-start;
+        }
+
+        .qr-section {
+            background: var(--card-white);
+            border-radius: var(--border-radius);
+            padding: 28px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            text-align: center;
+        }
+
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            background: var(--bg-light);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .qr-text {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-dark);
+            line-height: 1.4;
+        }
+
+        .mascot {
+            font-size: 80px;
+            animation: float 3s ease-in-out infinite;
+            margin-top: 8px;
+        }
+
+        /* ========== FOOTER STATS ========== */
+        .footer-section {
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 16px rgba(23, 105, 194, 0.08);
+            backdrop-filter: blur(10px);
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            gap: 40px;
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stat-icon {
+            font-size: 32px;
+            line-height: 1;
+        }
+
+        .stat-value {
+            font-size: 42px;
+            font-weight: 800;
+            color: var(--primary-blue);
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-light);
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        /* ========== ANIMATIONS ========== */
+        @keyframes zoomInLatest {
+            from {
+                opacity: 0;
+                transform: scale(0.7);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes zoomOutLatest {
+            from {
+                opacity: 1;
+                transform: scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px) scale(0.9);
+            }
+            to {
+                opacity: 0.8;
+                transform: translateX(0) scale(1);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-16px);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 2400px) {
+            .main-title {
+                font-size: 56px;
+            }
+            .main-subtitle {
+                font-size: 18px;
+            }
+            .latest-card-text {
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 1600px) {
+            .latest-card {
+                padding: 30px;
+            }
+            .latest-card-text {
+                font-size: 20px;
+            }
+            .small-card {
+                width: 160px;
+                height: 220px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background decorations -->
+    <div class="bg-decoration">
+        <svg width="100%" height="100%" style="position: absolute; top: 0; left: 0;">
+            <defs>
+                <pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse">
+                    <circle cx="50" cy="50" r="1" fill="rgba(56, 189, 248, 0.1)"/>
+                </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid)"/>
+            <!-- Wavy decorative lines -->
+            <path d="M 0,200 Q 300,150 600,200 T 1200,200 T 1800,200 T 2400,200" stroke="rgba(56, 189, 248, 0.15)" stroke-width="2" fill="none" opacity="0.6"/>
+            <path d="M 0,900 Q 300,950 600,900 T 1200,900 T 1800,900 T 2400,900" stroke="rgba(56, 189, 248, 0.15)" stroke-width="2" fill="none" opacity="0.6"/>
+        </svg>
+    </div>
+
+    <!-- Main TV Display -->
+    <div class="tv-display">
+        <!-- HEADER -->
+        <div class="header-section">
+            <h1 class="main-title">DMSc CONNECT 2026</h1>
+            <p class="main-subtitle">ร่วมแสดงความคิดเห็น เชื่อมโยงทุกความคิด</p>
+            <div class="daily-question" id="dailyQuestion">วันนี้ คุณอยากเห็นการเปลี่ยนแปลงอะไร?</div>
+        </div>
+
+        <!-- CONTENT -->
+        <div class="content-section">
+            <!-- Feedback Area -->
+            <div class="feedback-area">
+                <div class="latest-comment-label">ความคิดเห็นล่าสุด</div>
+
+                <div class="latest-comment-wrapper" id="latestCommentWrapper">
+                    <div class="latest-card" id="latestCard">
+                        <span class="latest-card-icon">💡</span>
+                        <div class="latest-card-text">ยินดีต้อนรับสู่ DMSc CONNECT 2026</div>
+                        <div class="latest-card-meta">
+                            <div class="meta-item">
+                                <span class="meta-badge">General</span>
+                            </div>
+                            <div class="meta-item">เพิ่งเดี๋ยวนี้</div>
+                            <div class="meta-item">❤️ 0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="carousel-wrapper" id="carouselWrapper">
+                    <!-- Small cards will be generated here -->
+                </div>
+            </div>
+
+            <!-- Right Sidebar: QR + Stats -->
+            <div class="right-sidebar">
+                <!-- QR Code Section -->
+                <div class="qr-section">
+                    <div class="qr-code" id="qrCode">📱</div>
+                    <p class="qr-text">สแกนเพื่อร่วมแสดงความคิดเห็น</p>
+                    <div class="mascot">👨‍🔬</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER STATS -->
+        <div class="footer-section">
+            <div class="stats-container">
+                <div class="stat">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-value" id="participantsCount">0</div>
+                    <div class="stat-label">ผู้เข้าร่วม</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-icon">💬</div>
+                    <div class="stat-value" id="feedbackCount">0</div>
+                    <div class="stat-label">ความคิดเห็น</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-icon">❤️</div>
+                    <div class="stat-value" id="likesCount">0</div>
+                    <div class="stat-label">ถูกใจ</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>
+        // ========== CONFIGURATION =========
+        const CONFIG = {
+            GAS_URL: 'https://script.google.com/macros/s/AKfycbwJLxRLl8nbyo3nxTCqOAANyMOKh9mQG5yJcOR8UWsaPQNEZI71G-f7TpZoHg6RgMXKBA/exec',
+            LATEST_DISPLAY_DURATION: 8000, // 8 seconds
+            CAROUSEL_ROTATE_INTERVAL: 4000, // 4 seconds
+            UPDATE_INTERVAL: 1000, // 1 second
+            MAX_DISPLAY_CARDS: 8,
+            EMOJI_MAP: ['🔬', '💊', '⚙️', '🍴', '🌿', '🏥', '🧪', '💡']
+        };
+
+        // ========== STATE =========
+        let allFeedback = [];
+        let currentLatestIndex = 0;
+        let displayQueue = [];
+
+        // ========== INITIALIZATION =========
+        function init() {
+            generateQRCode();
+            setupUpdateInterval();
+            setupCarouselRotation();
+        }
+
+        // ========== QR CODE GENERATION =========
+        function generateQRCode() {
+            const qrContainer = document.getElementById('qrCode');
+            qrContainer.innerHTML = '';
+            const mobileUrl = window.location.href.split('?')[0].replace('display-tv.html', 'index.html') + '?mobile=1';
+
+            new QRCode(qrContainer, {
+                text: mobileUrl,
+                width: 200,
+                height: 200,
+                colorDark: '#1769C2',
+                colorLight: '#F2F9FF',
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        }
+
+        // ========== DATA FETCHING =========
+        async function fetchFeedback() {
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+                const res = await fetch(CONFIG.GAS_URL + '?action=getAll', {
+                    signal: controller.signal
+                });
+
+                clearTimeout(timeoutId);
+
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+                const data = await res.json();
+                if (data.success && data.feedback) {
+                    allFeedback = data.feedback;
+                    updateDisplay();
+                    updateStats();
+                }
+            } catch (error) {
+                console.error('❌ Error fetching feedback:', error.message);
+            }
+        }
+
+        // ========== DISPLAY UPDATES =========
+        function updateDisplay() {
+            if (allFeedback.length === 0) {
+                showDefaultCard();
+                updateCarousel([]);
+                return;
+            }
+
+            // Show latest card
+            const latestCard = allFeedback[0];
+            displayLatestCard(latestCard);
+
+            // Update carousel with remaining cards
+            const carouselCards = allFeedback.slice(1, CONFIG.MAX_DISPLAY_CARDS);
+            updateCarousel(carouselCards);
+        }
+
+        function displayLatestCard(card) {
+            const latestCardEl = document.getElementById('latestCard');
+            const timeAgo = getTimeAgo(card.timestamp);
+
+            latestCardEl.innerHTML = `
+                <span class="latest-card-icon">${getEmojiForCard(allFeedback.indexOf(card))}</span>
+                <div class="latest-card-text">${escapeHtml(card.text)}</div>
+                <div class="latest-card-meta">
+                    <div class="meta-item">
+                        <span class="meta-badge">${card.pillar.substring(0, 15)}</span>
+                    </div>
+                    <div class="meta-item">${timeAgo}</div>
+                    <div class="meta-item">❤️ 0</div>
+                </div>
+            `;
+
+            latestCardEl.classList.remove('hidden');
+        }
+
+        function updateCarousel(cards) {
+            const carousel = document.getElementById('carouselWrapper');
+            carousel.innerHTML = cards.map((card, i) => `
+                <div class="small-card">
+                    <span class="small-card-icon">${getEmojiForCard(i + 1)}</span>
+                    <div class="small-card-text">${escapeHtml(card.text)}</div>
+                    <div class="small-card-time">${getTimeAgo(card.timestamp)}</div>
+                </div>
+            `).join('');
+        }
+
+        function showDefaultCard() {
+            const latestCardEl = document.getElementById('latestCard');
+            latestCardEl.innerHTML = `
+                <span class="latest-card-icon">💡</span>
+                <div class="latest-card-text">ยินดีต้อนรับสู่ DMSc CONNECT 2026</div>
+                <div class="latest-card-meta">
+                    <div class="meta-item">
+                        <span class="meta-badge">Welcome</span>
+                    </div>
+                    <div class="meta-item">รอความคิดเห็น...</div>
+                    <div class="meta-item">❤️ 0</div>
+                </div>
+            `;
+        }
+
+        function updateStats() {
+            const uniqueAuthors = new Set(allFeedback.map(f => f.author)).size;
+
+            document.getElementById('participantsCount').textContent = uniqueAuthors;
+            document.getElementById('feedbackCount').textContent = allFeedback.length;
+            document.getElementById('likesCount').textContent = '0';
+        }
+
+        // ========== UTILITY FUNCTIONS =========
+        function getEmojiForCard(index) {
+            return CONFIG.EMOJI_MAP[index % CONFIG.EMOJI_MAP.length];
+        }
+
+        function getTimeAgo(timestamp) {
+            if (!timestamp) return 'เพิ่งเดี๋ยวนี้';
+            try {
+                const date = new Date(timestamp);
+                const now = new Date();
+                const diff = Math.floor((now - date) / 1000);
+
+                if (diff < 60) return 'เพิ่งเดี๋ยวนี้';
+                if (diff < 3600) return `${Math.floor(diff / 60)} นาทีแล้ว`;
+                if (diff < 86400) return `${Math.floor(diff / 3600)} ชั่วโมงแล้ว`;
+                return `${Math.floor(diff / 86400)} วันแล้ว`;
+            } catch (e) {
+                return 'เพิ่งเดี๋ยวนี้';
+            }
+        }
+
+        function escapeHtml(text) {
+            const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+
+        // ========== INTERVALS =========
+        function setupUpdateInterval() {
+            fetchFeedback();
+            setInterval(fetchFeedback, CONFIG.UPDATE_INTERVAL);
+        }
+
+        function setupCarouselRotation() {
+            setInterval(() => {
+                const carousel = document.getElementById('carouselWrapper');
+                const cards = carousel.querySelectorAll('.small-card');
+                if (cards.length > 0) {
+                    cards[0].style.animation = 'slideIn 0.5s ease-out';
+                }
+            }, CONFIG.CAROUSEL_ROTATE_INTERVAL);
+        }
+
+        // Start everything when page loads
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
