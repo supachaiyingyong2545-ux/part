@@ -990,7 +990,7 @@
                 <div class="feedback-card ${i === 0 ? 'is-new' : ''}">
                     <div class="card-header">
                         <div class="card-badges">
-                            <span class="card-pillar">${PILLAR_NAMES[item.pillar]}</span>
+                            <span class="card-pillar">${item.pillar}</span>
                             <span class="card-staff-type">${item.staffType}</span>
                         </div>
                         <span class="card-author">${item.author}</span>
@@ -1061,15 +1061,15 @@
             container.innerHTML = `
                 <div class="summary-item">
                     <div class="summary-label">เสาหลักยอดนิยม</div>
-                    <div class="summary-content">${PILLAR_NAMES[topPillar?.[0]] || '-'} (${topPillar?.[1] || 0})</div>
+                    <div class="summary-content">${topPillar?.[0] || '-'} (${topPillar?.[1] || 0})</div>
                 </div>
                 <div class="summary-item">
                     <div class="summary-label">บุคคลภายใน</div>
-                    <div class="summary-content">${staffTypes['internal'] || 0} คน</div>
+                    <div class="summary-content">${staffTypes['บุคคลภายใน'] || 0} คน</div>
                 </div>
                 <div class="summary-item">
                     <div class="summary-label">บุคคลภายนอก</div>
-                    <div class="summary-content">${staffTypes['external'] || 0} คน</div>
+                    <div class="summary-content">${staffTypes['บุคคลภายนอก'] || 0} คน</div>
                 </div>
                 <div class="summary-item">
                     <div class="summary-label">รวมทั้งหมด</div>
@@ -1087,7 +1087,7 @@
             });
 
             const topPillar = Object.entries(pillars).sort((a, b) => b[1] - a[1])[0];
-            document.getElementById('topPillar').textContent = PILLAR_NAMES[topPillar?.[0]]?.substring(0, 10) || '-';
+            document.getElementById('topPillar').textContent = topPillar?.[0]?.substring(0, 15) || '-';
         }
 
         function escapeHtml(text) {
