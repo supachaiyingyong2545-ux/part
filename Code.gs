@@ -30,7 +30,11 @@ function doGet(e) {
 // รับ feedback จากฟอร์ม
 function doPost(e) {
   try {
-    const data = JSON.parse(e.postData.contents);
+    const rawData = e.postData.contents;
+    Logger.log('📨 Raw POST data received: ' + rawData);
+
+    const data = JSON.parse(rawData);
+    Logger.log('✅ Parsed JSON: ' + JSON.stringify(data));
 
     if (data.action === 'addFeedback') {
       return addFeedbackToSheet(data);
@@ -45,9 +49,10 @@ function doPost(e) {
       message: 'Invalid action'
     })).setMimeType(ContentService.MimeType.JSON);
   } catch (error) {
+    Logger.log('❌ Error in doPost: ' + error.toString());
     return ContentService.createTextOutput(JSON.stringify({
       success: false,
-      message: error.toString()
+      message: 'Error: ' + error.toString()
     })).setMimeType(ContentService.MimeType.JSON);
   }
 }
@@ -55,7 +60,18 @@ function doPost(e) {
 // บันทึกข้อมูล feedback ไป Sheet
 function addFeedbackToSheet(data) {
   try {
-    const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
+    Logger.log('🔍 Opening spreadsheet with ID: ' + SHEET_ID);
+    const ss = SpreadsheetApp.openById(SHEET_ID);
+    Logger.log('📋 Looking for sheet: ' + SHEET_NAME);
+
+    const sheet = ss.getSheetByName(SHEET_NAME);
+    if (!sheet) {
+      Logger.log('❌ Sheet not found! Available sheets:');
+      ss.getSheets().forEach((s, i) => {
+        Logger.log('  [' + i + '] ' + s.getName());
+      });
+      throw new Error('Sheet "' + SHEET_NAME + '" not found');
+    }
 
     const pillarName = PILLAR_NAMES[data.pillar] || data.pillar;
     const staffTypeName = STAFF_TYPE_NAMES[data.staffType] || data.staffType;
@@ -70,16 +86,19 @@ function addFeedbackToSheet(data) {
       Utilities.getUuid()
     ];
 
+    Logger.log('📝 Appending row: ' + JSON.stringify(row));
     sheet.appendRow(row);
+    Logger.log('✅ Row appended successfully');
 
     return ContentService.createTextOutput(JSON.stringify({
       success: true,
       message: 'Feedback saved successfully'
     })).setMimeType(ContentService.MimeType.JSON);
   } catch (error) {
+    Logger.log('❌ Error in addFeedbackToSheet: ' + error.toString());
     return ContentService.createTextOutput(JSON.stringify({
       success: false,
-      message: error.toString()
+      message: 'Error: ' + error.toString()
     })).setMimeType(ContentService.MimeType.JSON);
   }
 }
