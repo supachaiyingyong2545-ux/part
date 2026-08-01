@@ -872,9 +872,6 @@
 
                     const res = await fetch(GAS_URL, {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
                         body: JSON.stringify(payload),
                         signal: controller.signal
                     });
@@ -902,10 +899,14 @@
                     }
                 } catch (error) {
                     console.error('❌ Error:', error);
+                    console.error('Error type:', error.name);
+                    console.error('Error message:', error.message);
                     if (error.name === 'AbortError') {
-                        alert('ส่งข้อมูลช้าเกินไป ลองอีกครั้ง');
+                        alert('⏱️ ส่งข้อมูลช้าเกินไป ลองอีกครั้ง');
+                    } else if (error.message === 'Failed to fetch') {
+                        alert('❌ ไม่สามารถติดต่อระบบได้\n\nตรวจสอบ:\n1. Internet connection\n2. Google Apps Script URL');
                     } else {
-                        alert(`เกิดข้อผิดพลาด: ${error.message}`);
+                        alert(`⚠️ เกิดข้อผิดพลาด: ${error.message}`);
                     }
                 } finally {
                     submitBtn.textContent = originalText;
