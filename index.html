@@ -893,6 +893,9 @@
                         isAnon = false;
                         anonBtn.classList.remove('active');
                         author.disabled = false;
+
+                        // ดึงข้อมูลทันทีแทนรอ polling
+                        await updateDisplay();
                     } else {
                         throw new Error(data.message || 'ไม่สามารถบันทึกข้อมูลได้');
                     }
@@ -918,7 +921,7 @@
         function initTV() {
             generateQRCode();
             updateDisplay();
-            setInterval(updateDisplay, 2000);
+            setInterval(updateDisplay, 1000);
             setInterval(rotateMode, 40000);
         }
 
