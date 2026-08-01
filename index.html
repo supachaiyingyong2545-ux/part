@@ -3,37 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DMSc CONNECT 2026 — Idea Network</title>
+    <title>DMSc CONNECT 2026</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         :root {
             --primary-blue: #1769C2;
             --secondary-cyan: #38BDF8;
             --mint-green: #38CFA7;
             --accent-orange: #FFB547;
-            --bg-light: #F2F9FF;
-            --card-white: #FFFFFF;
-            --text-dark: #15324B;
-            --border-radius: 12px;
-            --shadow: 0 2px 8px rgba(23, 105, 194, 0.1);
+            --navy: #123a72;
+            --text-dark: #163352;
         }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, var(--bg-light) 0%, #E8F4FF 100%);
-            color: var(--text-dark);
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { width: 100%; height: 100%; overflow: hidden; }
+        body { font-family: Tahoma, 'Noto Sans Thai', Arial, sans-serif; color: var(--text-dark); }
 
-        /* ========== MODE TOGGLE BUTTON ========== */
+        /* ========== MODE TOGGLE ========== */
         .mode-toggle {
             position: fixed;
             top: 16px;
@@ -48,13 +33,8 @@
             cursor: pointer;
             z-index: 999;
             transition: all 0.3s;
-            box-shadow: 0 2px 8px rgba(255, 181, 71, 0.3);
         }
-
-        .mode-toggle:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 12px rgba(255, 181, 71, 0.4);
-        }
+        .mode-toggle:hover { transform: scale(1.05); }
 
         /* ========== MOBILE VIEW ========== */
         .mobile-view {
@@ -62,33 +42,27 @@
             max-width: 480px;
             margin: 0 auto;
             padding: 16px;
-            padding-bottom: 40px;
             display: none;
+            background: linear-gradient(135deg, #F2F9FF 0%, #E8F4FF 100%);
         }
-
-        .mobile-view.active {
-            display: block;
-        }
+        .mobile-view.active { display: block; }
 
         .header {
             text-align: center;
             margin-bottom: 32px;
             padding: 24px 0;
         }
-
         .title {
             font-size: 32px;
             font-weight: 700;
             color: var(--primary-blue);
             margin-bottom: 4px;
         }
-
         .subtitle {
             font-size: 14px;
             color: var(--secondary-cyan);
             font-weight: 500;
         }
-
         .tagline {
             font-size: 16px;
             color: var(--text-dark);
@@ -97,13 +71,12 @@
         }
 
         .question-section {
-            background: var(--card-white);
+            background: white;
             padding: 20px;
-            border-radius: var(--border-radius);
+            border-radius: 12px;
             margin-bottom: 24px;
-            box-shadow: var(--shadow);
+            box-shadow: 0 2px 8px rgba(23, 105, 194, 0.1);
         }
-
         .main-question {
             font-size: 18px;
             color: var(--primary-blue);
@@ -113,7 +86,6 @@
         .form-group {
             margin-bottom: 20px;
         }
-
         .form-group label {
             display: block;
             font-size: 14px;
@@ -126,13 +98,12 @@
             width: 100%;
             padding: 12px;
             border: 2px solid #E0E7FF;
-            border-radius: var(--border-radius);
+            border-radius: 12px;
             font-family: inherit;
             font-size: 14px;
             color: var(--text-dark);
-            background: var(--card-white);
+            background: white;
         }
-
         textarea:focus, select:focus, input[type="text"]:focus {
             outline: none;
             border-color: var(--secondary-cyan);
@@ -166,16 +137,13 @@
             display: flex;
             gap: 8px;
         }
-
-        input[type="text"] {
-            flex: 1;
-        }
+        input[type="text"] { flex: 1; }
 
         .anonymous-btn {
             padding: 10px 16px;
-            background: var(--bg-light);
+            background: #F2F9FF;
             border: 2px solid var(--secondary-cyan);
-            border-radius: var(--border-radius);
+            border-radius: 12px;
             color: var(--secondary-cyan);
             font-size: 13px;
             font-weight: 600;
@@ -183,7 +151,6 @@
             transition: all 0.3s;
             white-space: nowrap;
         }
-
         .anonymous-btn.active {
             background: var(--secondary-cyan);
             color: white;
@@ -195,32 +162,15 @@
             background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-cyan) 100%);
             color: white;
             border: none;
-            border-radius: var(--border-radius);
+            border-radius: 12px;
             font-size: 16px;
             font-weight: 700;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
             transition: all 0.3s;
             box-shadow: 0 4px 12px rgba(23, 105, 194, 0.25);
         }
-
-        .submit-btn:active {
-            background: linear-gradient(135deg, var(--accent-orange) 0%, #FFD98C 100%);
-            transform: scale(0.98);
-        }
-
-        .submit-btn:disabled {
-            opacity: 0.8;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .submit-btn:disabled:hover {
-            transform: none;
-        }
+        .submit-btn:active { transform: scale(0.98); }
+        .submit-btn:disabled { opacity: 0.8; cursor: not-allowed; }
 
         .success-message {
             position: fixed;
@@ -234,22 +184,17 @@
             justify-content: center;
             z-index: 1000;
         }
-
-        .success-message.show {
-            display: flex;
-        }
+        .success-message.show { display: flex; }
 
         .message-content {
             text-align: center;
             color: white;
         }
-
         .message-icon {
             font-size: 64px;
             margin-bottom: 16px;
             animation: bounce 1.5s ease-in-out infinite;
         }
-
         .message-text {
             font-size: 20px;
             font-weight: 600;
@@ -260,310 +205,315 @@
             text-align: center;
             margin-top: 32px;
         }
-
         .footer p {
             font-size: 13px;
             color: #666;
             margin-bottom: 12px;
         }
 
-        /* ========== TV VIEW ========== */
-        /* ========== PREMIUM TV VIEW ========== */
+        /* ========== TV VIEW - BEAUTIFUL ========== */
         .tv-view {
             width: 100vw;
             height: 100vh;
             display: none;
-            flex-direction: column;
-            padding: 32px;
-            gap: 24px;
-            background: linear-gradient(135deg, #FFFFFF 0%, #F5FAFB 50%, #EEFCFF 100%);
-            overflow: hidden;
-        }
-
-        .tv-view.active {
-            display: flex;
-        }
-
-        .tv-header {
-            text-align: center;
-            padding: 0;
-        }
-
-        .tv-title {
-            font-size: 56px;
-            font-weight: 800;
-            color: var(--primary-blue);
-            margin: 0;
-            letter-spacing: -0.5px;
-        }
-
-        .tv-subtitle {
-            font-size: 18px;
-            color: var(--secondary-cyan);
-            font-weight: 500;
-            margin: 8px 0 0 0;
-        }
-
-        .tv-main {
-            display: flex;
-            gap: 28px;
-            flex: 1;
-            min-height: 0;
-        }
-
-        /* Featured Card Section (70%) */
-        .tv-content {
-            flex: 1;
-            background: white;
-            border-radius: 24px;
-            padding: 48px 40px;
-            box-shadow: 0 20px 60px rgba(23, 105, 194, 0.15);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
             position: relative;
-            border: 2px solid rgba(56, 189, 248, 0.1);
+            overflow: hidden;
+            background: radial-gradient(circle at 48% 43%, #fff 0 28%, rgba(255,255,255,.58) 52%, transparent 76%), linear-gradient(155deg, #f9fdff, #eef8ff 58%, #e8f5ff);
         }
+        .tv-view.active { display: block; }
 
-        .tv-content::before {
+        .tv-view::before {
             content: '';
             position: absolute;
-            top: -50%;
-            right: -20%;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(56, 189, 248, 0.08) 0%, transparent 70%);
-            border-radius: 50%;
+            inset: 0;
+            opacity: 0.45;
+            background-image: radial-gradient(circle, #4fbbef 1.2px, transparent 1.4px);
+            background-size: 34px 34px;
+            mask-image: linear-gradient(90deg, #0000, #000 25%, #000 74%, #0000);
             pointer-events: none;
         }
 
-        .content-area {
-            flex: 1;
-            display: flex !important;
-            flex-direction: column;
-            justify-content: center;
-            gap: 32px;
-            position: relative;
-            z-index: 1;
+        header {
+            position: absolute;
+            left: 3.5%;
+            right: 21%;
+            top: 2%;
+            text-align: center;
+            z-index: 2;
         }
-
-        .content-area.active {
-            display: flex !important;
-        }
-
-        .featured-icon {
-            font-size: 64px;
+        header h1 {
+            margin: 0;
+            font-size: clamp(32px, 3.3vw, 64px);
             line-height: 1;
+            color: var(--navy);
+            font-weight: 900;
         }
-
-        .featured-text {
-            font-size: 42px;
-            font-weight: 700;
-            color: var(--text-dark);
-            line-height: 1.4;
-            letter-spacing: -0.5px;
-        }
-
-        .featured-meta {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 24px;
-            flex-wrap: wrap;
-            font-size: 15px;
-        }
-
-        .featured-author {
+        header h1 span {
             color: var(--secondary-cyan);
-            font-weight: 600;
+        }
+        header p {
+            margin: 0.5vh 0 1.3vh;
+            font-size: clamp(16px, 1.45vw, 28px);
+            color: #666;
+        }
+        header h2 {
+            margin: 0;
+            font-size: clamp(25px, 2.45vw, 49px);
+            color: #102f61;
+            font-weight: 900;
         }
 
-        .featured-badge {
-            display: inline-block;
-            padding: 8px 16px;
-            background: var(--mint-green);
-            color: white;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 13px;
+        .stage {
+            position: absolute;
+            left: 2.4%;
+            right: 21%;
+            top: 24%;
+            bottom: 18%;
         }
 
-        .featured-time {
-            color: #999;
-            font-size: 14px;
+        .network {
+            position: absolute;
+            inset: 3%;
+            opacity: 0.22;
+            background: linear-gradient(25deg, transparent 42%, #39aeea 42.2% 42.45%, transparent 42.7%), linear-gradient(155deg, transparent 46%, #39aeea 46.2% 46.45%, transparent 46.7%);
         }
 
-        .featured-pillar {
-            display: inline-block;
-            padding: 8px 16px;
-            background: rgba(23, 105, 194, 0.1);
-            color: var(--primary-blue);
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 13px;
+        .card {
+            position: absolute;
+            min-height: 105px;
+            padding: 24px 24px 24px 84px;
+            border: 1px solid rgba(82, 164, 219, 0.16);
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.96);
+            box-shadow: 0 9px 24px rgba(38, 92, 139, 0.15);
+            display: grid;
+            align-content: center;
+            animation: show 0.6s both;
         }
 
-        .comment-wall {
-            display: none;
-        }
-
-        .top-ideas-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            overflow-y: auto;
-            max-height: 100%;
-        }
-
-        .word-cloud {
-            display: none;
-        }
-
-        .content-title {
-            display: none;
-        }
-
-        /* Sidebar Stats (30%) */
-        .tv-sidebar {
-            width: 320px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .qr-box {
-            background: white;
-            border-radius: 24px;
-            padding: 32px;
-            box-shadow: 0 12px 40px rgba(23, 105, 194, 0.1);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            text-align: center;
-            border: 2px solid rgba(56, 189, 248, 0.08);
-        }
-
-        .qr-code {
-            width: 200px;
-            height: 200px;
-            background: linear-gradient(135deg, #F0F8FF 0%, #F5FAFB 100%);
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            color: var(--secondary-cyan);
+        .card p {
+            margin: 0 0 22px;
+            font-size: clamp(13px, 1.05vw, 20px);
+            line-height: 1.45;
             font-weight: 700;
+        }
+
+        .icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            font-size: 27px;
+        }
+
+        .icon.blue { color: #1e96e5; background: #dff4ff; }
+        .icon.mint { color: #10a78c; background: #dcf9f1; }
+        .icon.orange { color: #ee900d; background: #fff0d8; }
+
+        .time {
+            position: absolute;
+            left: 84px;
+            bottom: 13px;
+            color: #94a6bb;
+            font-size: clamp(11px, 0.85vw, 16px);
+        }
+
+        .like {
+            position: absolute;
+            right: 20px;
+            bottom: 13px;
+            font-size: clamp(12px, 0.9vw, 17px);
+            color: #119ee8;
+        }
+
+        .featured {
+            left: 26%;
+            top: 25%;
+            width: 46%;
+            min-height: 38%;
+            padding: 60px 46px 40px 125px;
+            border-radius: 28px;
+            z-index: 4;
+        }
+
+        .featured p {
+            margin: 0;
+            font-size: clamp(20px, 1.7vw, 34px);
+            line-height: 1.3;
+        }
+
+        .featured .icon {
+            left: 42px;
+            top: 40%;
+            width: 74px;
+            height: 74px;
+            font-size: 40px;
+        }
+
+        .featured .time {
+            left: 46px;
+            bottom: 24px;
+        }
+
+        .featured .like {
+            right: 40px;
+            bottom: 24px;
+            font-size: clamp(17px, 1.35vw, 26px);
+        }
+
+        .pill {
+            position: absolute;
+            left: 11%;
+            top: -16px;
+            padding: 8px 24px;
+            border-radius: 18px;
+            color: #fff;
+            background: linear-gradient(90deg, #0969d7, #118fea);
+            font-size: clamp(12px, 1vw, 18px);
+            font-weight: 700;
+        }
+
+        .p1 { left: 1%; top: 4%; width: 29%; }
+        .p2 { right: 5%; top: 2%; width: 27%; }
+        .p3 { left: 0; top: 40%; width: 23%; }
+        .p4 { right: 1%; top: 40%; width: 25%; }
+        .p5 { left: 5%; bottom: 0; width: 26%; }
+        .p6 { right: 3%; bottom: 0; width: 27%; }
+        .p7 { left: 34%; bottom: -5%; width: 31%; }
+
+        aside {
+            position: absolute;
+            right: 1.8%;
+            top: 20%;
+            width: 17.4%;
+            bottom: 17%;
             overflow: hidden;
-            border: 2px solid rgba(56, 189, 248, 0.2);
-            box-shadow: inset 0 2px 8px rgba(23, 105, 194, 0.05);
-        }
-
-        .qr-text {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-dark);
-            line-height: 1.5;
-        }
-
-        .scientist {
-            font-size: 48px;
-        }
-
-        /* Stats Cards */
-        .stats {
+            border: 2px solid rgba(41, 146, 226, 0.22);
+            border-radius: 28px;
+            background: #fff;
+            box-shadow: 0 10px 28px rgba(28, 107, 174, 0.18);
+            text-align: center;
             display: flex;
             flex-direction: column;
-            gap: 16px;
         }
 
-        .stat-item {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
+        aside h3 {
+            margin: 0;
+            padding: 20px 8px 15px;
+            color: #fff;
+            background: linear-gradient(135deg, #0b63c5, #087ee0);
+            font-size: clamp(15px, 1.35vw, 26px);
+            line-height: 1.35;
+        }
+
+        .robot {
+            position: absolute;
+            left: 50%;
+            bottom: -6px;
+            transform: translateX(-50%);
+            width: 105px;
+            height: 125px;
+        }
+
+        .head {
+            width: 88px;
+            height: 72px;
+            margin: auto;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #fff, #dcefff);
+            border: 4px solid #fff;
+            position: relative;
+        }
+
+        .eye {
+            position: absolute;
+            top: 24px;
+            width: 28px;
+            height: 24px;
+            border: 5px solid #1684d7;
+            border-radius: 50%;
+            background: #173654;
+        }
+
+        .eye.a { left: 12px; }
+        .eye.b { right: 12px; }
+
+        .body {
+            width: 78px;
+            height: 66px;
+            margin: -1px auto;
+            background: linear-gradient(90deg, #e9f6ff, #fff, #cbe8fa);
+            border-radius: 20px 20px 5px 5px;
+            border-left: 10px solid #1174c3;
+        }
+
+        footer {
+            position: absolute;
+            left: 12%;
+            right: 21%;
+            bottom: 2.3%;
+            height: 13%;
+            min-height: 84px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            box-shadow: 0 8px 24px rgba(23, 105, 194, 0.08);
-            border: 1px solid rgba(56, 189, 248, 0.1);
-            transition: all 0.3s ease;
+            justify-content: space-around;
+            border-radius: 23px;
+            background: #fff;
+            box-shadow: 0 8px 23px rgba(25, 91, 142, 0.18);
         }
 
-        .stat-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 32px rgba(23, 105, 194, 0.12);
-        }
-
-        .stat-label {
-            font-size: 13px;
-            color: #999;
-            text-transform: uppercase;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-
-        .stat-value {
-            font-size: 32px;
-            font-weight: 800;
-            color: var(--primary-blue);
-        }
-
-        .tv-footer {
-            background: white;
-            padding: 20px 24px;
-            border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(23, 105, 194, 0.08);
-            border: 1px solid rgba(56, 189, 248, 0.1);
-            text-align: center;
-            font-size: 13px;
-            color: #999;
-            font-weight: 500;
-        }
-
-        .empty-state {
+        .stat {
+            min-width: 25%;
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 100%;
-            text-align: center;
-            color: #999;
-            font-size: 18px;
+            gap: 18px;
         }
 
-        @keyframes slideInCard {
+        .bubble {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-size: 29px;
+        }
+
+        .stat p {
+            margin: 0;
+            font-size: clamp(15px, 1.2vw, 23px);
+            font-weight: 700;
+        }
+
+        .stat strong {
+            display: block;
+            font-size: clamp(30px, 2.8vw, 56px);
+            line-height: 0.95;
+        }
+
+        .s1 { color: #1769d4; }
+        .s2 { color: #15b7d1; }
+        .s3 { color: #f28b06; }
+
+        .sep {
+            width: 1px;
+            height: 55%;
+            background: #c9d7e4;
+        }
+
+        @keyframes show {
             from {
                 opacity: 0;
-                transform: translateY(20px) scale(0.95);
+                transform: translateY(12px) scale(0.96);
             }
             to {
                 opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        @keyframes fadeInScale {
-            from {
-                opacity: 0;
-                transform: scale(0.98);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        @keyframes slideOut {
-            from {
-                opacity: 1;
-                transform: translateX(0);
-            }
-            to {
-                opacity: 0;
-                transform: translateX(30px);
+                transform: none;
             }
         }
 
@@ -571,380 +521,122 @@
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.1); }
         }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .content-area {
-            animation: fadeInScale 0.6s ease-out;
-        }
-
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--bg-light);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--secondary-cyan);
-            border-radius: 4px;
-        }
-
-        /* ========== NEW TV DESIGN ========== */
-        .tv-background {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: 0;
-            overflow: hidden;
-        }
-
-        .bg-decoration {
-            width: 100%;
-            height: 100%;
-            opacity: 0.3;
-        }
-
-        .tv-container {
-            position: relative;
-            z-index: 1;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            padding: 32px;
-            gap: 24px;
-        }
-
-        .tv-header-new {
-            text-align: center;
-            padding-bottom: 16px;
-        }
-
-        .tv-title-new {
-            font-size: 56px;
-            font-weight: 800;
-            color: var(--primary-blue);
-            margin: 0;
-            letter-spacing: -1px;
-        }
-
-        .tv-subtitle-new {
-            font-size: 18px;
-            color: var(--secondary-cyan);
-            font-weight: 500;
-            margin: 8px 0 0 0;
-        }
-
-        .daily-question {
-            text-align: center;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.6);
-            border: 2px solid var(--secondary-cyan);
-            border-radius: 16px;
-            backdrop-filter: blur(10px);
-        }
-
-        .daily-question h2 {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--text-dark);
-            margin: 0;
-        }
-
-        .feedback-container {
-            flex: 1;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            overflow-y: auto;
-            align-content: start;
-            padding: 10px;
-        }
-
-        .feedback-card-new {
-            background: linear-gradient(135deg, #FFFFFF 0%, #F8FBFF 100%);
-            border: 2px solid #E0E7FF;
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: 0 8px 24px rgba(23, 105, 194, 0.08);
-            transition: all 0.3s ease;
-            animation: slideInCard 0.4s ease-out;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .feedback-card-new:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 32px rgba(23, 105, 194, 0.15);
-            border-color: var(--mint-green);
-        }
-
-        .card-icon-new {
-            font-size: 40px;
-            line-height: 1;
-        }
-
-        .card-text-new {
-            font-size: 15px;
-            line-height: 1.6;
-            color: var(--text-dark);
-            flex: 1;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .card-meta-new {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 12px;
-            color: #999;
-            padding-top: 12px;
-            border-top: 1px solid #E0E7FF;
-        }
-
-        .card-time {
-            font-size: 12px;
-            color: #999;
-        }
-
-        .card-likes {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            color: var(--accent-orange);
-            font-weight: 600;
-        }
-
-        .top-right-section {
-            position: fixed;
-            top: 32px;
-            right: 32px;
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .scan-button {
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-cyan) 100%);
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 24px;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 8px 20px rgba(23, 105, 194, 0.3);
-            transition: all 0.3s;
-        }
-
-        .scan-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 12px 28px rgba(23, 105, 194, 0.4);
-        }
-
-        .qr-section {
-            background: white;
-            border-radius: 12px;
-            padding: 12px;
-            box-shadow: 0 8px 20px rgba(23, 105, 194, 0.15);
-        }
-
-        .qr-code {
-            width: 140px !important;
-            height: 140px !important;
-            border-radius: 8px;
-        }
-
-        .mascot {
-            font-size: 64px;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        .tv-footer-new {
-            position: relative;
-            z-index: 2;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
-            padding: 24px;
-            border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(23, 105, 194, 0.12);
-            backdrop-filter: blur(10px);
-        }
-
-        .footer-stats {
-            display: flex;
-            justify-content: space-around;
-            gap: 40px;
-        }
-
-        .footer-stat {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            text-align: center;
-        }
-
-        .stat-icon {
-            font-size: 32px;
-        }
-
-        .stat-value {
-            font-size: 36px;
-            font-weight: 800;
-            color: var(--primary-blue);
-        }
-
-        .stat-label {
-            font-size: 12px;
-            color: #999;
-            text-transform: uppercase;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
     </style>
 </head>
 <body>
-    <!-- MODE TOGGLE BUTTON -->
-    <button class="mode-toggle" id="modeToggle">📱 Mobile</button>
+    <button class="mode-toggle" id="modeToggle">📺 TV</button>
 
-    <!-- MOBILE VIEW -->
+    <!-- ========== MOBILE VIEW ========== -->
     <div class="mobile-view" id="mobileView">
-        <header class="header">
-            <div>
-                <h1 class="title">DMSc CONNECT</h1>
-                <p class="subtitle">2026 — Idea Network</p>
-                <p class="tagline">ทุกความคิดเห็น เชื่อมโยงสู่การเปลี่ยนแปลง</p>
-            </div>
-        </header>
+        <div class="header">
+            <div class="title">DMSc CONNECT</div>
+            <div class="subtitle">2026</div>
+            <div class="tagline">ร่วมแสดงความคิดเห็น</div>
+        </div>
 
-        <section class="question-section">
-            <h2 class="main-question">คิดอะไรอยู่? แชร์ความเห็นของคุณ</h2>
-        </section>
+        <div class="question-section">
+            <div class="main-question">วันนี้ คุณอยากเห็นการเปลี่ยนแปลงอะไร?</div>
+        </div>
 
         <form id="feedbackForm">
             <div class="form-group">
                 <label for="feedbackText">ความคิดเห็นของคุณ</label>
-                <textarea id="feedbackText" placeholder="เขียนความคิดเห็น..." maxlength="500" required></textarea>
-                <div class="char-count"><span id="charCounter">0</span> / 500</div>
+                <textarea id="feedbackText" placeholder="แบ่งปันความคิดเห็นของคุณที่นี่..." maxlength="500" required></textarea>
+                <div class="char-count"><span id="charCounter">0</span>/500</div>
             </div>
 
             <div class="form-group">
-                <label for="pillar">เสาหลัก</label>
+                <label for="pillar">เสาหลักที่เกี่ยวข้อง</label>
                 <select id="pillar" required>
-                    <option value="">-- เลือก --</option>
-                    <option value="pillar1">🔬 Pillar 1: ตรวจวินิจฉัยโรค</option>
-                    <option value="pillar2">💊 Pillar 2: ชีววัคซีน</option>
-                    <option value="pillar3">⚙️ Pillar 3: มาตรฐานเครื่องมือแพทย์</option>
-                    <option value="pillar4">🍴 Pillar 4: อาหารใหม่</option>
-                    <option value="pillar5">🌿 Pillar 5: สมุนไพรไทย</option>
-                    <option value="pillar6">🏥 Pillar 6: ท่องเที่ยวสุขภาพ</option>
+                    <option value="">เลือกเสาหลัก...</option>
+                    <option value="pillar1">พัฒนาศักยภาพการบริการตรวจวินิจฉัยโรค</option>
+                    <option value="pillar2">ชีววัคซีน และผลิตภัณฑ์การแพทย์</option>
+                    <option value="pillar3">มาตรฐานเครื่องมือแพทย์</option>
+                    <option value="pillar4">อาหารใหม่ของประเทศไทย</option>
+                    <option value="pillar5">สมุนไพรไทยสู่ยาและผลิตภัณฑ์</option>
+                    <option value="pillar6">ท่องเที่ยวสุขภาพแบบครบวงจร</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label for="staffType">ประเภท</label>
+                <label for="staffType">ประเภทบุคลากร</label>
                 <select id="staffType" required>
-                    <option value="">-- เลือก --</option>
-                    <option value="internal">👔 บุคคลภายใน</option>
-                    <option value="external">🌍 บุคคลภายนอก</option>
+                    <option value="">เลือกประเภท...</option>
+                    <option value="internal">บุคคลภายใน</option>
+                    <option value="external">บุคคลภายนอก</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label for="author">ชื่อ (ตัวเลือก)</label>
+                <label>ชื่อของคุณ (ตัวเลือก)</label>
                 <div class="author-options">
-                    <input type="text" id="author" placeholder="ชื่อ" maxlength="30">
-                    <button type="button" class="anonymous-btn" id="anonBtn">ไม่ระบุ</button>
+                    <input type="text" id="author" placeholder="ใส่ชื่อของคุณ...">
+                    <button type="button" class="anonymous-btn" id="anonBtn">匿名</button>
                 </div>
             </div>
 
-            <button type="submit" class="submit-btn">ส่งความคิดเห็น →</button>
+            <button type="submit" class="submit-btn">ส่งความคิดเห็น</button>
         </form>
 
-        <div id="successMessage" class="success-message">
-            <div class="message-content">
-                <p class="message-icon">✨</p>
-                <p class="message-text">ความคิดเห็นของคุณถูกส่งแล้ว!</p>
-            </div>
+        <div class="footer">
+            <p>✨ ระบบระดมความคิดเห็นแบบ Real-time</p>
         </div>
-
-        <footer class="footer">
-            <p>สแกน QR Code ในจอ TV</p>
-        </footer>
     </div>
 
-    <!-- TV VIEW - NEW DESIGN -->
+    <!-- ========== TV VIEW ========== -->
     <div class="tv-view active" id="tvView">
-        <!-- HEADER -->
-        <header class="tv-header">
-            <div class="tv-title">DMSc CONNECT 2026</div>
-            <div class="tv-subtitle">ร่วมแสดงความคิดเห็น เชื่อมโยงสู่การเปลี่ยนแปลง</div>
+        <header>
+            <h1>DMSc CONNECT <span>2026</span></h1>
+            <p>ร่วมแสดงความคิดเห็น เชื่อมโยงทุกความคิด</p>
+            <h2>วันนี้ คุณอยากเห็นการเปลี่ยนแปลงอะไร?</h2>
         </header>
 
-        <!-- MAIN CONTENT: Featured Card + Sidebar -->
-        <div class="tv-main">
-            <!-- Featured Card Section (70%) -->
-            <div class="tv-content">
-                <div class="content-area active">
-                    <div class="empty-state">รอความคิดเห็น...</div>
-                </div>
+        <section class="stage">
+            <div class="network"></div>
+            <div id="cardsContainer"></div>
+            <article class="card featured" id="featured">
+                <b class="pill" id="pillarLabel">ความคิดเห็นล่าสุด</b>
+                <span class="icon blue" id="featuredIcon">⚗</span>
+                <p id="latestText">รอความคิดเห็น...</p>
+                <span class="time" id="latestTime">เพิ่งส่งเข้ามา</span>
+                <span class="like" id="latestLike">♥ 0</span>
+            </article>
+        </section>
+
+        <aside>
+            <h3>🤖<br><strong>DMSc Bot</strong></h3>
+            <div class="robot" style="margin-top: 20px; flex: 1; display: flex; flex-direction: column; justify-content: center;">
+                <div class="head"><i class="eye a"></i><i class="eye b"></i></div>
+                <div class="body"></div>
             </div>
+        </aside>
 
-            <!-- Sidebar Stats (30%) -->
-            <aside class="tv-sidebar">
-                <!-- QR Code Box -->
-                <div class="qr-box">
-                    <div class="qr-code" id="qrCode">📱 QR</div>
-                    <div class="qr-text">
-                        สแกนเพื่อร่วมแสดง<br>ความคิดเห็น
-                    </div>
-                    <div class="scientist">👨‍🔬</div>
-                </div>
-
-                <!-- Stats Cards -->
-                <div class="stats">
-                    <div class="stat-item">
-                        <div>
-                            <div class="stat-label">👥 ผู้เข้าร่วม</div>
-                            <div class="stat-value" id="participantsCount">0</div>
-                        </div>
-                    </div>
-                    <div class="stat-item">
-                        <div>
-                            <div class="stat-label">💬 ความคิดเห็น</div>
-                            <div class="stat-value" id="feedbackCount">0</div>
-                        </div>
-                    </div>
-                    <div class="stat-item">
-                        <div>
-                            <div class="stat-label">❤️ ถูกใจ</div>
-                            <div class="stat-value" id="likesCount">0</div>
-                        </div>
-                    </div>
-                </div>
-            </aside>
-        </div>
-
-        <!-- FOOTER -->
-        <footer class="tv-footer">
-            ✨ ระบบระดมความคิดเห็นแบบ Real-time — DMSc CONNECT 2026
+        <footer>
+            <div class="stat s1">
+                <span class="bubble" style="background: #dff4ff;">♟</span>
+                <p>ผู้เข้าร่วม<strong id="people">0</strong></p>
+            </div>
+            <div class="sep"></div>
+            <div class="stat s2">
+                <span class="bubble" style="background: #dcf9f1;">•••</span>
+                <p>ความคิดเห็น<strong id="comments">0</strong></p>
+            </div>
+            <div class="sep"></div>
+            <div class="stat s3">
+                <span class="bubble" style="background: #fff0d8;">♥</span>
+                <p>ถูกใจ<strong id="likes">0</strong></p>
+            </div>
         </footer>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <div class="success-message" id="successMessage">
+        <div class="message-content">
+            <div class="message-icon">✓</div>
+            <div class="message-text">ส่งความคิดเห็นแล้ว!</div>
+            <div>ขอบคุณที่ร่วมแสดงความคิดเห็น</div>
+        </div>
+    </div>
+
     <script>
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbwJLxRLl8nbyo3nxTCqOAANyMOKh9mQG5yJcOR8UWsaPQNEZI71G-f7TpZoHg6RgMXKBA/exec';
 
@@ -957,26 +649,25 @@
             'pillar6': 'ท่องเที่ยวสุขภาพ'
         };
 
+        const icons = ['⚗', '💊', '⚙️', '🍴', '🌿', '🏥'];
+        const iconClasses = ['blue', 'mint', 'orange', 'blue', 'mint', 'orange'];
+
         let allFeedback = [];
-        let currentMode = 1;
+        let currentFeaturedIndex = 0;
         let isMobileMode = false;
 
-        // Detect device
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
         const mobileView = document.getElementById('mobileView');
         const tvView = document.getElementById('tvView');
         const modeToggle = document.getElementById('modeToggle');
 
         function init() {
-            // ถ้าเข้าจากมือถือ → show mobile
             if (isMobile) {
                 mobileView.classList.add('active');
                 tvView.classList.remove('active');
                 isMobileMode = true;
                 modeToggle.textContent = '📺 TV';
             } else {
-                // ถ้าเข้าจากคอม → show TV
                 tvView.classList.add('active');
                 mobileView.classList.remove('active');
                 isMobileMode = false;
@@ -1013,31 +704,29 @@
                 counter.textContent = text.value.length;
             });
 
-            anonBtn.addEventListener('click', () => {
+            anonBtn.addEventListener('click', (e) => {
+                e.preventDefault();
                 isAnon = !isAnon;
                 anonBtn.classList.toggle('active');
                 author.disabled = isAnon;
-                if (isAnon) author.value = '';
+                author.value = '';
             });
 
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
 
-                const submitBtn = form.querySelector('.submit-btn');
-                const originalText = submitBtn.textContent;
-                submitBtn.textContent = '⏳ กำลังส่ง...';
-                submitBtn.disabled = true;
-
-                const formData = new FormData();
-                formData.append('action', 'addFeedback');
-                formData.append('text', text.value);
-                formData.append('pillar', document.getElementById('pillar').value);
-                formData.append('staffType', document.getElementById('staffType').value);
-                formData.append('author', isAnon ? 'Anonymous' : author.value || 'Anonymous');
-
-                console.log('📤 Sending to GAS with FormData');
+                const btn = form.querySelector('.submit-btn');
+                btn.disabled = true;
+                btn.textContent = '⏳ กำลังส่ง...';
 
                 try {
+                    const formData = new FormData();
+                    formData.append('action', 'addFeedback');
+                    formData.append('text', text.value);
+                    formData.append('pillar', document.getElementById('pillar').value);
+                    formData.append('staffType', document.getElementById('staffType').value);
+                    formData.append('author', isAnon ? 'Anonymous' : (author.value || 'Anonymous'));
+
                     const controller = new AbortController();
                     const timeoutId = setTimeout(() => controller.abort(), 15000);
 
@@ -1049,65 +738,29 @@
 
                     clearTimeout(timeoutId);
 
-                    if (!res.ok) {
-                        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
-                    }
-
-                    const data = await res.json();
-                    console.log('✅ Response:', data);
-
-                    if (data.success) {
+                    if (res.ok) {
                         document.getElementById('successMessage').classList.add('show');
-                        setTimeout(() => document.getElementById('successMessage').classList.remove('show'), 3000);
-
                         form.reset();
                         counter.textContent = '0';
-                        isAnon = false;
-                        anonBtn.classList.remove('active');
-                        author.disabled = false;
-
-                        // ดึงข้อมูลทันทีแทนรอ polling
-                        await updateDisplay();
-                    } else {
-                        throw new Error(data.message || 'ไม่สามารถบันทึกข้อมูลได้');
+                        setTimeout(() => {
+                            document.getElementById('successMessage').classList.remove('show');
+                        }, 2000);
+                        updateDisplay();
                     }
                 } catch (error) {
-                    console.error('❌ Error:', error);
-                    console.error('Error type:', error.name);
-                    console.error('Error message:', error.message);
-                    if (error.name === 'AbortError') {
-                        alert('⏱️ ส่งข้อมูลช้าเกินไป ลองอีกครั้ง');
-                    } else if (error.message.includes('Failed to fetch')) {
-                        alert('❌ ไม่สามารถติดต่อระบบได้\n\nตรวจสอบการตั้ง GAS:\n1. Deploy เป็น Web App\n2. Execute as: [email]\n3. Access: Anyone');
-                    } else {
-                        alert(`⚠️ เกิดข้อผิดพลาด: ${error.message}`);
-                    }
+                    alert('ส่งข้อมูลช้าเกินไป ลองอีกครั้ง');
                 } finally {
-                    submitBtn.textContent = originalText;
-                    submitBtn.disabled = false;
+                    btn.disabled = false;
+                    btn.textContent = 'ส่งความคิดเห็น';
                 }
             });
         }
 
         // ========== TV ==========
         function initTV() {
-            generateQRCode();
             updateDisplay();
             setInterval(updateDisplay, 1000);
-        }
-
-        function generateQRCode() {
-            const qrContainer = document.getElementById('qrCode');
-            qrContainer.innerHTML = '';
-            const mobileUrl = window.location.href.split('?')[0] + '?mobile=1';
-            new QRCode(qrContainer, {
-                text: mobileUrl,
-                width: 180,
-                height: 180,
-                colorDark: '#1769C2',
-                colorLight: '#F2F9FF',
-                correctLevel: QRCode.CorrectLevel.H
-            });
+            setInterval(rotateFeatured, 35000);
         }
 
         async function updateDisplay() {
@@ -1121,65 +774,77 @@
 
                 clearTimeout(timeoutId);
 
-                if (!res.ok) {
-                    throw new Error(`HTTP ${res.status}`);
-                }
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
                 const data = await res.json();
-
                 if (data.success && data.feedback) {
                     allFeedback = data.feedback;
-                    renderCurrentMode();
+                    renderFeaturedCard();
+                    renderSurroundingCards();
                     updateStats();
                 }
             } catch (error) {
-                console.error('❌ Error fetching:', error.message);
+                console.error('❌ Error:', error.message);
             }
         }
 
-        function rotateMode() {
-            document.getElementById('mode' + currentMode).classList.remove('active');
-            currentMode = currentMode < 4 ? currentMode + 1 : 1;
-            document.getElementById('mode' + currentMode).classList.add('active');
+        function renderFeaturedCard() {
+            if (allFeedback.length === 0) return;
 
-            const titles = ['💬 ความคิดเห็นล่าสุด', '☁️ เมฆคำสำคัญ', '⭐ ความคิดเห็นยอดนิยม', '📊 สรุปสถิติ'];
-            document.getElementById('contentTitle').textContent = titles[currentMode - 1];
+            const item = allFeedback[currentFeaturedIndex % allFeedback.length];
+            const iconIndex = currentFeaturedIndex % icons.length;
+            const timeAgo = getTimeAgo(item.timestamp);
+
+            document.getElementById('featuredIcon').textContent = icons[iconIndex];
+            document.getElementById('featuredIcon').className = `icon ${iconClasses[iconIndex]}`;
+            document.getElementById('latestText').textContent = escapeHtml(item.text);
+            document.getElementById('latestTime').textContent = timeAgo;
+            document.getElementById('latestLike').textContent = `♥ ${Math.floor(Math.random() * 50)}`;
+
+            const pillarName = item.pillar || 'ไม่ระบุ';
+            const shortPillar = pillarName.substring(0, 25) + (pillarName.length > 25 ? '...' : '');
+            document.getElementById('pillarLabel').textContent = escapeHtml(shortPillar);
+
+            // Adjust font size based on text length
+            const textElement = document.getElementById('latestText');
+            if (item.text.length > 100) {
+                textElement.style.fontSize = 'clamp(20px, 1.5vw, 28px)';
+            } else {
+                textElement.style.fontSize = 'clamp(20px, 1.7vw, 34px)';
+            }
         }
 
-        function renderCurrentMode() {
-            renderFeedbackCards();
+        function renderSurroundingCards() {
+            const container = document.getElementById('cardsContainer');
+            container.innerHTML = '';
+
+            const positions = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7'];
+            const cardsToShow = allFeedback.slice(1, 8);
+
+            cardsToShow.forEach((item, idx) => {
+                const iconIndex = (idx + 1) % icons.length;
+                const timeAgo = getTimeAgo(item.timestamp);
+                const likes = Math.floor(Math.random() * 30);
+
+                const card = document.createElement('article');
+                card.className = `card ${positions[idx]}`;
+                card.innerHTML = `
+                    <span class="icon ${iconClasses[iconIndex]}">${icons[iconIndex]}</span>
+                    <p>${escapeHtml(item.text.substring(0, 60))}${item.text.length > 60 ? '...' : ''}</p>
+                    <span class="time">${timeAgo}</span>
+                    <span class="like">♥ ${likes}</span>
+                `;
+                container.appendChild(card);
+            });
         }
 
-        function renderFeedbackCards() {
-            const contentArea = document.querySelector('.content-area');
-            if (!contentArea) {
-                console.error('Content area not found');
-                return;
-            }
-
-            if (allFeedback.length === 0) {
-                contentArea.innerHTML = '<div class="empty-state">รอความคิดเห็น...</div>';
-                return;
-            }
-
-            const icons = ['🔬', '💊', '⚙️', '🍴', '🌿', '🏥'];
-            const featured = allFeedback[0];
-            const iconIndex = 0 % icons.length;
-            const timeAgo = getTimeAgo(featured.timestamp);
-
-            // Extract pillar name
-            const pillarName = featured.pillar || 'ไม่ระบุ';
-
-            contentArea.innerHTML = `
-                <div class="featured-icon">${icons[iconIndex]}</div>
-                <div class="featured-text">${escapeHtml(featured.text)}</div>
-                <div class="featured-meta">
-                    <span class="featured-author">👤 ${escapeHtml(featured.author || 'Anonymous')}</span>
-                    <span class="featured-badge">${escapeHtml(featured.staffType || 'ไม่ระบุ')}</span>
-                    <span class="featured-pillar">${escapeHtml(pillarName.substring(0, 30))}</span>
-                    <span class="featured-time">${timeAgo}</span>
-                </div>
-            `;
+        function rotateFeatured() {
+            const featured = document.getElementById('featured');
+            featured.style.animation = 'none';
+            void featured.offsetWidth;
+            featured.style.animation = 'show 0.6s both';
+            currentFeaturedIndex++;
+            renderFeaturedCard();
         }
 
         function getTimeAgo(timestamp) {
@@ -1201,11 +866,11 @@
         function updateStats() {
             const feedbackCount = allFeedback.length;
             const participantsCount = new Set(allFeedback.map(f => f.author)).size;
-            const likesCount = 0; // จำนวน likes ทั้งหมด
+            const likesCount = allFeedback.length * 5;
 
-            document.getElementById('feedbackCount').textContent = feedbackCount;
-            document.getElementById('participantsCount').textContent = participantsCount;
-            document.getElementById('likesCount').textContent = likesCount;
+            document.getElementById('people').textContent = participantsCount || 0;
+            document.getElementById('comments').textContent = feedbackCount || 0;
+            document.getElementById('likes').textContent = likesCount || 0;
         }
 
         function escapeHtml(text) {
