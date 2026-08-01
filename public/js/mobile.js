@@ -98,18 +98,20 @@ class MobileFeedbackApp {
 
   submitFeedback() {
     const feedbackText = document.getElementById('feedbackText').value.trim();
-    const category = document.getElementById('category').value;
+    const pillar = document.getElementById('pillar').value;
+    const staffType = document.getElementById('staffType').value;
     const author = this.isAnonymous ? 'Anonymous' : document.getElementById('author').value || 'Anonymous';
 
-    if (!feedbackText || !category) {
-      alert('กรุณากรอกความคิดเห็นและเลือกหมวดหมู่');
+    if (!feedbackText || !pillar || !staffType) {
+      alert('กรุณากรอกความคิดเห็น เลือกเสาหลัก และประเภท');
       return;
     }
 
     const feedback = {
       type: 'feedback',
       text: feedbackText,
-      category,
+      pillar,
+      staffType,
       author
     };
 

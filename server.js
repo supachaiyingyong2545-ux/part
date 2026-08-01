@@ -38,7 +38,8 @@ wss.on('connection', (ws) => {
         const newFeedback = {
           id: uuidv4(),
           text: message.text,
-          category: message.category,
+          pillar: message.pillar,
+          staffType: message.staffType,
           author: message.author || 'Anonymous',
           timestamp: new Date().toISOString(),
           likes: 0,
@@ -109,20 +110,44 @@ async function saveToGoogleSheets(feedbackItem) {
     const { GoogleSpreadsheet } = require('google-spreadsheet');
     const { JWT } = require('google-auth-library');
 
-    if (!process.env.GOOGLE_SHEET_ID) {
-      console.warn('⚠️  Google Sheets not configured');
+    if (!process.env.GOOGLE_SHEET_ID || !process.env.GOOGLE_SERVICE_ACCOUNT) {
+      console.warn('⚠️  Google Sheets not fully configured');
       return;
     }
 
+    const serviceAccount = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT);
     const doc = new GoogleSpreadsheet(process.env.GOOGLE_SHEET_ID);
-    const sheet = doc.sheetsByIndex[0];
+
+    await doc.useServiceAccountAuth(serviceAccount);
+    await doc.loadInfo();
+
+    const sheet = doc.sheetsByTitle['ความคิดเห็น'];
+    if (!sheet) {
+      console.error('Sheet "ความคิดเห็น" not found');
+      return;
+    }
+
+    const pillarNames = {
+      'pillar1': 'พัฒนาศักยภาพการบริการตรวจวินิจฉัยโรคของประเทศไทย',
+      'pillar2': 'เสริมสร้างความเข้มแข็งและยกระดับมาตรฐานอุตสาหกรรมชีวเภสัชภัณฑ์ วัคซีน และผลิตภัณฑ์การแพทย์ขั้นสูง',
+      'pillar3': 'พัฒนาศูนย์ทดสอบมาตรฐานเครื่องมือแพทย์ระดับชาติแบบครบวงจร',
+      'pillar4': 'สนับสนุนและพัฒนาศักยภาพอุตสาหกรรมอาหารใหม่ของประเทศไทย',
+      'pillar5': 'ยกระดับสมุนไพรไทยสู่ยาและผลิตภัณฑ์สุขภาพระดับสากล',
+      'pillar6': 'สนับสนุนเส้นทางการท่องเที่ยวสุขภาพแบบครบวงจร'
+    };
+
+    const staffTypeNames = {
+      'internal': 'บุคคลภายใน',
+      'external': 'บุคคลภายนอก'
+    };
 
     await sheet.addRow({
-      'Timestamp': feedbackItem.timestamp,
-      'Text': feedbackItem.text,
-      'Category': feedbackItem.category,
-      'Author': feedbackItem.author,
-      'Likes': feedbackItem.likes
+      'เสาหลัก': pillarNames[feedbackItem.pillar] || feedbackItem.pillar,
+      'ความคิดเห็น': feedbackItem.text,
+      'ประเภท': staffTypeNames[feedbackItem.staffType] || feedbackItem.staffType,
+      'ผู้ส่ง': feedbackItem.author,
+      'วันเวลา': new Date(feedbackItem.timestamp).toLocaleString('th-TH'),
+      'ID': feedbackItem.id
     });
 
     console.log(`✅ Saved to Google Sheets: ${feedbackItem.id}`);

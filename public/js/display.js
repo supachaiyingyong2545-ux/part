@@ -115,18 +115,33 @@ class DisplayFeedbackApp {
 
   createCommentCard(item, index) {
     const isNew = index === 0;
-    const categoryEmoji = {
-      'research': '🔬',
-      'innovation': '💡',
-      'service': '🏥',
-      'network': '🌐',
-      'other': '⭐'
-    }[item.category] || '💭';
+    const pillarEmoji = {
+      'pillar1': '🔬',
+      'pillar2': '💊',
+      'pillar3': '⚙️',
+      'pillar4': '🍴',
+      'pillar5': '🌿',
+      'pillar6': '🏥'
+    }[item.pillar] || '💭';
+
+    const pillarShort = {
+      'pillar1': 'ตรวจวินิจฉัยโรค',
+      'pillar2': 'ชีววัคซีน',
+      'pillar3': 'มาตรฐานเครื่องมือ',
+      'pillar4': 'อาหารใหม่',
+      'pillar5': 'สมุนไพรไทย',
+      'pillar6': 'ท่องเที่ยวสุขภาพ'
+    }[item.pillar] || 'Other';
+
+    const staffTypeLabel = item.staffType === 'internal' ? '👔 ภายใน' : '🌍 ภายนอก';
 
     return `
       <div class="feedback-card ${isNew ? 'is-new' : ''}">
         <div class="card-header">
-          <span class="card-category">${categoryEmoji} ${item.category}</span>
+          <div>
+            <span class="card-category">${pillarEmoji} ${pillarShort}</span>
+            <span class="card-staff-type">${staffTypeLabel}</span>
+          </div>
           <span class="card-author">${item.author}</span>
         </div>
         <p class="card-text">${this.escapeHtml(item.text)}</p>
