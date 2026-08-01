@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1920px">
+    <title>DMSc CONNECT 2026 — TV Display</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #1769C2;
+            --secondary-cyan: #38BDF8;
+            --mint-green: #38CFA7;
+            --accent-orange: #FFB547;
+            --bg-light: #F2F9FF;
+            --card-white: #FFFFFF;
+            --text-dark: #15324B;
+            --border-radius: 16px;
+            --shadow: 0 8px 24px rgba(23, 105, 194, 0.12);
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, var(--bg-light) 0%, #E8F4FF 50%, #F0F8FF 100%);
+            color: var(--text-dark);
+        }
+
+        .tv-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            gap: 16px;
+        }
+
+        /* ========== HEADER ========== */
+        .tv-header {
+            background: linear-gradient(135deg, var(--card-white) 0%, rgba(255, 255, 255, 0.8) 100%);
+            padding: 24px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .header-left h1 {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 4px;
+            letter-spacing: -0.5px;
+        }
+
+        .header-left p {
+            font-size: 16px;
+            color: var(--secondary-cyan);
+            font-weight: 500;
+        }
+
+        .header-right {
+            text-align: right;
+            font-size: 18px;
+            color: var(--text-dark);
+            line-height: 1.5;
+        }
+
+        .mode-badge {
+            display: inline-block;
+            background: var(--accent-orange);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        /* ========== MAIN CONTENT ========== */
+        .tv-main {
+            display: flex;
+            gap: 16px;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .tv-content {
+            flex: 1;
+            background: var(--card-white);
+            border-radius: var(--border-radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-blue);
+            padding-bottom: 16px;
+            border-bottom: 3px solid var(--bg-light);
+            margin-bottom: 16px;
+            min-height: 40px;
+        }
+
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .content-area.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ========== MODE 1: LIVE COMMENTS ========== */
+        .comment-wall {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 16px;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        .feedback-card {
+            background: linear-gradient(135deg, #F8FBFF 0%, var(--card-white) 100%);
+            border: 2px solid #E0E7FF;
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: 0 4px 12px rgba(23, 105, 194, 0.08);
+            animation: slideInCard 0.4s ease-out;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .feedback-card:hover {
+            box-shadow: 0 8px 20px rgba(23, 105, 194, 0.15);
+            border-color: var(--mint-green);
+        }
+
+        .feedback-card.is-new {
+            border: 2px solid var(--secondary-cyan);
+            background: linear-gradient(135deg, #E0F2FE 0%, var(--card-white) 100%);
+            grid-column: span 2;
+            padding: 24px;
+            font-size: 1.1em;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .card-badges {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+
+        .card-pillar {
+            display: inline-block;
+            padding: 6px 12px;
+            background: var(--bg-light);
+            color: var(--primary-blue);
+            font-size: 11px;
+            font-weight: 700;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .card-staff-type {
+            display: inline-block;
+            padding: 6px 12px;
+            background: rgba(255, 181, 71, 0.1);
+            color: var(--accent-orange);
+            font-size: 11px;
+            font-weight: 700;
+            border-radius: 6px;
+        }
+
+        .card-author {
+            font-size: 12px;
+            color: #999;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .card-text {
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--text-dark);
+            word-wrap: break-word;
+        }
+
+        .card-footer {
+            font-size: 12px;
+            color: #999;
+            padding-top: 12px;
+            border-top: 1px solid #E0E7FF;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* ========== MODE 2: BUBBLE NETWORK ========== */
+        .bubble-container {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .network-svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 2px 8px rgba(23, 105, 194, 0.1));
+        }
+
+        .bubble {
+            fill: var(--secondary-cyan);
+            opacity: 0.8;
+            animation: bubblePulse 2s ease-in-out infinite;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .bubble:hover {
+            opacity: 1;
+        }
+
+        .network-line {
+            stroke: var(--secondary-cyan);
+            stroke-width: 2;
+            opacity: 0.3;
+            animation: linePulse 3s ease-in-out infinite;
+        }
+
+        /* ========== MODE 3: WORD CLOUD ========== */
+        .word-cloud {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 24px;
+        }
+
+        .word-tag {
+            background: linear-gradient(135deg, var(--secondary-cyan), var(--mint-green));
+            color: white;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-weight: 700;
+            animation: wordPopIn 0.5s ease-out;
+            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.2);
+            cursor: default;
+            white-space: nowrap;
+        }
+
+        /* ========== MODE 4: TOP IDEAS ========== */
+        .top-ideas-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow-y: auto;
+        }
+
+        .top-idea-item {
+            background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
+            border-left: 5px solid var(--accent-orange);
+            padding: 18px;
+            border-radius: 8px;
+            animation: slideInLeft 0.4s ease-out;
+            display: flex;
+            gap: 16px;
+        }
+
+        .top-idea-rank {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--accent-orange);
+            color: white;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .top-idea-content {
+            flex: 1;
+        }
+
+        .top-idea-text {
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .top-idea-stats {
+            display: flex;
+            gap: 16px;
+            font-size: 13px;
+            color: #999;
+        }
+
+        /* ========== MODE 5: SUMMARY STATS ========== */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            height: 100%;
+        }
+
+        .summary-item {
+            background: linear-gradient(135deg, var(--bg-light) 0%, #E8F4FF 100%);
+            padding: 24px;
+            border-radius: 12px;
+            border-left: 5px solid var(--mint-green);
+            animation: slideUp 0.4s ease-out;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .summary-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--primary-blue);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .summary-content {
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--text-dark);
+        }
+
+        /* ========== SIDEBAR: QR CODE ========== */
+        .tv-sidebar {
+            width: 240px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .qr-box {
+            background: var(--card-white);
+            border-radius: var(--border-radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            text-align: center;
+        }
+
+        .qr-code {
+            width: 180px;
+            height: 180px;
+            background: var(--bg-light);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: var(--secondary-cyan);
+            font-weight: 700;
+            overflow: hidden;
+        }
+
+        .qr-text {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-dark);
+            line-height: 1.4;
+        }
+
+        .scientist {
+            font-size: 48px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* ========== FOOTER: STATS ========== */
+        .tv-footer {
+            background: var(--card-white);
+            padding: 16px 24px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 32px;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .tagline {
+            font-size: 13px;
+            color: var(--secondary-cyan);
+            font-weight: 600;
+            flex: 1;
+            text-align: right;
+        }
+
+        .empty-state {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            color: #999;
+            font-size: 20px;
+        }
+
+        /* ========== ANIMATIONS ========== */
+        @keyframes slideInCard {
+            from {
+                opacity: 0;
+                transform: translateY(10px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes bubblePulse {
+            0%, 100% {
+                r: 40px;
+            }
+            50% {
+                r: 45px;
+            }
+        }
+
+        @keyframes linePulse {
+            0%, 100% {
+                opacity: 0.3;
+            }
+            50% {
+                opacity: 0.6;
+            }
+        }
+
+        @keyframes wordPopIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8) rotate(-180deg);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-light);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--secondary-cyan);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="tv-container">
+        <!-- HEADER -->
+        <header class="tv-header">
+            <div class="header-left">
+                <h1>DMSc CONNECT 2026</h1>
+                <p>Idea Network — เครือข่ายความคิด</p>
+            </div>
+            <div class="header-right">
+                <div>ร่วมแสดงความคิดเห็น</div>
+                <div class="mode-badge" id="modeBadge">💬 Live Comments</div>
+            </div>
+        </header>
+
+        <!-- MAIN CONTENT -->
+        <div class="tv-main">
+            <div class="tv-content">
+                <div class="content-title" id="contentTitle">💬 ความคิดเห็นล่าสุด</div>
+
+                <!-- Mode 1: Live Comments Wall -->
+                <div class="content-area active" id="mode1">
+                    <div class="comment-wall" id="commentWall">
+                        <div class="empty-state">รอความคิดเห็น...</div>
+                    </div>
+                </div>
+
+                <!-- Mode 2: Bubble Network -->
+                <div class="content-area" id="mode2">
+                    <div class="bubble-container">
+                        <svg class="network-svg" id="networkSvg" viewBox="0 0 1920 900"></svg>
+                    </div>
+                </div>
+
+                <!-- Mode 3: Word Cloud -->
+                <div class="content-area" id="mode3">
+                    <div class="word-cloud" id="wordCloud">
+                        <div class="empty-state">รอข้อมูล...</div>
+                    </div>
+                </div>
+
+                <!-- Mode 4: Top Ideas -->
+                <div class="content-area" id="mode4">
+                    <div class="top-ideas-list" id="topIdeas">
+                        <div class="empty-state">รอข้อมูล...</div>
+                    </div>
+                </div>
+
+                <!-- Mode 5: Summary Stats -->
+                <div class="content-area" id="mode5">
+                    <div class="summary-grid" id="summaryGrid">
+                        <div class="empty-state">รอข้อมูล...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SIDEBAR: QR CODE -->
+            <aside class="tv-sidebar">
+                <div class="qr-box">
+                    <div class="qr-code" id="qrCode">📱 QR</div>
+                    <p class="qr-text">สแกนเพื่อแสดงความคิดเห็น</p>
+                    <p class="scientist">👨‍🔬</p>
+                </div>
+            </aside>
+        </div>
+
+        <!-- FOOTER: STATS -->
+        <footer class="tv-footer">
+            <div class="stats">
+                <div class="stat-item">
+                    <span class="stat-label">ความคิดเห็น</span>
+                    <span class="stat-value" id="totalFeedback">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">เสาหลักยอดนิยม</span>
+                    <span class="stat-value" id="topPillar">-</span>
+                </div>
+                <div class="tagline">สแกน แสดงความคิดเห็น และร่วมสร้างอนาคตไปด้วยกัน</div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbwKj9VmKctT512iRjd7fwicFx_K_Fe3Od7tPXM6hhFRxNZlqeNYfIcHF591uMOL_QZ7XA/exec';
+        
+        const PILLAR_NAMES = {
+            'pillar1': 'ตรวจวินิจฉัยโรค',
+            'pillar2': 'ชีววัคซีน',
+            'pillar3': 'มาตรฐานเครื่องมือแพทย์',
+            'pillar4': 'อาหารใหม่',
+            'pillar5': 'สมุนไพรไทย',
+            'pillar6': 'ท่องเที่ยวสุขภาพ'
+        };
+
+        const PILLAR_EMOJI = {
+            'pillar1': '🔬', 'pillar2': '💊', 'pillar3': '⚙️',
+            'pillar4': '🍴', 'pillar5': '🌿', 'pillar6': '🏥'
+        };
+
+        let allFeedback = [];
+        let currentMode = 1;
+        const modeRotateInterval = 40000;
+
+        function init() {
+            generateQRCode();
+            updateDisplay();
+            setInterval(updateDisplay, 2000);
+            setInterval(rotateMode, modeRotateInterval);
+        }
+
+        function generateQRCode() {
+            const qrContainer = document.getElementById('qrCode');
+            qrContainer.innerHTML = '';
+            const mobileUrl = window.location.href.replace('/display.html', '/index.html');
+            new QRCode(qrContainer, {
+                text: mobileUrl,
+                width: 180,
+                height: 180,
+                colorDark: '#1769C2',
+                colorLight: '#F2F9FF',
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        }
+
+        async function updateDisplay() {
+            try {
+                const res = await fetch(GAS_URL + '?action=getAll');
+                const data = await res.json();
+                
+                if (data.success && data.feedback) {
+                    allFeedback = data.feedback;
+                    renderCurrentMode();
+                    updateStats();
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        function rotateMode() {
+            // ซ่อน mode ปัจจุบัน
+            document.getElementById('mode' + currentMode).classList.remove('active');
+            
+            // ไปยัง mode ถัดไป
+            currentMode = currentMode < 5 ? currentMode + 1 : 1;
+            
+            // แสดง mode ใหม่
+            document.getElementById('mode' + currentMode).classList.add('active');
+            updateModeDisplay();
+        }
+
+        function updateModeDisplay() {
+            const titles = {
+                1: '💬 ความคิดเห็นล่าสุด',
+                2: '🔗 เครือข่ายความคิด',
+                3: '☁️ เมฆคำสำคัญ',
+                4: '⭐ ความคิดเห็นยอดนิยม',
+                5: '📊 สรุปสถิติ'
+            };
+
+            const badges = {
+                1: '💬 Live Comments',
+                2: '🔗 Idea Bubbles',
+                3: '☁️ Word Cloud',
+                4: '⭐ Top Ideas',
+                5: '📊 Summary'
+            };
+
+            document.getElementById('contentTitle').textContent = titles[currentMode];
+            document.getElementById('modeBadge').textContent = badges[currentMode];
+
+            if (currentMode === 2) renderBubbleNetwork();
+            if (currentMode === 3) renderWordCloud();
+            if (currentMode === 4) renderTopIdeas();
+            if (currentMode === 5) renderSummary();
+        }
+
+        function renderCurrentMode() {
+            if (currentMode === 1) renderLiveComments();
+            else if (currentMode === 2) renderBubbleNetwork();
+            else if (currentMode === 3) renderWordCloud();
+            else if (currentMode === 4) renderTopIdeas();
+            else if (currentMode === 5) renderSummary();
+        }
+
+        function renderLiveComments() {
+            const wall = document.getElementById('commentWall');
+            if (allFeedback.length === 0) {
+                wall.innerHTML = '<div class="empty-state">รอความคิดเห็น...</div>';
+                return;
+            }
+
+            wall.innerHTML = allFeedback.slice(0, 12).map((item, i) => `
+                <div class="feedback-card ${i === 0 ? 'is-new' : ''}">
+                    <div class="card-header">
+                        <div class="card-badges">
+                            <span class="card-pillar">${PILLAR_EMOJI[item.pillar]} ${PILLAR_NAMES[item.pillar]}</span>
+                            <span class="card-staff-type">${item.staffType}</span>
+                        </div>
+                        <span class="card-author">${item.author}</span>
+                    </div>
+                    <p class="card-text">${escapeHtml(item.text)}</p>
+                    <div class="card-footer">
+                        <span>${new Date(item.timestamp).toLocaleTimeString('th-TH')}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderBubbleNetwork() {
+            const svg = document.getElementById('networkSvg');
+            if (allFeedback.length === 0) return;
+
+            svg.innerHTML = '';
+            const centerX = 960, centerY = 450, radius = 300;
+
+            const lines = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            const bubbles = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+
+            allFeedback.slice(0, 20).forEach((item, i) => {
+                const angle = (i / allFeedback.length) * Math.PI * 2;
+                const x = centerX + Math.cos(angle) * radius;
+                const y = centerY + Math.sin(angle) * radius;
+
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', centerX);
+                line.setAttribute('y1', centerY);
+                line.setAttribute('x2', x);
+                line.setAttribute('y2', y);
+                line.setAttribute('class', 'network-line');
+                lines.appendChild(line);
+
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', x);
+                circle.setAttribute('cy', y);
+                circle.setAttribute('r', 30 + Math.random() * 20);
+                circle.setAttribute('class', 'bubble');
+                circle.setAttribute('fill', getColorByPillar(item.pillar));
+                bubbles.appendChild(circle);
+            });
+
+            const center = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            center.setAttribute('cx', centerX);
+            center.setAttribute('cy', centerY);
+            center.setAttribute('r', 50);
+            center.setAttribute('fill', var('--primary-blue'));
+            bubbles.appendChild(center);
+
+            svg.appendChild(lines);
+            svg.appendChild(bubbles);
+        }
+
+        function renderWordCloud() {
+            const words = {};
+            const stopWords = new Set(['และ', 'ที่', 'เพราะ', 'ของ', 'ถึง', 'จาก']);
+
+            allFeedback.forEach(item => {
+                item.text.split(/[\s\n]+/).forEach(word => {
+                    const clean = word.toLowerCase().replace(/[^\w฀-๿]/g, '');
+                    if (clean.length > 2 && !stopWords.has(clean)) {
+                        words[clean] = (words[clean] || 0) + 1;
+                    }
+                });
+            });
+
+            const topWords = Object.entries(words)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 30);
+
+            const container = document.getElementById('wordCloud');
+            container.innerHTML = topWords
+                .map(([word, count]) => `<span class="word-tag" style="font-size: ${14 + count * 2}px;">${word}</span>`)
+                .join('');
+        }
+
+        function renderTopIdeas() {
+            const sorted = allFeedback.slice(0, 5);
+            const container = document.getElementById('topIdeas');
+
+            if (sorted.length === 0) {
+                container.innerHTML = '<div class="empty-state">ยังไม่มีข้อมูล</div>';
+                return;
+            }
+
+            container.innerHTML = sorted.map((item, i) => `
+                <div class="top-idea-item">
+                    <div class="top-idea-rank">${i + 1}</div>
+                    <div class="top-idea-content">
+                        <p class="top-idea-text">${escapeHtml(item.text)}</p>
+                        <div class="top-idea-stats">
+                            <span>👤 ${item.author}</span>
+                            <span>${new Date(item.timestamp).toLocaleTimeString('th-TH')}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderSummary() {
+            const container = document.getElementById('summaryGrid');
+            
+            const pillars = {};
+            allFeedback.forEach(item => {
+                pillars[item.pillar] = (pillars[item.pillar] || 0) + 1;
+            });
+
+            const topPillar = Object.entries(pillars).sort((a, b) => b[1] - a[1])[0];
+            const staffTypes = {};
+            allFeedback.forEach(item => {
+                staffTypes[item.staffType] = (staffTypes[item.staffType] || 0) + 1;
+            });
+
+            container.innerHTML = `
+                <div class="summary-item">
+                    <div class="summary-label">เสาหลักยอดนิยม</div>
+                    <div class="summary-content">${PILLAR_NAMES[topPillar?.[0]] || '-'} (${topPillar?.[1] || 0} รายการ)</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">บุคคลภายใน</div>
+                    <div class="summary-content">${staffTypes['internal'] || 0} คน</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">บุคคลภายนอก</div>
+                    <div class="summary-content">${staffTypes['external'] || 0} คน</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">รวมทั้งหมด</div>
+                    <div class="summary-content">${allFeedback.length} ความคิดเห็น</div>
+                </div>
+            `;
+        }
+
+        function updateStats() {
+            document.getElementById('totalFeedback').textContent = allFeedback.length;
+
+            const pillars = {};
+            allFeedback.forEach(item => {
+                pillars[item.pillar] = (pillars[item.pillar] || 0) + 1;
+            });
+
+            const topPillar = Object.entries(pillars).sort((a, b) => b[1] - a[1])[0];
+            document.getElementById('topPillar').textContent = PILLAR_NAMES[topPillar?.[0]]?.substring(0, 10) || '-';
+        }
+
+        function getColorByPillar(pillar) {
+            const colors = {
+                'pillar1': '#38BDF8', 'pillar2': '#38CFA7', 'pillar3': '#1769C2',
+                'pillar4': '#FFB547', 'pillar5': '#FFB5F0', 'pillar6': '#F87171'
+            };
+            return colors[pillar] || '#38BDF8';
+        }
+
+        function escapeHtml(text) {
+            const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+
+        init();
+    </script>
+</body>
+</html>
