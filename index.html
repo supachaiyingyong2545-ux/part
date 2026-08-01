@@ -212,6 +212,16 @@
             transform: scale(0.98);
         }
 
+        .submit-btn:disabled {
+            opacity: 0.8;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .submit-btn:disabled:hover {
+            transform: none;
+        }
+
         .success-message {
             position: fixed;
             top: 0;
@@ -841,6 +851,11 @@
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
 
+                const submitBtn = form.querySelector('.submit-btn');
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = '⏳ กำลังส่ง...';
+                submitBtn.disabled = true;
+
                 const payload = {
                     action: 'addFeedback',
                     text: text.value,
@@ -852,27 +867,49 @@
                 console.log('📤 Sending to GAS:', payload);
 
                 try {
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 15000);
+
                     const res = await fetch(GAS_URL, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify(payload)
+                        body: JSON.stringify(payload),
+                        signal: controller.signal
                     });
+
+                    clearTimeout(timeoutId);
+
+                    if (!res.ok) {
+                        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+                    }
+
                     const data = await res.json();
                     console.log('✅ Response:', data);
 
-                    document.getElementById('successMessage').classList.add('show');
-                    setTimeout(() => document.getElementById('successMessage').classList.remove('show'), 3000);
+                    if (data.success) {
+                        document.getElementById('successMessage').classList.add('show');
+                        setTimeout(() => document.getElementById('successMessage').classList.remove('show'), 3000);
 
-                    form.reset();
-                    counter.textContent = '0';
-                    isAnon = false;
-                    anonBtn.classList.remove('active');
-                    author.disabled = false;
+                        form.reset();
+                        counter.textContent = '0';
+                        isAnon = false;
+                        anonBtn.classList.remove('active');
+                        author.disabled = false;
+                    } else {
+                        throw new Error(data.message || 'ไม่สามารถบันทึกข้อมูลได้');
+                    }
                 } catch (error) {
                     console.error('❌ Error:', error);
-                    alert('เกิดข้อผิดพลาด');
+                    if (error.name === 'AbortError') {
+                        alert('ส่งข้อมูลช้าเกินไป ลองอีกครั้ง');
+                    } else {
+                        alert(`เกิดข้อผิดพลาด: ${error.message}`);
+                    }
+                } finally {
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
                 }
             });
         }
@@ -901,16 +938,28 @@
 
         async function updateDisplay() {
             try {
-                const res = await fetch(GAS_URL + '?action=getAll');
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+                const res = await fetch(GAS_URL + '?action=getAll', {
+                    signal: controller.signal
+                });
+
+                clearTimeout(timeoutId);
+
+                if (!res.ok) {
+                    throw new Error(`HTTP ${res.status}`);
+                }
+
                 const data = await res.json();
-                
+
                 if (data.success && data.feedback) {
                     allFeedback = data.feedback;
                     renderCurrentMode();
                     updateStats();
                 }
             } catch (error) {
-                console.error('❌ Error fetching:', error);
+                console.error('❌ Error fetching:', error.message);
             }
         }
 
