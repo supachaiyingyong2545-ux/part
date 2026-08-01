@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DMSc CONNECT 2026 — Idea Network</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #1769C2;
+            --secondary-cyan: #38BDF8;
+            --mint-green: #38CFA7;
+            --accent-orange: #FFB547;
+            --bg-light: #F2F9FF;
+            --card-white: #FFFFFF;
+            --text-dark: #15324B;
+            --border-radius: 12px;
+            --shadow: 0 2px 8px rgba(23, 105, 194, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, var(--bg-light) 0%, #E8F4FF 100%);
+            color: var(--text-dark);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* ========== MOBILE VIEW ========== */
+        .mobile-container {
+            max-width: 480px;
+            margin: 0 auto;
+            height: 100vh;
+            padding: 16px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .mobile-container.active {
+            display: block;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding: 24px 0;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        .logo-section {
+            margin-bottom: 16px;
+        }
+
+        .title {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 4px;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: var(--secondary-cyan);
+            font-weight: 500;
+        }
+
+        .tagline {
+            font-size: 16px;
+            color: var(--text-dark);
+            font-weight: 600;
+            margin-top: 12px;
+        }
+
+        .question-section {
+            background: var(--card-white);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+            animation: fadeIn 0.6s ease-out 0.2s both;
+        }
+
+        .main-question {
+            font-size: 18px;
+            color: var(--primary-blue);
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .question-subtitle {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .feedback-form {
+            animation: fadeIn 0.6s ease-out 0.4s both;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        textarea, select, input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #E0E7FF;
+            border-radius: var(--border-radius);
+            font-family: inherit;
+            font-size: 14px;
+            color: var(--text-dark);
+            transition: border-color 0.3s;
+            background: var(--card-white);
+        }
+
+        textarea:focus, select:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: var(--secondary-cyan);
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+            max-height: 180px;
+        }
+
+        .char-count {
+            font-size: 12px;
+            color: #999;
+            margin-top: 6px;
+            text-align: right;
+        }
+
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2315324B' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 20px;
+            padding-right: 36px;
+        }
+
+        .author-options {
+            display: flex;
+            gap: 8px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+        }
+
+        .anonymous-btn {
+            padding: 10px 16px;
+            background: var(--bg-light);
+            border: 2px solid var(--secondary-cyan);
+            border-radius: var(--border-radius);
+            color: var(--secondary-cyan);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .anonymous-btn.active {
+            background: var(--secondary-cyan);
+            color: white;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-cyan) 100%);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(23, 105, 194, 0.25);
+            animation: fadeIn 0.6s ease-out 0.5s both;
+        }
+
+        .submit-btn:active {
+            background: linear-gradient(135deg, var(--accent-orange) 0%, #FFD98C 100%);
+            transform: scale(0.98);
+        }
+
+        .feedback-message {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(23, 105, 194, 0.95);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .feedback-message.show {
+            display: flex;
+        }
+
+        .message-content {
+            text-align: center;
+            color: white;
+        }
+
+        .message-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            animation: bounce 1.5s ease-in-out infinite;
+        }
+
+        .message-text {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 32px;
+            padding-bottom: 16px;
+        }
+
+        .footer p {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 12px;
+        }
+
+        .participant-count {
+            font-size: 12px;
+            color: var(--secondary-cyan);
+            font-weight: 600;
+        }
+
+        /* ========== DISPLAY VIEW ========== */
+        .display-container {
+            width: 100vw;
+            height: 100vh;
+            display: none;
+            flex-direction: column;
+            padding: 24px;
+            gap: 16px;
+        }
+
+        .display-container.active {
+            display: flex;
+        }
+
+        .display-header {
+            background: linear-gradient(135deg, var(--card-white) 0%, rgba(255, 255, 255, 0.8) 100%);
+            padding: 20px 24px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .display-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 4px;
+        }
+
+        .display-subtitle {
+            font-size: 14px;
+            color: var(--secondary-cyan);
+            font-weight: 500;
+        }
+
+        .display-main {
+            display: flex;
+            gap: 16px;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .display-content {
+            flex: 1;
+            background: var(--card-white);
+            border-radius: var(--border-radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .mode-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-blue);
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--bg-light);
+            margin-bottom: 16px;
+        }
+
+        .comment-wall {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+            overflow-y: auto;
+            height: 100%;
+        }
+
+        .feedback-card {
+            background: linear-gradient(135deg, #F8FBFF 0%, var(--card-white) 100%);
+            border: 2px solid #E0E7FF;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 4px 12px rgba(23, 105, 194, 0.08);
+            animation: slideInCard 0.4s ease-out;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 8px;
+        }
+
+        .card-badges {
+            display: flex;
+            gap: 8px;
+        }
+
+        .card-category {
+            display: inline-block;
+            padding: 4px 8px;
+            background: var(--bg-light);
+            color: var(--primary-blue);
+            font-size: 11px;
+            font-weight: 700;
+            border-radius: 6px;
+        }
+
+        .card-staff-type {
+            display: inline-block;
+            padding: 4px 8px;
+            background: rgba(255, 181, 71, 0.1);
+            color: var(--accent-orange);
+            font-size: 11px;
+            font-weight: 700;
+            border-radius: 6px;
+        }
+
+        .card-author {
+            font-size: 12px;
+            color: #999;
+            font-weight: 500;
+        }
+
+        .card-text {
+            font-size: 15px;
+            line-height: 1.5;
+            color: var(--text-dark);
+            margin: 8px 0;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #E0E7FF;
+            font-size: 12px;
+            color: #999;
+        }
+
+        .sidebar {
+            width: 200px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .qr-section {
+            background: var(--card-white);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            text-align: center;
+        }
+
+        .qr-code {
+            width: 160px;
+            height: 160px;
+            background: var(--bg-light);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: var(--secondary-cyan);
+        }
+
+        .display-footer {
+            background: var(--card-white);
+            padding: 16px 24px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .empty-state {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            color: #999;
+            font-size: 16px;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        @keyframes slideInCard {
+            from {
+                opacity: 0;
+                transform: translateY(10px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .display-main {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+            }
+
+            .comment-wall {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+
+        @media (max-width: 360px) {
+            .title {
+                font-size: 28px;
+            }
+            .submit-btn {
+                font-size: 14px;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-light);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--secondary-cyan);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- ========== MOBILE VIEW ========== -->
+    <div class="mobile-container" id="mobileContainer">
+        <header class="header">
+            <div class="logo-section">
+                <h1 class="title">DMSc CONNECT</h1>
+                <p class="subtitle">2026 — Idea Network</p>
+            </div>
+            <p class="tagline">ทุกความคิดเห็น เชื่อมโยงสู่การเปลี่ยนแปลง</p>
+        </header>
+
+        <section class="question-section">
+            <h2 class="main-question">คิดอะไรอยู่? แชร์ความเห็นของคุณสู่เครือข่าย</h2>
+            <p class="question-subtitle">ความคิดเห็นของคุณมีคุณค่า และจะช่วยสร้างอนาคต DMSc</p>
+        </section>
+
+        <form id="feedbackForm" class="feedback-form">
+            <div class="form-group">
+                <label for="feedbackText">ความคิดเห็นของคุณ</label>
+                <textarea
+                    id="feedbackText"
+                    name="feedbackText"
+                    placeholder="เขียนความคิดเห็นของคุณ..."
+                    required
+                    maxlength="500"
+                ></textarea>
+                <div class="char-count">
+                    <span id="charCounter">0</span> / 500
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="pillar">เสาหลัก (Pillar)</label>
+                <select id="pillar" name="pillar" required>
+                    <option value="">-- เลือกเสาหลัก --</option>
+                    <option value="pillar1">🔬 เสาหลัก 1: ตรวจวินิจฉัยโรค</option>
+                    <option value="pillar2">💊 เสาหลัก 2: ชีววัคซีน</option>
+                    <option value="pillar3">⚙️ เสาหลัก 3: มาตรฐานเครื่องมือแพทย์</option>
+                    <option value="pillar4">🍴 เสาหลัก 4: อาหารใหม่</option>
+                    <option value="pillar5">🌿 เสาหลัก 5: สมุนไพรไทย</option>
+                    <option value="pillar6">🏥 เสาหลัก 6: ท่องเที่ยวสุขภาพ</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="staffType">ประเภท</label>
+                <select id="staffType" name="staffType" required>
+                    <option value="">-- เลือกประเภท --</option>
+                    <option value="internal">👔 บุคคลภายใน</option>
+                    <option value="external">🌍 บุคคลภายนอก</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="author">ชื่อของคุณ (ตัวเลือก)</label>
+                <div class="author-options">
+                    <input
+                        type="text"
+                        id="author"
+                        name="author"
+                        placeholder="ชื่อเล่นหรือชื่อจริง"
+                        maxlength="30"
+                    >
+                    <button type="button" class="anonymous-btn" id="anonBtn">ไม่ระบุชื่อ</button>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn">
+                <span class="btn-text">ส่งความคิดเห็น</span>
+                <span class="btn-icon">→</span>
+            </button>
+        </form>
+
+        <div id="feedbackMessage" class="feedback-message">
+            <div class="message-content">
+                <p class="message-icon">✨</p>
+                <p class="message-text">ความคิดเห็นของคุณกำลังเดินทางขึ้นสู่หน้าจอ...</p>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>สแกน QR Code ถ้ากลับมา หรือแชร์กับเพื่อน</p>
+            <div class="participant-count">
+                <span id="participantCount">0</span> ผู้เข้าร่วม | <span id="feedbackCount">0</span> ความคิดเห็น
+            </div>
+        </footer>
+    </div>
+
+    <!-- ========== DISPLAY VIEW ========== -->
+    <div class="display-container" id="displayContainer">
+        <header class="display-header">
+            <div>
+                <h1 class="display-title">DMSc CONNECT 2026</h1>
+                <p class="display-subtitle">Idea Network — เครือข่ายความคิด</p>
+            </div>
+        </header>
+
+        <div class="display-main">
+            <div class="display-content">
+                <div class="mode-title">💬 ความคิดเห็นล่าสุด</div>
+                <div id="commentWall" class="comment-wall">
+                    <div class="empty-state">
+                        <p>รอความคิดเห็นจากผู้เข้าร่วม...</p>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="sidebar">
+                <div class="qr-section">
+                    <div class="qr-code">📱 QR</div>
+                    <p style="font-size: 12px; font-weight: 600; color: var(--text-dark);">สแกนเพื่อร่วมแสดงความคิดเห็น</p>
+                    <p style="font-size: 40px;">👨‍🔬</p>
+                </div>
+            </aside>
+        </div>
+
+        <footer class="display-footer">
+            <div class="stats-row">
+                <div class="stat">
+                    <span class="stat-label">ผู้เข้าร่วม</span>
+                    <span class="stat-value" id="totalParticipants">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">ความคิดเห็น</span>
+                    <span class="stat-value" id="totalFeedback">0</span>
+                </div>
+                <div class="stat" style="flex: 1; text-align: right;">
+                    <span class="stat-label" style="text-align: right;">สแกน แสดงความคิดเห็น และร่วมสร้างอนาคตไปด้วยกัน</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // ตรวจสอบ mode จาก URL parameter
+        const params = new URLSearchParams(window.location.search);
+        const mode = params.get('mode') || 'mobile';
+        const gasUrl = params.get('gasUrl') || 'https://script.google.com/macros/d/YOUR_DEPLOYMENT_ID/usercontent';
+
+        const mobileContainer = document.getElementById('mobileContainer');
+        const displayContainer = document.getElementById('displayContainer');
+
+        if (mode === 'display') {
+            displayContainer.classList.add('active');
+            initializeDisplay();
+        } else {
+            mobileContainer.classList.add('active');
+            initializeMobile();
+        }
+
+        // ========== MOBILE FUNCTIONS ==========
+        function initializeMobile() {
+            const form = document.getElementById('feedbackForm');
+            const feedbackText = document.getElementById('feedbackText');
+            const charCounter = document.getElementById('charCounter');
+            const anonBtn = document.getElementById('anonBtn');
+            const authorInput = document.getElementById('author');
+            let isAnonymous = false;
+
+            feedbackText.addEventListener('input', (e) => {
+                charCounter.textContent = e.target.value.length;
+            });
+
+            anonBtn.addEventListener('click', () => {
+                isAnonymous = !isAnonymous;
+                if (isAnonymous) {
+                    authorInput.value = '';
+                    authorInput.disabled = true;
+                    anonBtn.classList.add('active');
+                } else {
+                    authorInput.disabled = false;
+                    anonBtn.classList.remove('active');
+                }
+            });
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const text = feedbackText.value.trim();
+                const pillar = document.getElementById('pillar').value;
+                const staffType = document.getElementById('staffType').value;
+                const author = isAnonymous ? 'Anonymous' : authorInput.value || 'Anonymous';
+
+                if (!text || !pillar || !staffType) {
+                    alert('กรุณากรอกความคิดเห็น เลือกเสาหลัก และประเภท');
+                    return;
+                }
+
+                try {
+                    const response = await fetch(gasUrl, {
+                        method: 'POST',
+                        payload: JSON.stringify({
+                            action: 'addFeedback',
+                            text: text,
+                            pillar: pillar,
+                            staffType: staffType,
+                            author: author
+                        })
+                    });
+
+                    showSuccessMessage();
+                    form.reset();
+                    charCounter.textContent = '0';
+                    isAnonymous = false;
+                    anonBtn.classList.remove('active');
+                    authorInput.disabled = false;
+
+                    // อัปเดตสถิติ
+                    updateMobileStats();
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('เกิดข้อผิดพลาด กรุณาลองใหม่');
+                }
+            });
+
+            // อัปเดตสถิติ
+            updateMobileStats();
+            setInterval(updateMobileStats, 3000);
+        }
+
+        async function updateMobileStats() {
+            try {
+                const response = await fetch(gasUrl + '?action=getAll');
+                const data = await response.json();
+                if (data.success) {
+                    document.getElementById('participantCount').textContent = data.feedback.length;
+                    document.getElementById('feedbackCount').textContent = data.feedback.length;
+                }
+            } catch (error) {
+                console.error('Error fetching stats:', error);
+            }
+        }
+
+        function showSuccessMessage() {
+            const msg = document.getElementById('feedbackMessage');
+            msg.classList.add('show');
+            setTimeout(() => msg.classList.remove('show'), 3000);
+        }
+
+        // ========== DISPLAY FUNCTIONS ==========
+        function initializeDisplay() {
+            updateDisplayData();
+            setInterval(updateDisplayData, 2000);
+        }
+
+        async function updateDisplayData() {
+            try {
+                const response = await fetch(gasUrl + '?action=getAll');
+                const data = await response.json();
+
+                if (data.success && data.feedback) {
+                    renderFeedbackCards(data.feedback);
+                    document.getElementById('totalFeedback').textContent = data.feedback.length;
+                    document.getElementById('totalParticipants').textContent = data.feedback.length;
+                }
+            } catch (error) {
+                console.error('Error fetching display data:', error);
+            }
+        }
+
+        function renderFeedbackCards(feedbackList) {
+            const wall = document.getElementById('commentWall');
+
+            if (feedbackList.length === 0) {
+                wall.innerHTML = '<div class="empty-state"><p>รอความคิดเห็นจากผู้เข้าร่วม...</p></div>';
+                return;
+            }
+
+            const pillarEmoji = {
+                'พัฒนาศักยภาพการบริการตรวจวินิจฉัยโรคของประเทศไทย': '🔬',
+                'เสริมสร้างความเข้มแข็งและยกระดับมาตรฐานอุตสาหกรรมชีวเภสัชภัณฑ์ วัคซีน และผลิตภัณฑ์การแพทย์ขั้นสูง': '💊',
+                'พัฒนาศูนย์ทดสอบมาตรฐานเครื่องมือแพทย์ระดับชาติแบบครบวงจร': '⚙️',
+                'สนับสนุนและพัฒนาศักยภาพอุตสาหกรรมอาหารใหม่ของประเทศไทย': '🍴',
+                'ยกระดับสมุนไพรไทยสู่ยาและผลิตภัณฑ์สุขภาพระดับสากล': '🌿',
+                'สนับสนุนเส้นทางการท่องเที่ยวสุขภาพแบบครบวงจร': '🏥'
+            };
+
+            wall.innerHTML = feedbackList.map(item => {
+                const emoji = pillarEmoji[item.pillar] || '💭';
+                const staffEmoji = item.staffType === 'บุคคลภายใน' ? '👔' : '🌍';
+                const shortPillar = item.pillar.substring(0, 30) + '...';
+
+                return `
+                    <div class="feedback-card">
+                        <div class="card-header">
+                            <div class="card-badges">
+                                <span class="card-category">${emoji} ${shortPillar}</span>
+                                <span class="card-staff-type">${staffEmoji} ${item.staffType}</span>
+                            </div>
+                            <span class="card-author">${item.author}</span>
+                        </div>
+                        <p class="card-text">${escapeHtml(item.text)}</p>
+                        <div class="card-footer">
+                            <span>${new Date(item.timestamp).toLocaleTimeString('th-TH')}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+    </script>
+</body>
+</html>
