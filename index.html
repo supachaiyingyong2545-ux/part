@@ -33,7 +33,30 @@
             height: 100%;
         }
 
-        /* ========== MOBILE FORM ========== */
+        /* ========== MODE TOGGLE BUTTON ========== */
+        .mode-toggle {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            background: var(--accent-orange);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            z-index: 999;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(255, 181, 71, 0.3);
+        }
+
+        .mode-toggle:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(255, 181, 71, 0.4);
+        }
+
+        /* ========== MOBILE VIEW ========== */
         .mobile-view {
             min-height: 100vh;
             max-width: 480px;
@@ -51,7 +74,6 @@
             text-align: center;
             margin-bottom: 32px;
             padding: 24px 0;
-            animation: slideDown 0.6s ease-out;
         }
 
         .title {
@@ -59,7 +81,6 @@
             font-weight: 700;
             color: var(--primary-blue);
             margin-bottom: 4px;
-            letter-spacing: -0.5px;
         }
 
         .subtitle {
@@ -87,13 +108,6 @@
             font-size: 18px;
             color: var(--primary-blue);
             margin-bottom: 8px;
-            line-height: 1.4;
-        }
-
-        .question-subtitle {
-            font-size: 13px;
-            color: #666;
-            line-height: 1.4;
         }
 
         .form-group {
@@ -116,7 +130,6 @@
             font-family: inherit;
             font-size: 14px;
             color: var(--text-dark);
-            transition: border-color 0.3s;
             background: var(--card-white);
         }
 
@@ -236,7 +249,6 @@
         .footer {
             text-align: center;
             margin-top: 32px;
-            padding-bottom: 16px;
         }
 
         .footer p {
@@ -245,13 +257,7 @@
             margin-bottom: 12px;
         }
 
-        .participant-count {
-            font-size: 12px;
-            color: var(--secondary-cyan);
-            font-weight: 600;
-        }
-
-        /* ========== TV DISPLAY ========== */
+        /* ========== TV VIEW ========== */
         .tv-view {
             width: 100vw;
             height: 100vh;
@@ -259,7 +265,8 @@
             flex-direction: column;
             padding: 24px;
             gap: 16px;
-            background: linear-gradient(135deg, var(--bg-light) 0%, #E8F4FF 100%);
+            background: linear-gradient(135deg, var(--bg-light) 0%, #E8F4FF 50%, #F0F8FF 100%);
+            overflow: hidden;
         }
 
         .tv-view.active {
@@ -268,9 +275,9 @@
 
         .tv-header {
             background: linear-gradient(135deg, var(--card-white) 0%, rgba(255, 255, 255, 0.8) 100%);
-            padding: 20px 24px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(23, 105, 194, 0.12);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -300,10 +307,12 @@
         .tv-content {
             flex: 1;
             background: var(--card-white);
-            border-radius: var(--border-radius);
+            border-radius: 16px;
             padding: 24px;
-            box-shadow: var(--shadow);
+            box-shadow: 0 8px 24px rgba(23, 105, 194, 0.12);
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
         .content-title {
@@ -311,28 +320,45 @@
             font-weight: 700;
             color: var(--primary-blue);
             padding-bottom: 16px;
-            border-bottom: 2px solid var(--bg-light);
+            border-bottom: 3px solid var(--bg-light);
             margin-bottom: 16px;
+        }
+
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .content-area.active {
+            display: flex;
+            flex-direction: column;
         }
 
         .comment-wall {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 16px;
             overflow-y: auto;
-            height: 100%;
         }
 
         .feedback-card {
             background: linear-gradient(135deg, #F8FBFF 0%, var(--card-white) 100%);
             border: 2px solid #E0E7FF;
             border-radius: 12px;
-            padding: 20px;
+            padding: 18px;
             box-shadow: 0 4px 12px rgba(23, 105, 194, 0.08);
             animation: slideInCard 0.4s ease-out;
             display: flex;
             flex-direction: column;
             gap: 12px;
+        }
+
+        .feedback-card.is-new {
+            border: 2px solid var(--secondary-cyan);
+            background: linear-gradient(135deg, #E0F2FE 0%, var(--card-white) 100%);
+            grid-column: span 2;
+            padding: 24px;
         }
 
         .card-header {
@@ -346,6 +372,7 @@
             display: flex;
             gap: 8px;
             flex-wrap: wrap;
+            flex: 1;
         }
 
         .card-pillar {
@@ -353,7 +380,7 @@
             padding: 6px 12px;
             background: var(--bg-light);
             color: var(--primary-blue);
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
             border-radius: 6px;
         }
@@ -363,19 +390,19 @@
             padding: 6px 12px;
             background: rgba(255, 181, 71, 0.1);
             color: var(--accent-orange);
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
             border-radius: 6px;
         }
 
         .card-author {
-            font-size: 13px;
+            font-size: 12px;
             color: #999;
             font-weight: 500;
         }
 
         .card-text {
-            font-size: 16px;
+            font-size: 15px;
             line-height: 1.6;
             color: var(--text-dark);
         }
@@ -387,8 +414,94 @@
             border-top: 1px solid #E0E7FF;
         }
 
+        .word-cloud {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 24px;
+        }
+
+        .word-tag {
+            background: linear-gradient(135deg, var(--secondary-cyan), var(--mint-green));
+            color: white;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.2);
+        }
+
+        .top-ideas-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow-y: auto;
+        }
+
+        .top-idea-item {
+            background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
+            border-left: 5px solid var(--accent-orange);
+            padding: 18px;
+            border-radius: 8px;
+            display: flex;
+            gap: 16px;
+        }
+
+        .top-idea-rank {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--accent-orange);
+            color: white;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .top-idea-content {
+            flex: 1;
+        }
+
+        .top-idea-text {
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .summary-item {
+            background: linear-gradient(135deg, var(--bg-light) 0%, #E8F4FF 100%);
+            padding: 24px;
+            border-radius: 12px;
+            border-left: 5px solid var(--mint-green);
+        }
+
+        .summary-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--primary-blue);
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .summary-content {
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--text-dark);
+        }
+
         .tv-sidebar {
-            width: 220px;
+            width: 240px;
             display: flex;
             flex-direction: column;
             gap: 16px;
@@ -396,9 +509,9 @@
 
         .qr-box {
             background: var(--card-white);
-            border-radius: var(--border-radius);
+            border-radius: 16px;
             padding: 24px;
-            box-shadow: var(--shadow);
+            box-shadow: 0 8px 24px rgba(23, 105, 194, 0.12);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -417,6 +530,7 @@
             font-size: 12px;
             color: var(--secondary-cyan);
             font-weight: 700;
+            overflow: hidden;
         }
 
         .qr-text {
@@ -434,8 +548,8 @@
         .tv-footer {
             background: var(--card-white);
             padding: 16px 24px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(23, 105, 194, 0.12);
         }
 
         .stats {
@@ -450,19 +564,18 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
         }
 
         .stat-label {
-            font-size: 13px;
+            font-size: 12px;
             color: #999;
             text-transform: uppercase;
             font-weight: 700;
-            letter-spacing: 0.5px;
         }
 
         .stat-value {
-            font-size: 28px;
+            font-size: 32px;
             font-weight: 700;
             color: var(--primary-blue);
         }
@@ -474,36 +587,7 @@
             height: 100%;
             text-align: center;
             color: #999;
-            font-size: 18px;
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-
-        @keyframes bounce {
-            0%, 100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.1);
-            }
+            font-size: 20px;
         }
 
         @keyframes slideInCard {
@@ -517,13 +601,14 @@
             }
         }
 
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
         @keyframes float {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-10px);
-            }
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
 
         ::-webkit-scrollbar {
@@ -541,7 +626,10 @@
     </style>
 </head>
 <body>
-    <!-- MOBILE FORM -->
+    <!-- MODE TOGGLE BUTTON -->
+    <button class="mode-toggle" id="modeToggle">📱 Mobile</button>
+
+    <!-- MOBILE VIEW -->
     <div class="mobile-view" id="mobileView">
         <header class="header">
             <div>
@@ -553,7 +641,6 @@
 
         <section class="question-section">
             <h2 class="main-question">คิดอะไรอยู่? แชร์ความเห็นของคุณ</h2>
-            <p class="question-subtitle">ความคิดเห็นของคุณมีคุณค่า</p>
         </section>
 
         <form id="feedbackForm">
@@ -604,13 +691,12 @@
         </div>
 
         <footer class="footer">
-            <p>สแกน QR Code เพื่อร่วมแสดงความคิดเห็น</p>
-            <div class="participant-count">ความคิดเห็น: <span id="mobileCount">0</span></div>
+            <p>สแกน QR Code ในจอ TV</p>
         </footer>
     </div>
 
-    <!-- TV DISPLAY -->
-    <div class="tv-view" id="tvView">
+    <!-- TV VIEW -->
+    <div class="tv-view active" id="tvView">
         <header class="tv-header">
             <div>
                 <h1 class="tv-title">DMSc CONNECT 2026</h1>
@@ -620,57 +706,120 @@
 
         <div class="tv-main">
             <div class="tv-content">
-                <div class="content-title">💬 ความคิดเห็นล่าสุด</div>
-                <div id="commentWall" class="comment-wall">
-                    <div class="empty-state">รอความคิดเห็น...</div>
+                <div class="content-title" id="contentTitle">💬 ความคิดเห็นล่าสุด</div>
+
+                <!-- Mode 1: Live Comments -->
+                <div class="content-area active" id="mode1">
+                    <div class="comment-wall" id="commentWall">
+                        <div class="empty-state">รอความคิดเห็น...</div>
+                    </div>
+                </div>
+
+                <!-- Mode 2: Word Cloud -->
+                <div class="content-area" id="mode2">
+                    <div class="word-cloud" id="wordCloud">
+                        <div class="empty-state">รอข้อมูล...</div>
+                    </div>
+                </div>
+
+                <!-- Mode 3: Top Ideas -->
+                <div class="content-area" id="mode3">
+                    <div class="top-ideas-list" id="topIdeas">
+                        <div class="empty-state">รอข้อมูล...</div>
+                    </div>
+                </div>
+
+                <!-- Mode 4: Summary Stats -->
+                <div class="content-area" id="mode4">
+                    <div class="summary-grid" id="summaryGrid">
+                        <div class="empty-state">รอข้อมูล...</div>
+                    </div>
                 </div>
             </div>
 
+            <!-- SIDEBAR: QR CODE -->
             <aside class="tv-sidebar">
                 <div class="qr-box">
-                    <div class="qr-code">📱 QR</div>
+                    <div class="qr-code" id="qrCode">📱 QR</div>
                     <p class="qr-text">สแกนเพื่อแสดงความคิดเห็น</p>
                     <p class="scientist">👨‍🔬</p>
                 </div>
             </aside>
         </div>
 
+        <!-- FOOTER: STATS -->
         <footer class="tv-footer">
             <div class="stats">
                 <div class="stat-item">
                     <span class="stat-label">ความคิดเห็น</span>
-                    <span class="stat-value" id="tvCount">0</span>
+                    <span class="stat-value" id="totalFeedback">0</span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-label">ร่วมสร้างอนาคตไปด้วยกัน</span>
+                    <span class="stat-label">เสาหลักยอดนิยม</span>
+                    <span class="stat-value" id="topPillar">-</span>
                 </div>
             </div>
         </footer>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script>
-        // ตั้งค่า GAS URL ที่นี่
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbwKj9VmKctT512iRjd7fwicFx_K_Fe3Od7tPXM6hhFRxNZlqeNYfIcHF591uMOL_QZ7XA/exec';
 
-        // ตรวจสอบ URL parameter
-        const params = new URLSearchParams(window.location.search);
-        const isDisplay = params.has('display') || params.get('mode') === 'display';
+        const PILLAR_NAMES = {
+            'pillar1': 'ตรวจวินิจฉัยโรค',
+            'pillar2': 'ชีววัคซีน',
+            'pillar3': 'มาตรฐานเครื่องมือแพทย์',
+            'pillar4': 'อาหารใหม่',
+            'pillar5': 'สมุนไพรไทย',
+            'pillar6': 'ท่องเที่ยวสุขภาพ'
+        };
+
+        let allFeedback = [];
+        let currentMode = 1;
+        let isMobileMode = false;
+
+        // Detect device
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
         const mobileView = document.getElementById('mobileView');
         const tvView = document.getElementById('tvView');
+        const modeToggle = document.getElementById('modeToggle');
 
-        if (isDisplay) {
-            // TV Display Mode
-            tvView.classList.add('active');
-            initializeDisplay();
-        } else {
-            // Mobile Form Mode
-            mobileView.classList.add('active');
-            initializeMobile();
+        function init() {
+            // ถ้าเข้าจากมือถือ → show mobile
+            if (isMobile) {
+                mobileView.classList.add('active');
+                tvView.classList.remove('active');
+                isMobileMode = true;
+                modeToggle.textContent = '📺 TV';
+            } else {
+                // ถ้าเข้าจากคอม → show TV
+                tvView.classList.add('active');
+                mobileView.classList.remove('active');
+                isMobileMode = false;
+                modeToggle.textContent = '📱 Mobile';
+            }
+
+            initMobile();
+            initTV();
         }
 
-        // ========== MOBILE FORM ==========
-        function initializeMobile() {
+        modeToggle.addEventListener('click', () => {
+            isMobileMode = !isMobileMode;
+            if (isMobileMode) {
+                mobileView.classList.add('active');
+                tvView.classList.remove('active');
+                modeToggle.textContent = '📺 TV';
+            } else {
+                tvView.classList.add('active');
+                mobileView.classList.remove('active');
+                modeToggle.textContent = '📱 Mobile';
+            }
+        });
+
+        // ========== MOBILE ==========
+        function initMobile() {
             const form = document.getElementById('feedbackForm');
             const text = document.getElementById('feedbackText');
             const counter = document.getElementById('charCounter');
@@ -692,94 +841,107 @@
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
 
-                if (!text.value || !document.getElementById('pillar').value || !document.getElementById('staffType').value) {
-                    alert('กรุณากรอกข้อมูลให้ครบ');
-                    return;
-                }
+                const payload = {
+                    action: 'addFeedback',
+                    text: text.value,
+                    pillar: document.getElementById('pillar').value,
+                    staffType: document.getElementById('staffType').value,
+                    author: isAnon ? 'Anonymous' : author.value || 'Anonymous'
+                };
+
+                console.log('📤 Sending to GAS:', payload);
 
                 try {
-                    const payload = {
-                        action: 'addFeedback',
-                        text: text.value,
-                        pillar: document.getElementById('pillar').value,
-                        staffType: document.getElementById('staffType').value,
-                        author: isAnon ? 'Anonymous' : author.value || 'Anonymous'
-                    };
-
-                    await fetch(GAS_URL, {
+                    const res = await fetch(GAS_URL, {
                         method: 'POST',
-                        payload: JSON.stringify(payload)
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
                     });
+                    const data = await res.json();
+                    console.log('✅ Response:', data);
 
-                    // แสดงข้อความสำเร็จ
-                    const msg = document.getElementById('successMessage');
-                    msg.classList.add('show');
-                    setTimeout(() => msg.classList.remove('show'), 3000);
+                    document.getElementById('successMessage').classList.add('show');
+                    setTimeout(() => document.getElementById('successMessage').classList.remove('show'), 3000);
 
-                    // รีเซ็ตฟอร์ม
                     form.reset();
                     counter.textContent = '0';
                     isAnon = false;
                     anonBtn.classList.remove('active');
                     author.disabled = false;
-
-                    // อัปเดตจำนวน
-                    updateMobileCount();
                 } catch (error) {
-                    console.error('Error:', error);
+                    console.error('❌ Error:', error);
                     alert('เกิดข้อผิดพลาด');
                 }
             });
-
-            updateMobileCount();
-            setInterval(updateMobileCount, 3000);
         }
 
-        async function updateMobileCount() {
-            try {
-                const res = await fetch(GAS_URL + '?action=getAll');
-                const data = await res.json();
-                if (data.success) {
-                    document.getElementById('mobileCount').textContent = data.feedback.length;
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
-
-        // ========== TV DISPLAY ==========
-        function initializeDisplay() {
+        // ========== TV ==========
+        function initTV() {
+            generateQRCode();
             updateDisplay();
             setInterval(updateDisplay, 2000);
+            setInterval(rotateMode, 40000);
+        }
+
+        function generateQRCode() {
+            const qrContainer = document.getElementById('qrCode');
+            qrContainer.innerHTML = '';
+            const mobileUrl = window.location.href.split('?')[0] + '?mobile=1';
+            new QRCode(qrContainer, {
+                text: mobileUrl,
+                width: 180,
+                height: 180,
+                colorDark: '#1769C2',
+                colorLight: '#F2F9FF',
+                correctLevel: QRCode.CorrectLevel.H
+            });
         }
 
         async function updateDisplay() {
             try {
                 const res = await fetch(GAS_URL + '?action=getAll');
                 const data = await res.json();
-
+                
                 if (data.success && data.feedback) {
-                    renderCards(data.feedback);
-                    document.getElementById('tvCount').textContent = data.feedback.length;
+                    allFeedback = data.feedback;
+                    renderCurrentMode();
+                    updateStats();
                 }
             } catch (error) {
-                console.error('Error:', error);
+                console.error('❌ Error fetching:', error);
             }
         }
 
-        function renderCards(feedbackList) {
-            const wall = document.getElementById('commentWall');
+        function rotateMode() {
+            document.getElementById('mode' + currentMode).classList.remove('active');
+            currentMode = currentMode < 4 ? currentMode + 1 : 1;
+            document.getElementById('mode' + currentMode).classList.add('active');
 
-            if (feedbackList.length === 0) {
+            const titles = ['💬 ความคิดเห็นล่าสุด', '☁️ เมฆคำสำคัญ', '⭐ ความคิดเห็นยอดนิยม', '📊 สรุปสถิติ'];
+            document.getElementById('contentTitle').textContent = titles[currentMode - 1];
+        }
+
+        function renderCurrentMode() {
+            if (currentMode === 1) renderLiveComments();
+            else if (currentMode === 2) renderWordCloud();
+            else if (currentMode === 3) renderTopIdeas();
+            else if (currentMode === 4) renderSummary();
+        }
+
+        function renderLiveComments() {
+            const wall = document.getElementById('commentWall');
+            if (allFeedback.length === 0) {
                 wall.innerHTML = '<div class="empty-state">รอความคิดเห็น...</div>';
                 return;
             }
 
-            wall.innerHTML = feedbackList.map(item => `
-                <div class="feedback-card">
+            wall.innerHTML = allFeedback.slice(0, 12).map((item, i) => `
+                <div class="feedback-card ${i === 0 ? 'is-new' : ''}">
                     <div class="card-header">
                         <div class="card-badges">
-                            <span class="card-pillar">${item.pillar.substring(0, 25)}...</span>
+                            <span class="card-pillar">${PILLAR_NAMES[item.pillar]}</span>
                             <span class="card-staff-type">${item.staffType}</span>
                         </div>
                         <span class="card-author">${item.author}</span>
@@ -790,10 +952,101 @@
             `).join('');
         }
 
+        function renderWordCloud() {
+            const words = {};
+            const stopWords = new Set(['และ', 'ที่', 'เพราะ', 'ของ', 'ถึง', 'จาก']);
+
+            allFeedback.forEach(item => {
+                item.text.split(/[\s\n]+/).forEach(word => {
+                    const clean = word.toLowerCase().replace(/[^\w฀-๿]/g, '');
+                    if (clean.length > 2 && !stopWords.has(clean)) {
+                        words[clean] = (words[clean] || 0) + 1;
+                    }
+                });
+            });
+
+            const topWords = Object.entries(words)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 30);
+
+            const container = document.getElementById('wordCloud');
+            container.innerHTML = topWords
+                .map(([word, count]) => `<span class="word-tag" style="font-size: ${14 + count * 2}px;">${word}</span>`)
+                .join('');
+        }
+
+        function renderTopIdeas() {
+            const sorted = allFeedback.slice(0, 5);
+            const container = document.getElementById('topIdeas');
+
+            if (sorted.length === 0) {
+                container.innerHTML = '<div class="empty-state">ยังไม่มีข้อมูล</div>';
+                return;
+            }
+
+            container.innerHTML = sorted.map((item, i) => `
+                <div class="top-idea-item">
+                    <div class="top-idea-rank">${i + 1}</div>
+                    <div class="top-idea-content">
+                        <p class="top-idea-text">${escapeHtml(item.text)}</p>
+                        <div style="font-size: 12px; color: #999;">👤 ${item.author}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderSummary() {
+            const pillars = {};
+            allFeedback.forEach(item => {
+                pillars[item.pillar] = (pillars[item.pillar] || 0) + 1;
+            });
+
+            const staffTypes = {};
+            allFeedback.forEach(item => {
+                staffTypes[item.staffType] = (staffTypes[item.staffType] || 0) + 1;
+            });
+
+            const topPillar = Object.entries(pillars).sort((a, b) => b[1] - a[1])[0];
+
+            const container = document.getElementById('summaryGrid');
+            container.innerHTML = `
+                <div class="summary-item">
+                    <div class="summary-label">เสาหลักยอดนิยม</div>
+                    <div class="summary-content">${PILLAR_NAMES[topPillar?.[0]] || '-'} (${topPillar?.[1] || 0})</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">บุคคลภายใน</div>
+                    <div class="summary-content">${staffTypes['internal'] || 0} คน</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">บุคคลภายนอก</div>
+                    <div class="summary-content">${staffTypes['external'] || 0} คน</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">รวมทั้งหมด</div>
+                    <div class="summary-content">${allFeedback.length} ความคิดเห็น</div>
+                </div>
+            `;
+        }
+
+        function updateStats() {
+            document.getElementById('totalFeedback').textContent = allFeedback.length;
+
+            const pillars = {};
+            allFeedback.forEach(item => {
+                pillars[item.pillar] = (pillars[item.pillar] || 0) + 1;
+            });
+
+            const topPillar = Object.entries(pillars).sort((a, b) => b[1] - a[1])[0];
+            document.getElementById('topPillar').textContent = PILLAR_NAMES[topPillar?.[0]]?.substring(0, 10) || '-';
+        }
+
         function escapeHtml(text) {
             const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
             return text.replace(/[&<>"']/g, m => map[m]);
         }
+
+        init();
     </script>
 </body>
 </html>
