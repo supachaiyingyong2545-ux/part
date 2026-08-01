@@ -268,14 +268,15 @@
         }
 
         /* ========== TV VIEW ========== */
+        /* ========== PREMIUM TV VIEW ========== */
         .tv-view {
             width: 100vw;
             height: 100vh;
             display: none;
             flex-direction: column;
-            padding: 24px;
-            gap: 16px;
-            background: linear-gradient(135deg, var(--bg-light) 0%, #E8F4FF 50%, #F0F8FF 100%);
+            padding: 32px;
+            gap: 24px;
+            background: linear-gradient(135deg, #FFFFFF 0%, #F5FAFB 50%, #EEFCFF 100%);
             overflow: hidden;
         }
 
@@ -284,162 +285,129 @@
         }
 
         .tv-header {
-            background: linear-gradient(135deg, var(--card-white) 0%, rgba(255, 255, 255, 0.8) 100%);
-            padding: 24px;
-            border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(23, 105, 194, 0.12);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 24px;
+            text-align: center;
+            padding: 0;
         }
 
         .tv-title {
-            font-size: 48px;
-            font-weight: 700;
+            font-size: 56px;
+            font-weight: 800;
             color: var(--primary-blue);
-            margin-bottom: 4px;
+            margin: 0;
+            letter-spacing: -0.5px;
         }
 
         .tv-subtitle {
-            font-size: 16px;
+            font-size: 18px;
             color: var(--secondary-cyan);
             font-weight: 500;
+            margin: 8px 0 0 0;
         }
 
         .tv-main {
             display: flex;
-            gap: 16px;
+            gap: 28px;
             flex: 1;
             min-height: 0;
         }
 
+        /* Featured Card Section (70%) */
         .tv-content {
             flex: 1;
-            background: var(--card-white);
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 8px 24px rgba(23, 105, 194, 0.12);
+            background: white;
+            border-radius: 24px;
+            padding: 48px 40px;
+            box-shadow: 0 20px 60px rgba(23, 105, 194, 0.15);
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            border: 2px solid rgba(56, 189, 248, 0.1);
         }
 
-        .content-title {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--primary-blue);
-            padding-bottom: 16px;
-            border-bottom: 3px solid var(--bg-light);
-            margin-bottom: 16px;
+        .tv-content::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
         }
 
         .content-area {
             flex: 1;
-            overflow-y: auto;
-            display: none;
+            display: flex !important;
+            flex-direction: column;
+            justify-content: center;
+            gap: 32px;
+            position: relative;
+            z-index: 1;
         }
 
         .content-area.active {
+            display: flex !important;
+        }
+
+        .featured-icon {
+            font-size: 64px;
+            line-height: 1;
+        }
+
+        .featured-text {
+            font-size: 42px;
+            font-weight: 700;
+            color: var(--text-dark);
+            line-height: 1.4;
+            letter-spacing: -0.5px;
+        }
+
+        .featured-meta {
             display: flex;
-            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 24px;
+            flex-wrap: wrap;
+            font-size: 15px;
+        }
+
+        .featured-author {
+            color: var(--secondary-cyan);
+            font-weight: 600;
+        }
+
+        .featured-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: var(--mint-green);
+            color: white;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .featured-time {
+            color: #999;
+            font-size: 14px;
+        }
+
+        .featured-pillar {
+            display: inline-block;
+            padding: 8px 16px;
+            background: rgba(23, 105, 194, 0.1);
+            color: var(--primary-blue);
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 13px;
         }
 
         .comment-wall {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 16px;
-            overflow-y: auto;
-        }
-
-        .feedback-card {
-            background: linear-gradient(135deg, #F8FBFF 0%, var(--card-white) 100%);
-            border: 2px solid #E0E7FF;
-            border-radius: 12px;
-            padding: 18px;
-            box-shadow: 0 4px 12px rgba(23, 105, 194, 0.08);
-            animation: slideInCard 0.4s ease-out;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .feedback-card.is-new {
-            border: 2px solid var(--secondary-cyan);
-            background: linear-gradient(135deg, #E0F2FE 0%, var(--card-white) 100%);
-            grid-column: span 2;
-            padding: 24px;
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 12px;
-        }
-
-        .card-badges {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            flex: 1;
-        }
-
-        .card-pillar {
-            display: inline-block;
-            padding: 6px 12px;
-            background: var(--bg-light);
-            color: var(--primary-blue);
-            font-size: 11px;
-            font-weight: 700;
-            border-radius: 6px;
-        }
-
-        .card-staff-type {
-            display: inline-block;
-            padding: 6px 12px;
-            background: rgba(255, 181, 71, 0.1);
-            color: var(--accent-orange);
-            font-size: 11px;
-            font-weight: 700;
-            border-radius: 6px;
-        }
-
-        .card-author {
-            font-size: 12px;
-            color: #999;
-            font-weight: 500;
-        }
-
-        .card-text {
-            font-size: 15px;
-            line-height: 1.6;
-            color: var(--text-dark);
-        }
-
-        .card-footer {
-            font-size: 12px;
-            color: #999;
-            padding-top: 12px;
-            border-top: 1px solid #E0E7FF;
-        }
-
-        .word-cloud {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 20px;
-            padding: 24px;
-        }
-
-        .word-tag {
-            background: linear-gradient(135deg, var(--secondary-cyan), var(--mint-green));
-            color: white;
-            padding: 12px 24px;
-            border-radius: 24px;
-            font-weight: 700;
-            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.2);
+            display: none;
         }
 
         .top-ideas-list {
@@ -447,93 +415,43 @@
             flex-direction: column;
             gap: 12px;
             overflow-y: auto;
+            max-height: 100%;
         }
 
-        .top-idea-item {
-            background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
-            border-left: 5px solid var(--accent-orange);
-            padding: 18px;
-            border-radius: 8px;
-            display: flex;
-            gap: 16px;
+        .word-cloud {
+            display: none;
         }
 
-        .top-idea-rank {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--accent-orange);
-            color: white;
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            font-weight: 700;
-            font-size: 24px;
-            flex-shrink: 0;
+        .content-title {
+            display: none;
         }
 
-        .top-idea-content {
-            flex: 1;
-        }
-
-        .top-idea-text {
-            font-size: 16px;
-            line-height: 1.6;
-            color: var(--text-dark);
-            margin-bottom: 8px;
-        }
-
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-        }
-
-        .summary-item {
-            background: linear-gradient(135deg, var(--bg-light) 0%, #E8F4FF 100%);
-            padding: 24px;
-            border-radius: 12px;
-            border-left: 5px solid var(--mint-green);
-        }
-
-        .summary-label {
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--primary-blue);
-            text-transform: uppercase;
-            margin-bottom: 12px;
-        }
-
-        .summary-content {
-            font-size: 16px;
-            line-height: 1.6;
-            color: var(--text-dark);
-        }
-
+        /* Sidebar Stats (30%) */
         .tv-sidebar {
-            width: 240px;
+            width: 320px;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 20px;
         }
 
         .qr-box {
-            background: var(--card-white);
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 8px 24px rgba(23, 105, 194, 0.12);
+            background: white;
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: 0 12px 40px rgba(23, 105, 194, 0.1);
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 16px;
+            gap: 20px;
             text-align: center;
+            border: 2px solid rgba(56, 189, 248, 0.08);
         }
 
         .qr-code {
-            width: 180px;
-            height: 180px;
-            background: var(--bg-light);
-            border-radius: 8px;
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, #F0F8FF 0%, #F5FAFB 100%);
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -541,53 +459,69 @@
             color: var(--secondary-cyan);
             font-weight: 700;
             overflow: hidden;
+            border: 2px solid rgba(56, 189, 248, 0.2);
+            box-shadow: inset 0 2px 8px rgba(23, 105, 194, 0.05);
         }
 
         .qr-text {
             font-size: 13px;
             font-weight: 600;
             color: var(--text-dark);
-            line-height: 1.4;
+            line-height: 1.5;
         }
 
         .scientist {
             font-size: 48px;
-            animation: float 3s ease-in-out infinite;
         }
 
-        .tv-footer {
-            background: var(--card-white);
-            padding: 16px 24px;
-            border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(23, 105, 194, 0.12);
-        }
-
+        /* Stats Cards */
         .stats {
             display: flex;
-            justify-content: space-around;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 32px;
+            flex-direction: column;
+            gap: 16px;
         }
 
         .stat-item {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
             align-items: center;
-            gap: 6px;
+            box-shadow: 0 8px 24px rgba(23, 105, 194, 0.08);
+            border: 1px solid rgba(56, 189, 248, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(23, 105, 194, 0.12);
         }
 
         .stat-label {
-            font-size: 12px;
+            font-size: 13px;
             color: #999;
             text-transform: uppercase;
             font-weight: 700;
+            letter-spacing: 0.5px;
         }
 
         .stat-value {
             font-size: 32px;
-            font-weight: 700;
+            font-weight: 800;
             color: var(--primary-blue);
+        }
+
+        .tv-footer {
+            background: white;
+            padding: 20px 24px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(23, 105, 194, 0.08);
+            border: 1px solid rgba(56, 189, 248, 0.1);
+            text-align: center;
+            font-size: 13px;
+            color: #999;
+            font-weight: 500;
         }
 
         .empty-state {
@@ -597,17 +531,39 @@
             height: 100%;
             text-align: center;
             color: #999;
-            font-size: 20px;
+            font-size: 18px;
         }
 
         @keyframes slideInCard {
             from {
                 opacity: 0;
-                transform: translateY(10px) scale(0.95);
+                transform: translateY(20px) scale(0.95);
             }
             to {
                 opacity: 1;
                 transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(30px);
             }
         }
 
@@ -619,6 +575,10 @@
         @keyframes float {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-10px); }
+        }
+
+        .content-area {
+            animation: fadeInScale 0.6s ease-out;
         }
 
         ::-webkit-scrollbar {
@@ -928,69 +888,59 @@
 
     <!-- TV VIEW - NEW DESIGN -->
     <div class="tv-view active" id="tvView">
-        <!-- Background decorative elements -->
-        <div class="tv-background">
-            <svg class="bg-decoration" viewBox="0 0 1920 1080">
-                <defs>
-                    <pattern id="dots" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
-                        <circle cx="40" cy="40" r="3" fill="rgba(56, 189, 248, 0.1)"/>
-                    </pattern>
-                </defs>
-                <rect width="1920" height="1080" fill="url(#dots)"/>
-                <path d="M 100 200 Q 400 100 700 150 T 1300 200" stroke="rgba(56, 189, 248, 0.15)" stroke-width="2" fill="none"/>
-                <path d="M 150 800 Q 450 900 750 850 T 1350 800" stroke="rgba(56, 189, 248, 0.15)" stroke-width="2" fill="none"/>
-            </svg>
-        </div>
+        <!-- HEADER -->
+        <header class="tv-header">
+            <div class="tv-title">DMSc CONNECT 2026</div>
+            <div class="tv-subtitle">ร่วมแสดงความคิดเห็น เชื่อมโยงสู่การเปลี่ยนแปลง</div>
+        </header>
 
-        <!-- Main content -->
-        <div class="tv-container">
-            <!-- HEADER -->
-            <header class="tv-header-new">
-                <div class="header-left">
-                    <h1 class="tv-title-new">DMSc CONNECT 2026</h1>
-                    <p class="tv-subtitle-new">ร่วมแสดงความคิดเห็น เชื่อมโยงสู่การเปลี่ยนแปลง</p>
+        <!-- MAIN CONTENT: Featured Card + Sidebar -->
+        <div class="tv-main">
+            <!-- Featured Card Section (70%) -->
+            <div class="tv-content">
+                <div class="content-area active">
+                    <div class="empty-state">รอความคิดเห็น...</div>
                 </div>
-            </header>
-
-            <!-- Daily question -->
-            <section class="daily-question">
-                <h2 id="dailyQuestion">วันนี้ คุณอยากเห็นการเปลี่ยนแปลงอะไร?</h2>
-            </section>
-
-            <!-- Feedback cards container -->
-            <div class="feedback-container" id="feedbackContainer">
-                <div class="empty-state">รอความคิดเห็น...</div>
             </div>
 
-            <!-- Top right section: Button + QR + Mascot -->
-            <div class="top-right-section">
-                <button class="scan-button">สแกนเพื่อร่วมแสดงความคิดเห็น</button>
-                <div class="qr-section">
+            <!-- Sidebar Stats (30%) -->
+            <aside class="tv-sidebar">
+                <!-- QR Code Box -->
+                <div class="qr-box">
                     <div class="qr-code" id="qrCode">📱 QR</div>
+                    <div class="qr-text">
+                        สแกนเพื่อร่วมแสดง<br>ความคิดเห็น
+                    </div>
+                    <div class="scientist">👨‍🔬</div>
                 </div>
-                <div class="mascot">👨‍🔬</div>
-            </div>
+
+                <!-- Stats Cards -->
+                <div class="stats">
+                    <div class="stat-item">
+                        <div>
+                            <div class="stat-label">👥 ผู้เข้าร่วม</div>
+                            <div class="stat-value" id="participantsCount">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div>
+                            <div class="stat-label">💬 ความคิดเห็น</div>
+                            <div class="stat-value" id="feedbackCount">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div>
+                            <div class="stat-label">❤️ ถูกใจ</div>
+                            <div class="stat-value" id="likesCount">0</div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
         </div>
 
-        <!-- FOOTER STATS -->
-        <footer class="tv-footer-new">
-            <div class="footer-stats">
-                <div class="footer-stat">
-                    <div class="stat-icon">👥</div>
-                    <div class="stat-value" id="participantsCount">0</div>
-                    <div class="stat-label">ผู้เข้าร่วม</div>
-                </div>
-                <div class="footer-stat">
-                    <div class="stat-icon">💬</div>
-                    <div class="stat-value" id="feedbackCount">0</div>
-                    <div class="stat-label">ความคิดเห็น</div>
-                </div>
-                <div class="footer-stat">
-                    <div class="stat-icon">❤️</div>
-                    <div class="stat-value" id="likesCount">0</div>
-                    <div class="stat-label">ถูกใจ</div>
-                </div>
-            </div>
+        <!-- FOOTER -->
+        <footer class="tv-footer">
+            ✨ ระบบระดมความคิดเห็นแบบ Real-time — DMSc CONNECT 2026
         </footer>
     </div>
 
@@ -1201,29 +1151,35 @@
         }
 
         function renderFeedbackCards() {
-            const container = document.getElementById('feedbackContainer');
+            const contentArea = document.querySelector('.content-area');
+            if (!contentArea) {
+                console.error('Content area not found');
+                return;
+            }
+
             if (allFeedback.length === 0) {
-                container.innerHTML = '<div class="empty-state">รอความคิดเห็น...</div>';
+                contentArea.innerHTML = '<div class="empty-state">รอความคิดเห็น...</div>';
                 return;
             }
 
             const icons = ['🔬', '💊', '⚙️', '🍴', '🌿', '🏥'];
+            const featured = allFeedback[0];
+            const iconIndex = 0 % icons.length;
+            const timeAgo = getTimeAgo(featured.timestamp);
 
-            container.innerHTML = allFeedback.slice(0, 20).map((item, i) => {
-                const iconIndex = i % icons.length;
-                const timeAgo = getTimeAgo(item.timestamp);
+            // Extract pillar name
+            const pillarName = featured.pillar || 'ไม่ระบุ';
 
-                return `
-                    <div class="feedback-card-new">
-                        <div class="card-icon-new">${icons[iconIndex]}</div>
-                        <p class="card-text-new">${escapeHtml(item.text)}</p>
-                        <div class="card-meta-new">
-                            <span class="card-time">${timeAgo}</span>
-                            <span class="card-likes">❤️ 0</span>
-                        </div>
-                    </div>
-                `;
-            }).join('');
+            contentArea.innerHTML = `
+                <div class="featured-icon">${icons[iconIndex]}</div>
+                <div class="featured-text">${escapeHtml(featured.text)}</div>
+                <div class="featured-meta">
+                    <span class="featured-author">👤 ${escapeHtml(featured.author || 'Anonymous')}</span>
+                    <span class="featured-badge">${escapeHtml(featured.staffType || 'ไม่ระบุ')}</span>
+                    <span class="featured-pillar">${escapeHtml(pillarName.substring(0, 30))}</span>
+                    <span class="featured-time">${timeAgo}</span>
+                </div>
+            `;
         }
 
         function getTimeAgo(timestamp) {
