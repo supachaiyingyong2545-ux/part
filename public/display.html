@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DMSc CONNECT 2026 — Display</title>
+    <link rel="stylesheet" href="css/display.css">
+</head>
+<body>
+    <div class="display-container">
+        <!-- Header -->
+        <header class="display-header">
+            <div class="header-content">
+                <h1 class="display-title">DMSc CONNECT 2026</h1>
+                <p class="display-subtitle">Idea Network — เครือข่ายความคิด</p>
+            </div>
+            <div class="header-info">
+                <p id="currentQuestion">ร่วมแสดงความคิดเห็น และเชื่อมโยงทุกความคิด</p>
+            </div>
+        </header>
+
+        <!-- Main Display Area -->
+        <div class="display-main">
+            <!-- Display Modes Container -->
+            <div id="displayContainer" class="display-content">
+                <!-- Mode 1: Live Comment Wall -->
+                <div id="liveWall" class="display-mode active">
+                    <div class="mode-title">💬 ความคิดเห็นล่าสุด</div>
+                    <div id="commentWall" class="comment-wall">
+                        <div class="empty-state">
+                            <p>รอความคิดเห็นจากผู้เข้าร่วม...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mode 2: Idea Bubbles -->
+                <div id="bubbleNetwork" class="display-mode" style="display: none;">
+                    <div class="mode-title">🔗 เครือข่ายความคิด</div>
+                    <div id="bubbleContainer" class="bubble-container">
+                        <svg id="networkSvg" class="network-svg" viewBox="0 0 1920 1000"></svg>
+                    </div>
+                </div>
+
+                <!-- Mode 3: Word Cloud -->
+                <div id="wordCloudMode" class="display-mode" style="display: none;">
+                    <div class="mode-title">☁️ เมฆคำสำคัญ</div>
+                    <div id="wordCloud" class="word-cloud">
+                        <div class="empty-state">
+                            <p>รอความคิดเห็นเพื่อสร้างเมฆคำ...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mode 4: Top Ideas -->
+                <div id="topIdeasMode" class="display-mode" style="display: none;">
+                    <div class="mode-title">⭐ ความคิดเห็นยอดนิยม</div>
+                    <div id="topIdeasList" class="top-ideas-list">
+                        <div class="empty-state">
+                            <p>ยังไม่มีความคิดเห็นยอดนิยม</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mode 5: Summary Stats -->
+                <div id="summaryMode" class="display-mode" style="display: none;">
+                    <div class="mode-title">📊 สรุปสถิติ</div>
+                    <div id="summaryStats" class="summary-stats">
+                        <div class="empty-state">
+                            <p>รอการอัปเดตข้อมูล...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Sidebar: QR Code -->
+            <aside class="sidebar">
+                <div class="qr-section">
+                    <div id="qrCode" class="qr-code">
+                        <div class="qr-placeholder">
+                            <p>QR Code</p>
+                            <p style="font-size: 10px;">ใช้ qrcode.js</p>
+                        </div>
+                    </div>
+                    <p class="qr-text">สแกนเพื่อร่วมแสดงความคิดเห็น</p>
+                    <div class="scientist-icon">👨‍🔬</div>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Footer Stats -->
+        <footer class="display-footer">
+            <div class="stats-row">
+                <div class="stat">
+                    <span class="stat-label">ผู้เข้าร่วม</span>
+                    <span class="stat-value" id="totalParticipants">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">ความคิดเห็น</span>
+                    <span class="stat-value" id="totalFeedback">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">ความเห็นยอดนิยม</span>
+                    <span class="stat-value" id="topLiked">0</span>
+                </div>
+                <div class="tagline">สแกน แสดงความคิดเห็น และร่วมสร้างอนาคตไปด้วยกัน</div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- QR Code Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="js/display.js"></script>
+</body>
+</html>

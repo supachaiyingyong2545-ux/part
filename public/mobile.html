@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DMSc CONNECT 2026 — ส่งความคิดเห็น</title>
+    <link rel="stylesheet" href="css/mobile.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo-section">
+                <h1 class="title">DMSc CONNECT</h1>
+                <p class="subtitle">2026 — Idea Network</p>
+            </div>
+            <p class="tagline">ทุกความคิดเห็น เชื่อมโยงสู่การเปลี่ยนแปลง</p>
+        </header>
+
+        <!-- Main Question -->
+        <section class="question-section">
+            <h2 class="main-question">คิดอะไรอยู่? แชร์ความเห็นของคุณสู่เครือข่าย</h2>
+            <p class="question-subtitle">ความคิดเห็นของคุณมีคุณค่า และจะช่วยสร้างอนาคต DMSc</p>
+        </section>
+
+        <!-- Feedback Form -->
+        <form id="feedbackForm" class="feedback-form">
+            <!-- Feedback Text -->
+            <div class="form-group">
+                <label for="feedbackText">ความคิดเห็นของคุณ</label>
+                <textarea
+                    id="feedbackText"
+                    name="feedbackText"
+                    placeholder="เขียนความคิดเห็นของคุณ..."
+                    required
+                    maxlength="500"
+                ></textarea>
+                <div class="char-count">
+                    <span id="charCounter">0</span> / 500
+                </div>
+            </div>
+
+            <!-- Category Selection -->
+            <div class="form-group">
+                <label for="category">หมวดหมู่</label>
+                <select id="category" name="category" required>
+                    <option value="">-- เลือกหมวดหมู่ --</option>
+                    <option value="research">🔬 วิจัย</option>
+                    <option value="innovation">💡 นวัตกรรม</option>
+                    <option value="service">🏥 บริการ</option>
+                    <option value="network">🌐 เครือข่าย</option>
+                    <option value="other">⭐ อื่น ๆ</option>
+                </select>
+            </div>
+
+            <!-- Author Name -->
+            <div class="form-group">
+                <label for="author">ชื่อของคุณ (ตัวเลือก)</label>
+                <div class="author-options">
+                    <input
+                        type="text"
+                        id="author"
+                        name="author"
+                        placeholder="ชื่อเล่นหรือชื่อจริง"
+                        maxlength="30"
+                    >
+                    <button type="button" class="anonymous-btn" id="anonBtn">ไม่ระบุชื่อ</button>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="submit-btn" id="submitBtn">
+                <span class="btn-text">ส่งความคิดเห็น</span>
+                <span class="btn-icon">→</span>
+            </button>
+        </form>
+
+        <!-- Feedback Message -->
+        <div id="feedbackMessage" class="feedback-message" style="display: none;">
+            <div class="message-content">
+                <p class="message-icon">✨</p>
+                <p class="message-text">ความคิดเห็นของคุณกำลังเดินทางขึ้นสู่หน้าจอ...</p>
+                <p class="message-hint">ตรวจสอบจอใหญ่ในงาน</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>สแกน QR Code ถ้ากลับมา หรือแชร์กับเพื่อน</p>
+            <div class="participant-count">
+                <span id="participantCount">0</span> ผู้เข้าร่วม | <span id="feedbackCount">0</span> ความคิดเห็น
+            </div>
+        </footer>
+    </div>
+
+    <script src="js/mobile.js"></script>
+</body>
+</html>
