@@ -27,21 +27,23 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background: linear-gradient(135deg, var(--bg-light) 0%, #E8F4FF 100%);
             color: var(--text-dark);
-            height: 100vh;
-            overflow: hidden;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
         }
 
-        /* ========== MOBILE VIEW ========== */
-        .mobile-container {
+        /* ========== MOBILE FORM ========== */
+        .mobile-view {
+            min-height: 100vh;
             max-width: 480px;
             margin: 0 auto;
-            height: 100vh;
             padding: 16px;
-            overflow-y: auto;
+            padding-bottom: 40px;
             display: none;
         }
 
-        .mobile-container.active {
+        .mobile-view.active {
             display: block;
         }
 
@@ -50,10 +52,6 @@
             margin-bottom: 32px;
             padding: 24px 0;
             animation: slideDown 0.6s ease-out;
-        }
-
-        .logo-section {
-            margin-bottom: 16px;
         }
 
         .title {
@@ -83,7 +81,6 @@
             border-radius: var(--border-radius);
             margin-bottom: 24px;
             box-shadow: var(--shadow);
-            animation: fadeIn 0.6s ease-out 0.2s both;
         }
 
         .main-question {
@@ -97,10 +94,6 @@
             font-size: 13px;
             color: #666;
             line-height: 1.4;
-        }
-
-        .feedback-form {
-            animation: fadeIn 0.6s ease-out 0.4s both;
         }
 
         .form-group {
@@ -199,7 +192,6 @@
             gap: 8px;
             transition: all 0.3s;
             box-shadow: 0 4px 12px rgba(23, 105, 194, 0.25);
-            animation: fadeIn 0.6s ease-out 0.5s both;
         }
 
         .submit-btn:active {
@@ -207,7 +199,7 @@
             transform: scale(0.98);
         }
 
-        .feedback-message {
+        .success-message {
             position: fixed;
             top: 0;
             left: 0;
@@ -218,10 +210,9 @@
             align-items: center;
             justify-content: center;
             z-index: 1000;
-            animation: fadeIn 0.3s ease-out;
         }
 
-        .feedback-message.show {
+        .success-message.show {
             display: flex;
         }
 
@@ -260,21 +251,22 @@
             font-weight: 600;
         }
 
-        /* ========== DISPLAY VIEW ========== */
-        .display-container {
+        /* ========== TV DISPLAY ========== */
+        .tv-view {
             width: 100vw;
             height: 100vh;
             display: none;
             flex-direction: column;
             padding: 24px;
             gap: 16px;
+            background: linear-gradient(135deg, var(--bg-light) 0%, #E8F4FF 100%);
         }
 
-        .display-container.active {
+        .tv-view.active {
             display: flex;
         }
 
-        .display-header {
+        .tv-header {
             background: linear-gradient(135deg, var(--card-white) 0%, rgba(255, 255, 255, 0.8) 100%);
             padding: 20px 24px;
             border-radius: var(--border-radius);
@@ -285,27 +277,27 @@
             gap: 24px;
         }
 
-        .display-title {
-            font-size: 36px;
+        .tv-title {
+            font-size: 48px;
             font-weight: 700;
             color: var(--primary-blue);
             margin-bottom: 4px;
         }
 
-        .display-subtitle {
-            font-size: 14px;
+        .tv-subtitle {
+            font-size: 16px;
             color: var(--secondary-cyan);
             font-weight: 500;
         }
 
-        .display-main {
+        .tv-main {
             display: flex;
             gap: 16px;
             flex: 1;
             min-height: 0;
         }
 
-        .display-content {
+        .tv-content {
             flex: 1;
             background: var(--card-white);
             border-radius: var(--border-radius);
@@ -314,18 +306,18 @@
             overflow: hidden;
         }
 
-        .mode-title {
-            font-size: 18px;
+        .content-title {
+            font-size: 24px;
             font-weight: 700;
             color: var(--primary-blue);
-            padding-bottom: 12px;
+            padding-bottom: 16px;
             border-bottom: 2px solid var(--bg-light);
             margin-bottom: 16px;
         }
 
         .comment-wall {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 16px;
             overflow-y: auto;
             height: 100%;
@@ -335,114 +327,126 @@
             background: linear-gradient(135deg, #F8FBFF 0%, var(--card-white) 100%);
             border: 2px solid #E0E7FF;
             border-radius: 12px;
-            padding: 16px;
+            padding: 20px;
             box-shadow: 0 4px 12px rgba(23, 105, 194, 0.08);
             animation: slideInCard 0.4s ease-out;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
         .card-header {
             display: flex;
             justify-content: space-between;
-            align-items: start;
-            margin-bottom: 8px;
+            align-items: flex-start;
+            gap: 12px;
         }
 
         .card-badges {
             display: flex;
             gap: 8px;
+            flex-wrap: wrap;
         }
 
-        .card-category {
+        .card-pillar {
             display: inline-block;
-            padding: 4px 8px;
+            padding: 6px 12px;
             background: var(--bg-light);
             color: var(--primary-blue);
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 700;
             border-radius: 6px;
         }
 
         .card-staff-type {
             display: inline-block;
-            padding: 4px 8px;
+            padding: 6px 12px;
             background: rgba(255, 181, 71, 0.1);
             color: var(--accent-orange);
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 700;
             border-radius: 6px;
         }
 
         .card-author {
-            font-size: 12px;
+            font-size: 13px;
             color: #999;
             font-weight: 500;
         }
 
         .card-text {
-            font-size: 15px;
-            line-height: 1.5;
+            font-size: 16px;
+            line-height: 1.6;
             color: var(--text-dark);
-            margin: 8px 0;
         }
 
         .card-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 8px;
-            padding-top: 8px;
-            border-top: 1px solid #E0E7FF;
             font-size: 12px;
             color: #999;
+            padding-top: 12px;
+            border-top: 1px solid #E0E7FF;
         }
 
-        .sidebar {
-            width: 200px;
+        .tv-sidebar {
+            width: 220px;
             display: flex;
             flex-direction: column;
             gap: 16px;
         }
 
-        .qr-section {
+        .qr-box {
             background: var(--card-white);
             border-radius: var(--border-radius);
-            padding: 20px;
+            padding: 24px;
             box-shadow: var(--shadow);
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 12px;
+            gap: 16px;
             text-align: center;
         }
 
         .qr-code {
-            width: 160px;
-            height: 160px;
+            width: 180px;
+            height: 180px;
             background: var(--bg-light);
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 10px;
+            font-size: 12px;
             color: var(--secondary-cyan);
+            font-weight: 700;
         }
 
-        .display-footer {
+        .qr-text {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-dark);
+            line-height: 1.4;
+        }
+
+        .scientist {
+            font-size: 48px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .tv-footer {
             background: var(--card-white);
             padding: 16px 24px;
             border-radius: var(--border-radius);
             box-shadow: var(--shadow);
         }
 
-        .stats-row {
+        .stats {
             display: flex;
             justify-content: space-around;
             align-items: center;
             flex-wrap: wrap;
-            gap: 24px;
+            gap: 32px;
         }
 
-        .stat {
+        .stat-item {
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -450,7 +454,7 @@
         }
 
         .stat-label {
-            font-size: 12px;
+            font-size: 13px;
             color: #999;
             text-transform: uppercase;
             font-weight: 700;
@@ -458,7 +462,7 @@
         }
 
         .stat-value {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: 700;
             color: var(--primary-blue);
         }
@@ -470,7 +474,7 @@
             height: 100%;
             text-align: center;
             color: #999;
-            font-size: 16px;
+            font-size: 18px;
         }
 
         @keyframes slideDown {
@@ -513,351 +517,281 @@
             }
         }
 
-        @media (max-width: 1024px) {
-            .display-main {
-                flex-direction: column;
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
             }
-
-            .sidebar {
-                width: 100%;
-            }
-
-            .comment-wall {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            }
-        }
-
-        @media (max-width: 360px) {
-            .title {
-                font-size: 28px;
-            }
-            .submit-btn {
-                font-size: 14px;
+            50% {
+                transform: translateY(-10px);
             }
         }
 
         ::-webkit-scrollbar {
-            width: 6px;
+            width: 8px;
         }
 
         ::-webkit-scrollbar-track {
             background: var(--bg-light);
-            border-radius: 10px;
         }
 
         ::-webkit-scrollbar-thumb {
             background: var(--secondary-cyan);
-            border-radius: 10px;
+            border-radius: 4px;
         }
     </style>
 </head>
 <body>
-    <!-- ========== MOBILE VIEW ========== -->
-    <div class="mobile-container" id="mobileContainer">
+    <!-- MOBILE FORM -->
+    <div class="mobile-view" id="mobileView">
         <header class="header">
-            <div class="logo-section">
+            <div>
                 <h1 class="title">DMSc CONNECT</h1>
                 <p class="subtitle">2026 — Idea Network</p>
+                <p class="tagline">ทุกความคิดเห็น เชื่อมโยงสู่การเปลี่ยนแปลง</p>
             </div>
-            <p class="tagline">ทุกความคิดเห็น เชื่อมโยงสู่การเปลี่ยนแปลง</p>
         </header>
 
         <section class="question-section">
-            <h2 class="main-question">คิดอะไรอยู่? แชร์ความเห็นของคุณสู่เครือข่าย</h2>
-            <p class="question-subtitle">ความคิดเห็นของคุณมีคุณค่า และจะช่วยสร้างอนาคต DMSc</p>
+            <h2 class="main-question">คิดอะไรอยู่? แชร์ความเห็นของคุณ</h2>
+            <p class="question-subtitle">ความคิดเห็นของคุณมีคุณค่า</p>
         </section>
 
-        <form id="feedbackForm" class="feedback-form">
+        <form id="feedbackForm">
             <div class="form-group">
                 <label for="feedbackText">ความคิดเห็นของคุณ</label>
-                <textarea
-                    id="feedbackText"
-                    name="feedbackText"
-                    placeholder="เขียนความคิดเห็นของคุณ..."
-                    required
-                    maxlength="500"
-                ></textarea>
-                <div class="char-count">
-                    <span id="charCounter">0</span> / 500
-                </div>
+                <textarea id="feedbackText" placeholder="เขียนความคิดเห็น..." maxlength="500" required></textarea>
+                <div class="char-count"><span id="charCounter">0</span> / 500</div>
             </div>
 
             <div class="form-group">
-                <label for="pillar">เสาหลัก (Pillar)</label>
-                <select id="pillar" name="pillar" required>
-                    <option value="">-- เลือกเสาหลัก --</option>
-                    <option value="pillar1">🔬 เสาหลัก 1: ตรวจวินิจฉัยโรค</option>
-                    <option value="pillar2">💊 เสาหลัก 2: ชีววัคซีน</option>
-                    <option value="pillar3">⚙️ เสาหลัก 3: มาตรฐานเครื่องมือแพทย์</option>
-                    <option value="pillar4">🍴 เสาหลัก 4: อาหารใหม่</option>
-                    <option value="pillar5">🌿 เสาหลัก 5: สมุนไพรไทย</option>
-                    <option value="pillar6">🏥 เสาหลัก 6: ท่องเที่ยวสุขภาพ</option>
+                <label for="pillar">เสาหลัก</label>
+                <select id="pillar" required>
+                    <option value="">-- เลือก --</option>
+                    <option value="pillar1">🔬 Pillar 1: ตรวจวินิจฉัยโรค</option>
+                    <option value="pillar2">💊 Pillar 2: ชีววัคซีน</option>
+                    <option value="pillar3">⚙️ Pillar 3: มาตรฐานเครื่องมือแพทย์</option>
+                    <option value="pillar4">🍴 Pillar 4: อาหารใหม่</option>
+                    <option value="pillar5">🌿 Pillar 5: สมุนไพรไทย</option>
+                    <option value="pillar6">🏥 Pillar 6: ท่องเที่ยวสุขภาพ</option>
                 </select>
             </div>
 
             <div class="form-group">
                 <label for="staffType">ประเภท</label>
-                <select id="staffType" name="staffType" required>
-                    <option value="">-- เลือกประเภท --</option>
+                <select id="staffType" required>
+                    <option value="">-- เลือก --</option>
                     <option value="internal">👔 บุคคลภายใน</option>
                     <option value="external">🌍 บุคคลภายนอก</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label for="author">ชื่อของคุณ (ตัวเลือก)</label>
+                <label for="author">ชื่อ (ตัวเลือก)</label>
                 <div class="author-options">
-                    <input
-                        type="text"
-                        id="author"
-                        name="author"
-                        placeholder="ชื่อเล่นหรือชื่อจริง"
-                        maxlength="30"
-                    >
-                    <button type="button" class="anonymous-btn" id="anonBtn">ไม่ระบุชื่อ</button>
+                    <input type="text" id="author" placeholder="ชื่อ" maxlength="30">
+                    <button type="button" class="anonymous-btn" id="anonBtn">ไม่ระบุ</button>
                 </div>
             </div>
 
-            <button type="submit" class="submit-btn" id="submitBtn">
-                <span class="btn-text">ส่งความคิดเห็น</span>
-                <span class="btn-icon">→</span>
-            </button>
+            <button type="submit" class="submit-btn">ส่งความคิดเห็น →</button>
         </form>
 
-        <div id="feedbackMessage" class="feedback-message">
+        <div id="successMessage" class="success-message">
             <div class="message-content">
                 <p class="message-icon">✨</p>
-                <p class="message-text">ความคิดเห็นของคุณกำลังเดินทางขึ้นสู่หน้าจอ...</p>
+                <p class="message-text">ความคิดเห็นของคุณถูกส่งแล้ว!</p>
             </div>
         </div>
 
         <footer class="footer">
-            <p>สแกน QR Code ถ้ากลับมา หรือแชร์กับเพื่อน</p>
-            <div class="participant-count">
-                <span id="participantCount">0</span> ผู้เข้าร่วม | <span id="feedbackCount">0</span> ความคิดเห็น
-            </div>
+            <p>สแกน QR Code เพื่อร่วมแสดงความคิดเห็น</p>
+            <div class="participant-count">ความคิดเห็น: <span id="mobileCount">0</span></div>
         </footer>
     </div>
 
-    <!-- ========== DISPLAY VIEW ========== -->
-    <div class="display-container" id="displayContainer">
-        <header class="display-header">
+    <!-- TV DISPLAY -->
+    <div class="tv-view" id="tvView">
+        <header class="tv-header">
             <div>
-                <h1 class="display-title">DMSc CONNECT 2026</h1>
-                <p class="display-subtitle">Idea Network — เครือข่ายความคิด</p>
+                <h1 class="tv-title">DMSc CONNECT 2026</h1>
+                <p class="tv-subtitle">Idea Network — เครือข่ายความคิด</p>
             </div>
         </header>
 
-        <div class="display-main">
-            <div class="display-content">
-                <div class="mode-title">💬 ความคิดเห็นล่าสุด</div>
+        <div class="tv-main">
+            <div class="tv-content">
+                <div class="content-title">💬 ความคิดเห็นล่าสุด</div>
                 <div id="commentWall" class="comment-wall">
-                    <div class="empty-state">
-                        <p>รอความคิดเห็นจากผู้เข้าร่วม...</p>
-                    </div>
+                    <div class="empty-state">รอความคิดเห็น...</div>
                 </div>
             </div>
 
-            <aside class="sidebar">
-                <div class="qr-section">
+            <aside class="tv-sidebar">
+                <div class="qr-box">
                     <div class="qr-code">📱 QR</div>
-                    <p style="font-size: 12px; font-weight: 600; color: var(--text-dark);">สแกนเพื่อร่วมแสดงความคิดเห็น</p>
-                    <p style="font-size: 40px;">👨‍🔬</p>
+                    <p class="qr-text">สแกนเพื่อแสดงความคิดเห็น</p>
+                    <p class="scientist">👨‍🔬</p>
                 </div>
             </aside>
         </div>
 
-        <footer class="display-footer">
-            <div class="stats-row">
-                <div class="stat">
-                    <span class="stat-label">ผู้เข้าร่วม</span>
-                    <span class="stat-value" id="totalParticipants">0</span>
-                </div>
-                <div class="stat">
+        <footer class="tv-footer">
+            <div class="stats">
+                <div class="stat-item">
                     <span class="stat-label">ความคิดเห็น</span>
-                    <span class="stat-value" id="totalFeedback">0</span>
+                    <span class="stat-value" id="tvCount">0</span>
                 </div>
-                <div class="stat" style="flex: 1; text-align: right;">
-                    <span class="stat-label" style="text-align: right;">สแกน แสดงความคิดเห็น และร่วมสร้างอนาคตไปด้วยกัน</span>
+                <div class="stat-item">
+                    <span class="stat-label">ร่วมสร้างอนาคตไปด้วยกัน</span>
                 </div>
             </div>
         </footer>
     </div>
 
     <script>
-        // ตรวจสอบ mode จาก URL parameter
+        // ตั้งค่า GAS URL ที่นี่
+        const GAS_URL = 'https://script.google.com/macros/d/YOUR_DEPLOYMENT_ID/usercontent';
+
+        // ตรวจสอบ URL parameter
         const params = new URLSearchParams(window.location.search);
-        const mode = params.get('mode') || 'mobile';
-        const gasUrl = params.get('gasUrl') || 'https://script.google.com/macros/d/YOUR_DEPLOYMENT_ID/usercontent';
+        const isDisplay = params.has('display') || params.get('mode') === 'display';
 
-        const mobileContainer = document.getElementById('mobileContainer');
-        const displayContainer = document.getElementById('displayContainer');
+        const mobileView = document.getElementById('mobileView');
+        const tvView = document.getElementById('tvView');
 
-        if (mode === 'display') {
-            displayContainer.classList.add('active');
+        if (isDisplay) {
+            // TV Display Mode
+            tvView.classList.add('active');
             initializeDisplay();
         } else {
-            mobileContainer.classList.add('active');
+            // Mobile Form Mode
+            mobileView.classList.add('active');
             initializeMobile();
         }
 
-        // ========== MOBILE FUNCTIONS ==========
+        // ========== MOBILE FORM ==========
         function initializeMobile() {
             const form = document.getElementById('feedbackForm');
-            const feedbackText = document.getElementById('feedbackText');
-            const charCounter = document.getElementById('charCounter');
+            const text = document.getElementById('feedbackText');
+            const counter = document.getElementById('charCounter');
             const anonBtn = document.getElementById('anonBtn');
-            const authorInput = document.getElementById('author');
-            let isAnonymous = false;
+            const author = document.getElementById('author');
+            let isAnon = false;
 
-            feedbackText.addEventListener('input', (e) => {
-                charCounter.textContent = e.target.value.length;
+            text.addEventListener('input', () => {
+                counter.textContent = text.value.length;
             });
 
             anonBtn.addEventListener('click', () => {
-                isAnonymous = !isAnonymous;
-                if (isAnonymous) {
-                    authorInput.value = '';
-                    authorInput.disabled = true;
-                    anonBtn.classList.add('active');
-                } else {
-                    authorInput.disabled = false;
-                    anonBtn.classList.remove('active');
-                }
+                isAnon = !isAnon;
+                anonBtn.classList.toggle('active');
+                author.disabled = isAnon;
+                if (isAnon) author.value = '';
             });
 
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                const text = feedbackText.value.trim();
-                const pillar = document.getElementById('pillar').value;
-                const staffType = document.getElementById('staffType').value;
-                const author = isAnonymous ? 'Anonymous' : authorInput.value || 'Anonymous';
 
-                if (!text || !pillar || !staffType) {
-                    alert('กรุณากรอกความคิดเห็น เลือกเสาหลัก และประเภท');
+                if (!text.value || !document.getElementById('pillar').value || !document.getElementById('staffType').value) {
+                    alert('กรุณากรอกข้อมูลให้ครบ');
                     return;
                 }
 
                 try {
-                    const response = await fetch(gasUrl, {
+                    const payload = {
+                        action: 'addFeedback',
+                        text: text.value,
+                        pillar: document.getElementById('pillar').value,
+                        staffType: document.getElementById('staffType').value,
+                        author: isAnon ? 'Anonymous' : author.value || 'Anonymous'
+                    };
+
+                    await fetch(GAS_URL, {
                         method: 'POST',
-                        payload: JSON.stringify({
-                            action: 'addFeedback',
-                            text: text,
-                            pillar: pillar,
-                            staffType: staffType,
-                            author: author
-                        })
+                        payload: JSON.stringify(payload)
                     });
 
-                    showSuccessMessage();
-                    form.reset();
-                    charCounter.textContent = '0';
-                    isAnonymous = false;
-                    anonBtn.classList.remove('active');
-                    authorInput.disabled = false;
+                    // แสดงข้อความสำเร็จ
+                    const msg = document.getElementById('successMessage');
+                    msg.classList.add('show');
+                    setTimeout(() => msg.classList.remove('show'), 3000);
 
-                    // อัปเดตสถิติ
-                    updateMobileStats();
+                    // รีเซ็ตฟอร์ม
+                    form.reset();
+                    counter.textContent = '0';
+                    isAnon = false;
+                    anonBtn.classList.remove('active');
+                    author.disabled = false;
+
+                    // อัปเดตจำนวน
+                    updateMobileCount();
                 } catch (error) {
                     console.error('Error:', error);
-                    alert('เกิดข้อผิดพลาด กรุณาลองใหม่');
+                    alert('เกิดข้อผิดพลาด');
                 }
             });
 
-            // อัปเดตสถิติ
-            updateMobileStats();
-            setInterval(updateMobileStats, 3000);
+            updateMobileCount();
+            setInterval(updateMobileCount, 3000);
         }
 
-        async function updateMobileStats() {
+        async function updateMobileCount() {
             try {
-                const response = await fetch(gasUrl + '?action=getAll');
-                const data = await response.json();
+                const res = await fetch(GAS_URL + '?action=getAll');
+                const data = await res.json();
                 if (data.success) {
-                    document.getElementById('participantCount').textContent = data.feedback.length;
-                    document.getElementById('feedbackCount').textContent = data.feedback.length;
+                    document.getElementById('mobileCount').textContent = data.feedback.length;
                 }
             } catch (error) {
-                console.error('Error fetching stats:', error);
+                console.error('Error:', error);
             }
         }
 
-        function showSuccessMessage() {
-            const msg = document.getElementById('feedbackMessage');
-            msg.classList.add('show');
-            setTimeout(() => msg.classList.remove('show'), 3000);
-        }
-
-        // ========== DISPLAY FUNCTIONS ==========
+        // ========== TV DISPLAY ==========
         function initializeDisplay() {
-            updateDisplayData();
-            setInterval(updateDisplayData, 2000);
+            updateDisplay();
+            setInterval(updateDisplay, 2000);
         }
 
-        async function updateDisplayData() {
+        async function updateDisplay() {
             try {
-                const response = await fetch(gasUrl + '?action=getAll');
-                const data = await response.json();
+                const res = await fetch(GAS_URL + '?action=getAll');
+                const data = await res.json();
 
                 if (data.success && data.feedback) {
-                    renderFeedbackCards(data.feedback);
-                    document.getElementById('totalFeedback').textContent = data.feedback.length;
-                    document.getElementById('totalParticipants').textContent = data.feedback.length;
+                    renderCards(data.feedback);
+                    document.getElementById('tvCount').textContent = data.feedback.length;
                 }
             } catch (error) {
-                console.error('Error fetching display data:', error);
+                console.error('Error:', error);
             }
         }
 
-        function renderFeedbackCards(feedbackList) {
+        function renderCards(feedbackList) {
             const wall = document.getElementById('commentWall');
 
             if (feedbackList.length === 0) {
-                wall.innerHTML = '<div class="empty-state"><p>รอความคิดเห็นจากผู้เข้าร่วม...</p></div>';
+                wall.innerHTML = '<div class="empty-state">รอความคิดเห็น...</div>';
                 return;
             }
 
-            const pillarEmoji = {
-                'พัฒนาศักยภาพการบริการตรวจวินิจฉัยโรคของประเทศไทย': '🔬',
-                'เสริมสร้างความเข้มแข็งและยกระดับมาตรฐานอุตสาหกรรมชีวเภสัชภัณฑ์ วัคซีน และผลิตภัณฑ์การแพทย์ขั้นสูง': '💊',
-                'พัฒนาศูนย์ทดสอบมาตรฐานเครื่องมือแพทย์ระดับชาติแบบครบวงจร': '⚙️',
-                'สนับสนุนและพัฒนาศักยภาพอุตสาหกรรมอาหารใหม่ของประเทศไทย': '🍴',
-                'ยกระดับสมุนไพรไทยสู่ยาและผลิตภัณฑ์สุขภาพระดับสากล': '🌿',
-                'สนับสนุนเส้นทางการท่องเที่ยวสุขภาพแบบครบวงจร': '🏥'
-            };
-
-            wall.innerHTML = feedbackList.map(item => {
-                const emoji = pillarEmoji[item.pillar] || '💭';
-                const staffEmoji = item.staffType === 'บุคคลภายใน' ? '👔' : '🌍';
-                const shortPillar = item.pillar.substring(0, 30) + '...';
-
-                return `
-                    <div class="feedback-card">
-                        <div class="card-header">
-                            <div class="card-badges">
-                                <span class="card-category">${emoji} ${shortPillar}</span>
-                                <span class="card-staff-type">${staffEmoji} ${item.staffType}</span>
-                            </div>
-                            <span class="card-author">${item.author}</span>
+            wall.innerHTML = feedbackList.map(item => `
+                <div class="feedback-card">
+                    <div class="card-header">
+                        <div class="card-badges">
+                            <span class="card-pillar">${item.pillar.substring(0, 25)}...</span>
+                            <span class="card-staff-type">${item.staffType}</span>
                         </div>
-                        <p class="card-text">${escapeHtml(item.text)}</p>
-                        <div class="card-footer">
-                            <span>${new Date(item.timestamp).toLocaleTimeString('th-TH')}</span>
-                        </div>
+                        <span class="card-author">${item.author}</span>
                     </div>
-                `;
-            }).join('');
+                    <p class="card-text">${escapeHtml(item.text)}</p>
+                    <div class="card-footer">${new Date(item.timestamp).toLocaleTimeString('th-TH')}</div>
+                </div>
+            `).join('');
         }
 
         function escapeHtml(text) {
-            const map = {
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#039;'
-            };
+            const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
             return text.replace(/[&<>"']/g, m => map[m]);
         }
     </script>
