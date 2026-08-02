@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DMSc Strategy Book Reader</title>
+<title>DMSc Book Reader</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@400;500;600;700&family=Noto+Sans+Thai:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -11,35 +11,27 @@
     --ink: #0d2b2b;
     --paper: #eef3ee;
     --teal: #12a594;
-    --teal-deep: #0a6e64;
     --amber: #e8a33d;
-    --red: #c74c42;
-    --line: rgba(13,43,43,0.14);
     --serif: 'Noto Serif Thai', serif;
-    --sans: 'Noto Sans Thai', sans-serif;
     --mono: 'IBM Plex Mono', monospace;
   }
 
   * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
   body {
     margin: 0;
-    background: linear-gradient(135deg, #f5f8f6 0%, #eef3ee 100%);
-    color: var(--ink);
+    background: linear-gradient(135deg, #f5f8f6, #eef3ee);
     font-family: var(--serif);
+    color: var(--ink);
     line-height: 1.8;
     min-height: 100vh;
   }
 
-  /* Book container */
-  .book-wrapper {
-    position: fixed;
-    inset: 0;
+  .container {
     display: flex;
     align-items: center;
     justify-content: center;
+    min-height: 100vh;
     padding: 20px;
-    z-index: 1;
   }
 
   .book {
@@ -47,134 +39,86 @@
     max-width: 900px;
     aspect-ratio: 16/9;
     background: var(--paper);
-    border-radius: 16px;
+    border-radius: 12px;
     box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    display: flex;
     overflow: hidden;
     position: relative;
-    display: flex;
   }
 
-  .book-page {
+  .page {
     flex: 1;
-    padding: 60px 50px;
-    overflow-y: auto;
+    padding: 50px 45px;
+    overflow: hidden;
     position: relative;
-    background: var(--paper);
   }
 
-  .book-page:nth-child(1) {
-    border-right: 1px solid var(--line);
+  .page:first-child {
+    border-right: 1px solid rgba(13,43,43,0.1);
   }
 
-  .book-page:nth-child(2) {
-    display: none;
+  .page-inner {
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
   }
 
-  @media (max-width: 768px) {
-    .book {
-      aspect-ratio: 9/16;
-      max-width: 100%;
-    }
-    .book-page {
-      padding: 40px 30px;
-    }
-    .book-page:nth-child(1) {
-      border-right: none;
-    }
-    .book-page:nth-child(2) {
-      display: none;
-    }
-  }
-
-  /* Typography */
   .page-label {
     font-family: var(--mono);
     font-size: 11px;
     letter-spacing: 0.15em;
     text-transform: uppercase;
-    color: var(--teal-deep);
-    margin-bottom: 20px;
+    color: var(--teal);
+    margin-bottom: 16px;
   }
 
-  .page-title {
-    font-size: 2rem;
-    font-weight: 700;
-    margin: 0 0 30px;
-    color: var(--ink);
-    line-height: 1.2;
-  }
-
-  .page-title.small {
+  .page h2 {
     font-size: 1.5rem;
-  }
-
-  .page-subtitle {
-    font-family: var(--sans);
-    font-size: 0.9rem;
-    color: var(--teal-deep);
-    margin: 0 0 40px;
-    letter-spacing: 0.05em;
-  }
-
-  .page-content {
-    position: relative;
-    min-height: 200px;
-  }
-
-  .page-content p {
-    margin: 0 0 16px;
-    font-size: 1.05rem;
+    font-weight: 700;
+    margin: 0 0 24px;
     color: var(--ink);
-    opacity: 0;
-    transition: opacity 0.4s ease;
   }
 
-  .page-content p.revealed {
-    opacity: 1;
+  .page p {
+    font-size: 0.95rem;
+    margin: 0 0 14px;
+    color: var(--ink);
   }
 
-  .page-content p strong {
-    color: var(--teal-deep);
-    font-weight: 600;
-  }
-
-  .page-content ul {
+  .page ul {
     list-style: none;
-    margin: 20px 0;
     padding: 0;
+    margin: 12px 0;
   }
 
-  .page-content li {
-    margin: 12px 0 12px 30px;
-    font-size: 1rem;
-    opacity: 0;
-    transition: opacity 0.4s ease;
+  .page li {
+    margin: 8px 0 8px 20px;
+    font-size: 0.9rem;
+    color: var(--ink);
     position: relative;
   }
 
-  .page-content li.revealed {
-    opacity: 1;
-  }
-
-  .page-content li::before {
+  .page li::before {
     content: "▪";
     position: absolute;
-    left: -20px;
+    left: -15px;
     color: var(--amber);
   }
 
   /* Spotlight effect */
-  .spotlight {
+  .spotlight-bar {
     position: absolute;
     left: 0;
     top: 0;
     width: 100%;
-    height: 80px;
-    background: radial-gradient(ellipse 100% 50% at 50% 0%, rgba(18,165,148,0.3) 0%, rgba(18,165,148,0.1) 40%, transparent 70%);
+    height: 70px;
+    background: radial-gradient(ellipse at 50% 50%, rgba(18,165,148,0.4) 0%, rgba(18,165,148,0.1) 40%, transparent 70%);
     pointer-events: none;
-    box-shadow: 0 0 40px rgba(18,165,148,0.4), inset 0 0 40px rgba(232,163,61,0.15);
-    border-radius: 50%;
-    filter: blur(20px);
+    box-shadow: 0 0 30px rgba(18,165,148,0.5);
+    filter: blur(15px);
+    z-index: 10;
   }
 
   /* Controls */
@@ -184,30 +128,31 @@
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 20px;
-    z-index: 10;
+    gap: 16px;
     align-items: center;
+    background: rgba(238,243,238,0.9);
+    backdrop-filter: blur(10px);
+    padding: 12px 20px;
+    border-radius: 50px;
+    border: 1px solid rgba(13,43,43,0.1);
+    z-index: 20;
   }
 
   .btn {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
-    border: 1px solid var(--line);
-    background: rgba(238, 243, 238, 0.9);
+    border: 1px solid rgba(13,43,43,0.2);
+    background: transparent;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
+    font-size: 18px;
+    color: var(--teal);
     transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
   }
 
-  .btn:hover {
+  .btn:hover:not(:disabled) {
     background: var(--teal);
     color: white;
-    border-color: var(--teal);
     transform: scale(1.1);
   }
 
@@ -216,351 +161,309 @@
     cursor: not-allowed;
   }
 
-  .btn:disabled:hover {
-    transform: scale(1);
-  }
-
-  .page-counter {
+  .page-info {
     font-family: var(--mono);
-    font-size: 13px;
-    color: var(--teal-deep);
-    min-width: 80px;
+    font-size: 12px;
+    color: var(--teal);
+    min-width: 100px;
     text-align: center;
   }
 
-  .progress-bar {
-    width: 120px;
-    height: 3px;
-    background: var(--line);
-    border-radius: 2px;
+  .progress {
+    width: 100px;
+    height: 2px;
+    background: rgba(13,43,43,0.1);
+    border-radius: 1px;
     overflow: hidden;
   }
 
-  .progress-fill {
+  .progress-bar {
     height: 100%;
     background: linear-gradient(90deg, var(--teal), var(--amber));
     width: 0%;
     transition: width 0.3s ease;
   }
 
-  /* Header info */
-  .book-header {
+  /* Header */
+  .header {
     position: fixed;
     top: 20px;
     right: 30px;
-    z-index: 20;
     text-align: right;
+    z-index: 20;
   }
 
-  .book-title {
+  .header-title {
     font-family: var(--mono);
-    font-size: 12px;
+    font-size: 11px;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--teal-deep);
-    margin-bottom: 4px;
+    color: var(--teal);
   }
 
-  .reading-status {
-    font-family: var(--sans);
-    font-size: 13px;
-    color: rgba(13,43,43,0.6);
+  .header-status {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: rgba(13,43,43,0.5);
+    margin-top: 4px;
   }
 
-  /* Animation */
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-
-  .page-title {
-    animation: fadeIn 0.6s ease 0.2s both;
-  }
-
-  .page-subtitle {
-    animation: fadeIn 0.6s ease 0.4s both;
+  @media (max-width: 768px) {
+    .book {
+      aspect-ratio: 9/12;
+    }
+    .page {
+      padding: 35px 25px;
+    }
+    .page:first-child {
+      border-right: none;
+    }
   }
 </style>
 </head>
 <body>
 
-<div class="book-header">
-  <div class="book-title">DMSc Strategy 2570–2574</div>
-  <div class="reading-status" id="readingStatus">กำลังอ่าน...</div>
+<div class="header">
+  <div class="header-title">DMSc Strategy</div>
+  <div class="header-status" id="status">Loading...</div>
 </div>
 
-<div class="book-wrapper">
+<div class="container">
   <div class="book" id="book">
-    <div class="book-page" id="page1">
-      <div class="page-label">บทนำ</div>
-      <h1 class="page-title">แผนยุทธศาสตร์<br>วิจัยและนวัตกรรม</h1>
-      <div class="page-subtitle">DMSc Research & Innovation Strategy 2027–2031</div>
-      <div class="page-content">
-        <p><strong>กรมวิทยาศาสตร์การแพทย์</strong> เป็นองค์กรหลักด้านวิทยาศาสตร์การแพทย์ของประเทศไทย</p>
-        <p>เราทำหน้าที่ศึกษาวิจัย พัฒนามาตรฐาน และตรวจวิเคราะห์ทางห้องปฏิบัติการ เพื่อคุ้มครองสุขภาพและพัฒนาคุณภาพชีวิตของประชาชน</p>
-        <p>แผนนี้ครอบคลุมการสร้างนวัตกรรมวิทยาศาสตร์การแพทย์ระดับสากล เพื่อให้เกิด <strong>ความมั่นคงทางการแพทย์และเศรษฐกิจสุขภาพ</strong> ของประเทศ</p>
-      </div>
-      <div class="spotlight" id="spotlight1"></div>
-    </div>
-
-    <div class="book-page" id="page2">
-      <div class="page-label">บทที่ 1</div>
-      <h2 class="page-title small">รู้จักกรมวิทยาศาสตร์การแพทย์</h2>
-      <div class="page-content">
-        <p><strong>องค์กรชั้นนำ</strong> ที่ให้บริการทั้งในด้าน:</p>
-        <ul>
-          <li>ตรวจวิเคราะห์และเฝ้าระวังคุณภาพผลิตภัณฑ์สุขภาพ</li>
-          <li>วิจัย พัฒนาองค์ความรู้และนวัตกรรมด้านวิทยาศาสตร์การแพทย์</li>
-          <li>กำหนดและรับรองมาตรฐานห้องปฏิบัติการและผลิตภัณฑ์</li>
-        </ul>
-        <p><strong>ทรัพยากรสำคัญ:</strong></p>
-        <ul>
-          <li>2,300+ บุคลากรผู้เชี่ยวชาญ</li>
-          <li>40 หน่วยงาน ครอบคลุมทั่วประเทศ</li>
-          <li>1,000+ เครื่องมือและห้องปฏิบัติการมาตรฐานสากล</li>
-        </ul>
-      </div>
-      <div class="spotlight" id="spotlight2"></div>
-    </div>
-
-    <div class="book-page" id="page3">
-      <div class="page-label">บทที่ 2</div>
-      <h2 class="page-title small">ภารกิจและพันธกิจ</h2>
-      <div class="page-content">
-        <p><strong>ภารกิจหลัก 5 ประการ:</strong></p>
-        <ul>
-          <li>ตรวจวิเคราะห์และเฝ้าระวังคุณภาพผลิตภัณฑ์สุขภาพ</li>
-          <li>วิจัย พัฒนาองค์ความรู้และนวัตกรรม</li>
-          <li>กำหนดและรับรองมาตรฐานห้องปฏิบัติการ</li>
-          <li>กำกับดูแลตามกฎหมาย</li>
-          <li>ถ่ายทอดองค์ความรู้และสนับสนุนระบบสุขภาพ</li>
-        </ul>
-        <p><strong>เป้าหมายสุดท้าย:</strong> เป็นองค์การชั้นนำด้านวิทยาศาสตร์การแพทย์ของเอเชีย (1 ใน 3) ภายในปี 2570</p>
-      </div>
-      <div class="spotlight" id="spotlight3"></div>
-    </div>
-
-    <div class="book-page" id="page4">
-      <div class="page-label">บทที่ 3</div>
-      <h2 class="page-title small">ทำไมเราจึงต้องก้าวไปข้างหน้า</h2>
-      <div class="page-content">
-        <p>ท้องถิ่นกำลังเผชิญกับความท้าทายใหม่ ๆ ที่ต้องการการปรับตัว:</p>
-        <ul>
-          <li><strong>สังคมสูงวัย</strong> และโรคไม่ติดต่อเรื้อรังเพิ่มขึ้น</li>
-          <li><strong>โรคอุบัติใหม่</strong> ภัยคุกคามด้านสุขภาพ</li>
-          <li><strong>ความก้าวหน้าทางเทคโนโลยี</strong> และข้อมูลสุขภาพขนาดใหญ่</li>
-          <li><strong>ความต้องการยา</strong> คุณภาพและนวัตกรรมทางการแพทย์</li>
-          <li><strong>การสนับสนุนจากรัฐบาล</strong> ต่อนโยบายสุขภาพ</li>
-        </ul>
-      </div>
-      <div class="spotlight" id="spotlight4"></div>
-    </div>
-
-    <div class="book-page" id="page5">
-      <div class="page-label">บทที่ 4</div>
-      <h2 class="page-title small">วิสัยทัศน์และเป้าหมาย</h2>
-      <div class="page-content">
-        <p><strong>วิสัยทัศน์:</strong></p>
-        <p style="font-style: italic; color: var(--red);">กรมวิทยาศาสตร์การแพทย์ เป็นองค์การชั้นนำด้านวิทยาศาสตร์การแพทย์และสาธารณสุข 1 ใน 3 ของเอเชีย ภายในปี พ.ศ. 2570</p>
-        <p><strong>เป้าประสงค์ 1:</strong> ระบบสาธารณสุขของประเทศมีศักยภาพทางห้องปฏิบัติการ เพื่อการตรวจวินิจฉัยและเฝ้าระวังภัยสุขภาพได้ทันต่อสถานการณ์</p>
-        <p><strong>เป้าประสงค์ 2:</strong> ยกระดับผลิตภัณฑ์และบริการทางการแพทย์ของไทยด้วยนวัตกรรม เพื่อขับเคลื่อนเศรษฐกิจสุขภาพ</p>
-      </div>
-      <div class="spotlight" id="spotlight5"></div>
-    </div>
-
-    <div class="book-page" id="page6">
-      <div class="page-label">บทที่ 5</div>
-      <h2 class="page-title small">เสาหลัก 1: ศักยภาพการบริการตรวจวินิจฉัย</h2>
-      <div class="page-content">
-        <p><strong>วัตถุประสงค์:</strong> เป็นห้องปฏิบัติการอ้างอิงที่แม่นยำและรวดเร็ว</p>
-        <p><strong>กิจกรรมหลัก:</strong></p>
-        <ul>
-          <li>ถอดรหัสพันธุกรรมโรคหายากและมะเร็ง</li>
-          <li>ชุดตรวจแม่นยำสูง (POCT)</li>
-          <li>ระบบตรวจวินิจฉัยและเฝ้าระวังโรคติดเชื้อ</li>
-          <li>ระบบ AI ห้องปฏิบัติการ</li>
-        </ul>
-        <p><strong>ผลลัพธ์:</strong> ชุดตรวจวินิจฉัยแบบพกพาแม่นยำสูง ระบบฐานข้อมูล AI เฝ้าระวังวัณโรค</p>
-      </div>
-      <div class="spotlight" id="spotlight6"></div>
-    </div>
-
-    <div class="book-page" id="page7">
-      <div class="page-label">บทที่ 6</div>
-      <h2 class="page-title small">เสาหลัก 2: ชีวเภสัชภัณฑ์และวัคซีน</h2>
-      <div class="page-content">
-        <p><strong>วัตถุประสงค์:</strong> สนับสนุนกระบวนการผลิตวัคซีน ชีววัตถุ และยา</p>
-        <p><strong>กิจกรรมหลัก:</strong></p>
-        <ul>
-          <li>ห้องปฏิบัติการควบคุมคุณภาพสำหรับ ATMPs</li>
-          <li>วิเคราะห์วัคซีนและชีวเภสัชภัณฑ์</li>
-          <li>ยกระดับโครงสร้างพื้นฐานชีววิทยา</li>
-        </ul>
-        <p><strong>ผลลัพธ์:</strong> ผลิตภัณฑ์ต้นแบบ NK cell therapy และ MSC cells มาตรฐานวัคซีน</p>
-      </div>
-      <div class="spotlight" id="spotlight7"></div>
-    </div>
-
-    <div class="book-page" id="page8">
-      <div class="page-label">บทที่ 7</div>
-      <h2 class="page-title small">เสาหลัก 3: มาตรฐานเครื่องมือแพทย์</h2>
-      <div class="page-content">
-        <p><strong>วัตถุประสงค์:</strong> เป็นหน่วยงานกลางด้านมาตรฐาน สนับสนุนนวัตกรรม</p>
-        <p><strong>กิจกรรมหลัก:</strong></p>
-        <ul>
-          <li>วิธีทดสอบตามมาตรฐานสากล</li>
-          <li>แบบจำลองชีววิทยา (ทดแทนสัตว์ทดลอง)</li>
-          <li>ระบบประเมินประสิทธิภาพ IVD</li>
-        </ul>
-        <p><strong>ผลลัพธ์:</strong> โครงสร้างพื้นฐานคุณภาพ NQI ห้องปฏิบัติการ Biocompatibility ตาม ISO 10993</p>
-      </div>
-      <div class="spotlight" id="spotlight8"></div>
-    </div>
-
-    <div class="book-page" id="page9">
-      <div class="page-label">บทที่ 8</div>
-      <h2 class="page-title small">เสาหลัก 4: อุตสาหกรรมอาหารใหม่</h2>
-      <div class="page-content">
-        <p><strong>วัตถุประสงค์:</strong> นวัตกรรม Future Food สู่ครัวโลก</p>
-        <p><strong>กิจกรรมหลัก:</strong></p>
-        <ul>
-          <li>วิธีตรวจวิเคราะห์สารสำคัญของอาหาร</li>
-          <li>ศูนย์ประเมินความปลอดภัยอาหารอนาคต</li>
-          <li>ฐานข้อมูลโภชนาการเพื่อการกล่าวอ้างสุขภาพ</li>
-        </ul>
-        <p><strong>ผลลัพธ์:</strong> วิธีตรวจวิเคราะห์ สารสำคัญ Positive List ประกาศกระทรวงสาธารณสุข</p>
-      </div>
-      <div class="spotlight" id="spotlight9"></div>
-    </div>
-
-    <div class="book-page" id="page10">
-      <div class="page-label">บทที่ 9</div>
-      <h2 class="page-title small">เสาหลัก 5: สมุนไพรไทยระดับสากล</h2>
-      <div class="page-content">
-        <p><strong>วัตถุประสงค์:</strong> เพิ่มมูลค่าสมุนไพรไทย</p>
-        <p><strong>กิจกรรมหลัก:</strong></p>
-        <ul>
-          <li>ตำรามาตรฐานยาสมุนไพรไทย (THP)</li>
-          <li>สารมาตรฐานด้านสมุนไพร</li>
-          <li>วิจัยพืชสมุนไพรเศรษฐกิจ</li>
-        </ul>
-        <p><strong>ผลลัพธ์:</strong> ตำรา THP 100 โมโนกราฟ นวัตกรรมสมุนไพรตอบโจทย์โรค</p>
-      </div>
-      <div class="spotlight" id="spotlight10"></div>
-    </div>
-
-    <div class="book-page" id="page11">
-      <div class="page-label">บทที่ 10</div>
-      <h2 class="page-title small">เสาหลัก 6: การท่องเที่ยวสุขภาพ</h2>
-      <div class="page-content">
-        <p><strong>วัตถุประสงค์:</strong> เพิ่มมูลค่าธุรกิจท่องเที่ยว</p>
-        <p><strong>กิจกรรมหลัก:</strong></p>
-        <ul>
-          <li>มาตรฐานห้องปฏิบัติการคลินิก Wellness Center</li>
-          <li>เฝ้าระวังด้านอาหาร ผลิตภัณฑ์สุขภาพ สิ่งแวดล้อม</li>
-        </ul>
-        <p><strong>ผลลัพธ์:</strong> ระบบมาตรฐานห้องปฏิบัติการ Wellness ที่ EEC, AWC, Herbal City</p>
-      </div>
-      <div class="spotlight" id="spotlight11"></div>
-    </div>
-
-    <div class="book-page" id="page12">
-      <div class="page-label">บทสรุป</div>
-      <h1 class="page-title small">เชื่อมโยงทุกความคิด</h1>
-      <div class="page-subtitle">ร่วมสร้างอนาคตวิทยาศาสตร์การแพทย์</div>
-      <div class="page-content">
-        <p><strong>เส้นทางการขับเคลื่อน 2570–2574:</strong></p>
-        <ul>
-          <li><strong>Phase 1 (2570):</strong> เตรียมโครงสร้างพื้นฐาน</li>
-          <li><strong>Phase 2 (2571):</strong> ขยายเครือข่าย เพิ่มศักยภาพ</li>
-          <li><strong>Phase 3 (2572):</strong> ประสานความสำเร็จ ปรับปรุง</li>
-          <li><strong>Phase 4 (2573–2574):</strong> บรรลุวิสัยทัศน์ ยอมรับระดับสากล</li>
-        </ul>
-        <p style="margin-top: 24px; font-style: italic; color: var(--teal-deep);">เชื่อมเครือข่าย · ขับเคลื่อนวิจัยและนวัตกรรม · สู่การมีอายุยืนยาวอย่างมีสุขภาพดี</p>
-      </div>
-      <div class="spotlight" id="spotlight12"></div>
-    </div>
+    <!-- Pages generated by JavaScript -->
   </div>
 </div>
 
 <div class="controls">
-  <button class="btn" id="prevBtn" title="หน้าก่อนหน้า">←</button>
-  <div class="page-counter"><span id="pageNum">1</span> / <span id="pageTotal">12</span></div>
-  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-  <button class="btn" id="nextBtn" title="หน้าถัดไป">→</button>
+  <button class="btn" id="prevBtn">←</button>
+  <div class="page-info"><span id="pageNum">1</span> / <span id="pageTotal">12</span></div>
+  <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+  <button class="btn" id="nextBtn">→</button>
 </div>
 
 <script>
-  const book = document.getElementById('book');
-  let currentPageIndex = 0;
-  const totalPages = 12;
-  const pageElements = Array.from(document.querySelectorAll('.book-page'));
+  const pages = [
+    {
+      label: 'บทนำ',
+      title: 'แผนยุทธศาสตร์วิจัยและนวัตกรรม',
+      content: [
+        '<strong>กรมวิทยาศาสตร์การแพทย์</strong> เป็นองค์กรหลักด้านวิทยาศาสตร์การแพทย์ของประเทศไทย',
+        'เราทำหน้าที่ศึกษาวิจัย พัฒนามาตรฐาน และตรวจวิเคราะห์ทางห้องปฏิบัติการ เพื่อคุ้มครองสุขภาพของประชาชน',
+        'แผนนี้ครอบคลุมการสร้างนวัตกรรมวิทยาศาสตร์การแพทย์ระดับสากล เพื่อให้เกิด <strong>ความมั่นคงทางการแพทย์และเศรษฐกิจสุขภาพ</strong>'
+      ]
+    },
+    {
+      label: 'บทที่ 1',
+      title: 'รู้จักกรมวิทยาศาสตร์การแพทย์',
+      content: [
+        '<strong>องค์กรชั้นนำ</strong> ให้บริการด้าน:',
+        'ตรวจวิเคราะห์และเฝ้าระวังคุณภาพผลิตภัณฑ์สุขภาพ',
+        'วิจัย พัฒนาองค์ความรู้และนวัตกรรม',
+        'กำหนดและรับรองมาตรฐานห้องปฏิบัติการ',
+        '<strong>ทรัพยากรสำคัญ:</strong>',
+        '2,300+ บุคลากรผู้เชี่ยวชาญ',
+        '40 หน่วยงาน ครอบคลุมทั่วประเทศ',
+        '1,000+ เครื่องมือและห้องปฏิบัติการ'
+      ]
+    },
+    {
+      label: 'บทที่ 2',
+      title: 'ภารกิจและพันธกิจ',
+      content: [
+        '<strong>ภารกิจหลัก 5 ประการ:</strong>',
+        'ตรวจวิเคราะห์และเฝ้าระวังคุณภาพผลิตภัณฑ์สุขภาพ',
+        'วิจัย พัฒนาองค์ความรู้และนวัตกรรม',
+        'กำหนดและรับรองมาตรฐาน',
+        'กำกับดูแลตามกฎหมาย',
+        'ถ่ายทอดองค์ความรู้สนับสนุนระบบสุขภาพ',
+        '<strong>เป้าหมาย:</strong> เป็นองค์การชั้นนำของเอเชีย (1 ใน 3) ภายในปี 2570'
+      ]
+    },
+    {
+      label: 'บทที่ 3',
+      title: 'ทำไมต้องก้าวไปข้างหน้า',
+      content: [
+        'ท้องถิ่นกำลังเผชิญกับความท้าทายใหม่ ๆ:',
+        '<strong>สังคมสูงวัย</strong> และโรคไม่ติดต่อเรื้อรังเพิ่มขึ้น',
+        '<strong>โรคอุบัติใหม่</strong> และภัยคุกคามด้านสุขภาพ',
+        '<strong>ความก้าวหน้าทางเทคโนโลยี</strong> และข้อมูลสุขภาพขนาดใหญ่',
+        '<strong>ความต้องการยา</strong> คุณภาพและนวัตกรรมทางการแพทย์',
+        '<strong>การสนับสนุนจากรัฐบาล</strong> ต่อนโยบายสุขภาพ'
+      ]
+    },
+    {
+      label: 'บทที่ 4',
+      title: 'วิสัยทัศน์และเป้าหมาย',
+      content: [
+        '<strong>วิสัยทัศน์:</strong>',
+        'กรมวิทยาศาสตร์การแพทย์ เป็นองค์การชั้นนำ 1 ใน 3 ของเอเชีย ปี 2570',
+        '<strong>เป้าประสงค์ 1:</strong> ระบบสาธารณสุขมีศักยภาพตรวจวินิจฉัยและเฝ้าระวังภัย',
+        '<strong>เป้าประสงค์ 2:</strong> ยกระดับผลิตภัณฑ์ไทยด้วยนวัตกรรมไปสู่เศรษฐกิจสุขภาพ'
+      ]
+    },
+    {
+      label: 'เสาหลัก 1',
+      title: 'ศักยภาพการบริการตรวจวินิจฉัย',
+      content: [
+        '<strong>วัตถุประสงค์:</strong> เป็นห้องปฏิบัติการอ้างอิงที่แม่นยำและรวดเร็ว',
+        '<strong>กิจกรรมหลัก:</strong>',
+        'ถอดรหัสพันธุกรรมโรคหายากและมะเร็ง',
+        'ชุดตรวจแม่นยำสูง (POCT)',
+        'ระบบตรวจวินิจฉัยและเฝ้าระวังโรคติดเชื้อ',
+        'ระบบ AI ห้องปฏิบัติการ'
+      ]
+    },
+    {
+      label: 'เสาหลัก 2',
+      title: 'ชีวเภสัชภัณฑ์และวัคซีน',
+      content: [
+        '<strong>วัตถุประสงค์:</strong> สนับสนุนกระบวนการผลิตวัคซีนและชีววัตถุ',
+        '<strong>กิจกรรมหลัก:</strong>',
+        'ห้องปฏิบัติการควบคุมคุณภาพ ATMPs',
+        'วิเคราะห์วัคซีนและชีวเภสัชภัณฑ์',
+        'ยกระดับโครงสร้างพื้นฐาน',
+        '<strong>ผลลัพธ์:</strong> NK cell therapy, MSC cells, มาตรฐานวัคซีน'
+      ]
+    },
+    {
+      label: 'เสาหลัก 3',
+      title: 'มาตรฐานเครื่องมือแพทย์',
+      content: [
+        '<strong>วัตถุประสงค์:</strong> หน่วยงานกลางด้านมาตรฐาน',
+        '<strong>กิจกรรมหลัก:</strong>',
+        'วิธีทดสอบตามมาตรฐานสากล',
+        'แบบจำลองชีววิทยา ทดแทนสัตว์ทดลอง',
+        'ระบบประเมินประสิทธิภาพ IVD',
+        '<strong>ผลลัพธ์:</strong> NQI ครอบคลุม 22 กลุ่ม ISO 10993'
+      ]
+    },
+    {
+      label: 'เสาหลัก 4',
+      title: 'อุตสาหกรรมอาหารใหม่',
+      content: [
+        '<strong>วัตถุประสงค์:</strong> นวัตกรรม Future Food สู่ครัวโลก',
+        '<strong>กิจกรรมหลัก:</strong>',
+        'วิธีตรวจวิเคราะห์สารสำคัญของอาหาร',
+        'ศูนย์ประเมินความปลอดภัยอาหาร',
+        'ฐานข้อมูลโภชนาการเพื่อกล่าวอ้างสุขภาพ',
+        '<strong>ผลลัพธ์:</strong> Positive List ประกาศกระทรวง'
+      ]
+    },
+    {
+      label: 'เสาหลัก 5',
+      title: 'สมุนไพรไทยระดับสากล',
+      content: [
+        '<strong>วัตถุประสงค์:</strong> เพิ่มมูลค่าสมุนไพรไทย',
+        '<strong>กิจกรรมหลัก:</strong>',
+        'ตำรามาตรฐานยาสมุนไพรไทย (THP)',
+        'สารมาตรฐานด้านสมุนไพร',
+        'วิจัยพืชสมุนไพรเศรษฐกิจ',
+        '<strong>ผลลัพธ์:</strong> ตำรา THP 100 โมโนกราฟ'
+      ]
+    },
+    {
+      label: 'เสาหลัก 6',
+      title: 'การท่องเที่ยวสุขภาพ',
+      content: [
+        '<strong>วัตถุประสงค์:</strong> เพิ่มมูลค่าธุรกิจท่องเที่ยว',
+        '<strong>กิจกรรมหลัก:</strong>',
+        'มาตรฐานห้องปฏิบัติการคลินิก Wellness Center',
+        'เฝ้าระวังอาหาร ผลิตภัณฑ์สุขภาพ สิ่งแวดล้อม',
+        '<strong>ผลลัพธ์:</strong> ระบบ Wellness ที่ EEC, AWC, Herbal City'
+      ]
+    },
+    {
+      label: 'บทสรุป',
+      title: 'เชื่อมโยงทุกความคิด',
+      content: [
+        '<strong>เส้นทางการขับเคลื่อน 2570–2574:</strong>',
+        '<strong>Phase 1 (2570):</strong> เตรียมโครงสร้างพื้นฐาน',
+        '<strong>Phase 2 (2571):</strong> ขยายเครือข่าย เพิ่มศักยภาพ',
+        '<strong>Phase 3 (2572):</strong> ประสานความสำเร็จ ปรับปรุง',
+        '<strong>Phase 4 (2573–2574):</strong> บรรลุวิสัยทัศน์ สากล',
+        '<em>เชื่อมเครือข่าย · ขับเคลื่อนวิจัยและนวัตกรรม · สู่อายุยืนยาวอย่างมีสุขภาพดี</em>'
+      ]
+    }
+  ];
 
-  // Show only current page spread
-  function updateBookDisplay() {
-    pageElements.forEach((page, i) => {
-      page.style.display = i === currentPageIndex ? 'block' : 'none';
-    });
+  let currentPage = 0;
 
-    document.getElementById('pageNum').textContent = currentPageIndex + 1;
-    document.getElementById('progressFill').style.width = ((currentPageIndex + 1) / totalPages * 100) + '%';
-    document.getElementById('prevBtn').disabled = currentPageIndex === 0;
-    document.getElementById('nextBtn').disabled = currentPageIndex === totalPages - 1;
-    document.getElementById('readingStatus').textContent = `หน้า ${currentPageIndex + 1} จาก ${totalPages}`;
+  function renderPages() {
+    const book = document.getElementById('book');
+    book.innerHTML = '';
 
-    // Trigger reading animation for current page
-    triggerReadingAnimation();
+    // Create 2 pages for spread view
+    for (let i = 0; i < 2; i++) {
+      const pageIdx = currentPage + i;
+      const pageData = pages[pageIdx];
+
+      const pageDiv = document.createElement('div');
+      pageDiv.className = 'page';
+
+      if (pageData) {
+        let contentHTML = `
+          <div class="page-inner">
+            <div class="page-label">${pageData.label}</div>
+            <h2>${pageData.title}</h2>
+            ${pageData.content.map(line => {
+              if (line.startsWith('<')) {
+                return `<p>${line}</p>`;
+              }
+              return `<p>${line}</p>`;
+            }).join('')}
+          </div>
+          <div class="spotlight-bar"></div>
+        `;
+        pageDiv.innerHTML = contentHTML;
+      }
+
+      book.appendChild(pageDiv);
+    }
+
+    document.getElementById('pageNum').textContent = currentPage + 1;
+    document.getElementById('pageTotal').textContent = pages.length;
+    document.getElementById('status').textContent = `หน้า ${currentPage + 1}`;
+    document.getElementById('progressBar').style.width = ((currentPage + 1) / pages.length * 100) + '%';
+
+    document.getElementById('prevBtn').disabled = currentPage === 0;
+    document.getElementById('nextBtn').disabled = currentPage >= pages.length - 2;
+
+    // Animate spotlight
+    animateSpotlight();
   }
 
-  // Spotlight reading animation
-  function triggerReadingAnimation() {
-    const currentPage = pageElements[currentPageIndex];
-    const spotlight = currentPage.querySelector('.spotlight');
-    const paragraphs = currentPage.querySelectorAll('p, li');
+  function animateSpotlight() {
+    const spotlights = document.querySelectorAll('.spotlight-bar');
+    spotlights.forEach((spotlight, pageIdx) => {
+      const page = spotlight.closest('.page');
+      const pageHeight = page.offsetHeight;
 
-    // Reset all text opacity
-    paragraphs.forEach(el => {
-      el.classList.remove('revealed');
-      el.style.opacity = '0';
+      // Animate spotlight from top to bottom
+      let position = -70;
+      const speed = 2;
+      const interval = setInterval(() => {
+        position += speed;
+        spotlight.style.transform = `translateY(${position}px)`;
+
+        if (position > pageHeight) {
+          clearInterval(interval);
+          spotlight.style.opacity = '0.2';
+        }
+      }, 30);
     });
-
-    if (!spotlight) return;
-
-    // Animate spotlight down and reveal text
-    let delay = 0;
-    paragraphs.forEach((el, i) => {
-      setTimeout(() => {
-        el.classList.add('revealed');
-
-        // Move spotlight
-        const rect = el.getBoundingClientRect();
-        const pageRect = currentPage.getBoundingClientRect();
-        const relativeTop = rect.top - pageRect.top + currentPage.scrollTop;
-        spotlight.style.transform = `translateY(${relativeTop}px)`;
-      }, delay);
-      delay += 150;
-    });
-
-    // Hide spotlight after reading
-    setTimeout(() => {
-      spotlight.style.opacity = '0.3';
-    }, delay + 500);
   }
 
-  // Navigation
   document.getElementById('nextBtn').addEventListener('click', () => {
-    if (currentPageIndex < totalPages - 1) {
-      currentPageIndex++;
-      updateBookDisplay();
-      window.scrollTo(0, 0);
+    if (currentPage < pages.length - 2) {
+      currentPage += 2;
+      renderPages();
     }
   });
 
   document.getElementById('prevBtn').addEventListener('click', () => {
-    if (currentPageIndex > 0) {
-      currentPageIndex--;
-      updateBookDisplay();
-      window.scrollTo(0, 0);
+    if (currentPage > 0) {
+      currentPage -= 2;
+      renderPages();
     }
   });
 
@@ -570,8 +473,7 @@
     if (e.key === 'ArrowLeft') document.getElementById('prevBtn').click();
   });
 
-  // Initialize
-  updateBookDisplay();
+  renderPages();
 </script>
 
 </body>
