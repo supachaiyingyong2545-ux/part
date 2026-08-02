@@ -200,6 +200,85 @@
   .pillar-band{ padding:64px 0; }
   .pillar-band:nth-of-type(even){ background:var(--paper-2); }
 
+  /* ---------- video intro ---------- */
+  .video-intro{
+    position:relative; margin-top:48px; border-radius:16px; overflow:hidden;
+    aspect-ratio:16/9; background:linear-gradient(135deg, var(--teal-deep), var(--teal));
+    display:flex; align-items:center; justify-content:center; cursor:pointer;
+  }
+  .video-intro:hover .play-btn{ transform:scale(1.15); }
+  .play-btn{
+    width:80px; height:80px; border-radius:50%;
+    background:rgba(255,255,255,0.95);
+    display:flex; align-items:center; justify-content:center;
+    transition:transform 0.3s ease;
+    box-shadow:0 12px 32px rgba(0,0,0,0.2);
+  }
+  .play-btn::after{
+    content:""; width:0; height:0;
+    border-left:28px solid var(--teal-deep);
+    border-top:18px solid transparent;
+    border-bottom:18px solid transparent;
+    margin-left:6px;
+  }
+  .video-intro-text{ position:absolute; bottom:24px; left:24px; color:white; }
+  .video-intro-text p{ margin:0; font-size:0.95rem; opacity:0.9; }
+  .video-intro-text .label{ font-family:var(--mono); font-size:12px; text-transform:uppercase; letter-spacing:0.1em; opacity:0.8; margin-bottom:8px; }
+
+  /* ---------- interactive pillar cards ---------- */
+  .pillar-toggle-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-top:48px; margin-bottom:48px; }
+  @media (max-width:640px){ .pillar-toggle-grid{ grid-template-columns:1fr; } }
+  .pillar-card{
+    border:1px solid var(--line); border-radius:12px; padding:20px; cursor:pointer;
+    transition:all 0.3s ease; background:rgba(255,255,255,0.6);
+  }
+  .pillar-card:hover{ border-color:var(--teal); background:rgba(18,165,148,0.06); }
+  .pillar-card-header{ display:flex; justify-content:space-between; align-items:flex-start; }
+  .pillar-card-num{ font-family:var(--grotesk); font-size:2rem; font-weight:700; color:var(--teal); }
+  .pillar-card-title{ font-size:1.1rem; font-weight:600; color:var(--ink); margin-bottom:4px; max-width:75%; }
+  .pillar-card-toggle{
+    width:32px; height:32px; border-radius:6px; border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center; font-size:18px;
+    transition:all 0.3s ease;
+  }
+  .pillar-card.is-open .pillar-card-toggle{ background:var(--teal); color:white; border-color:var(--teal); transform:rotate(180deg); }
+  .pillar-card-content{ max-height:0; overflow:hidden; transition:max-height 0.4s ease; }
+  .pillar-card.is-open .pillar-card-content{ max-height:800px; }
+  .pillar-card-content-inner{ padding-top:16px; border-top:1px solid var(--line); }
+  .pillar-card-content p{ font-size:0.95rem; margin:0 0 12px; color:rgba(13,43,43,0.8); }
+
+  /* ---------- timeline ---------- */
+  .timeline{ position:relative; margin-top:48px; padding:40px 0; }
+  .timeline::before{
+    content:""; position:absolute; left:50%; top:0; bottom:0; width:2px;
+    background:linear-gradient(180deg, var(--teal), var(--amber));
+    @media (max-width:768px){ left:20px; }
+  }
+  .timeline-items{ display:flex; flex-direction:column; gap:48px; }
+  .timeline-item{
+    display:grid; grid-template-columns:1fr 1fr; gap:32px; position:relative;
+    @media (max-width:768px){ grid-template-columns:1fr; padding-left:60px; }
+  }
+  .timeline-item:nth-child(even) .timeline-content{ grid-column:2; @media (max-width:768px){ grid-column:1; } }
+  .timeline-marker{
+    position:absolute; left:calc(50% - 16px); top:0; width:32px; height:32px;
+    border-radius:50%; background:var(--teal); border:4px solid var(--paper);
+    box-shadow:0 0 0 8px rgba(18,165,148,0.1);
+    @media (max-width:768px){ left:-24px; }
+  }
+  .timeline-content{
+    padding:24px; border:1px solid var(--line); border-radius:12px;
+    background:rgba(255,255,255,0.5); opacity:0; transform:translateY(20px);
+    animation:slideIn 0.6s ease-out forwards;
+  }
+  .timeline-item:nth-child(1) .timeline-content{ animation-delay:0.1s; }
+  .timeline-item:nth-child(2) .timeline-content{ animation-delay:0.2s; }
+  .timeline-item:nth-child(3) .timeline-content{ animation-delay:0.3s; }
+  .timeline-item:nth-child(4) .timeline-content{ animation-delay:0.4s; }
+  @keyframes slideIn{ from{ opacity:0; transform:translateY(20px); } to{ opacity:1; transform:translateY(0); } }
+  .timeline-year{ font-family:var(--grotesk); font-size:1.4rem; font-weight:700; color:var(--teal-deep); margin-bottom:8px; }
+  .timeline-desc{ font-size:0.95rem; color:rgba(13,43,43,0.8); line-height:1.6; }
+
   /* ---------- closing ---------- */
   .closing{ text-align:left; padding:140px 0 160px; }
   .closing .display{ margin-bottom:24px; }
@@ -234,15 +313,29 @@
     <div class="scroll-cue">เลื่อนลงเพื่อฟังชีพจร <span class="arrow">↓</span></div>
   </section>
 
+  <!-- VIDEO INTRO -->
+  <section id="video-section" style="padding:80px 0;">
+    <div class="eyebrow">Introduction</div>
+    <h2 class="reveal">คำนำจากผู้บริหาร</h2>
+    <div class="video-intro reveal d1" id="videoIntro">
+      <div class="play-btn"></div>
+      <div class="video-intro-text">
+        <div class="label">DMSc Strategy Overview</div>
+        <p>รู้จักแผนยุทธศาสตร์วิจัยและนวัตกรรมในอีก 5 นาที</p>
+      </div>
+    </div>
+    <p class="reveal d2" style="margin-top:24px; font-size:0.9rem; color:rgba(13,43,43,0.6);">กดเพื่อฟังเสียงบรรยายจากปัญญาประดิษฐ์ (AI voice narration)</p>
+  </section>
+
   <!-- 01 WELCOME -->
   <section id="s1">
     <div class="eyebrow">01 · Welcome</div>
     <h2 class="reveal">รู้จักกรมวิทยาศาสตร์การแพทย์</h2>
     <p class="reveal d1">องค์กรหลักด้านวิทยาศาสตร์การแพทย์ ทำหน้าที่ศึกษาวิจัย พัฒนามาตรฐาน และตรวจวิเคราะห์ทางห้องปฏิบัติการ เพื่อคุ้มครองสุขภาพและพัฒนาคุณภาพชีวิตของประชาชน ครอบคลุมด้านผลิตภัณฑ์สุขภาพ การชันสูตรโรค และความปลอดภัยทางอาหารและยา</p>
     <div class="stat-grid">
-      <div class="stat reveal d1"><div class="stat-num">2,300<span style="font-size:1.2rem;">+</span></div><div class="stat-label">บุคลากร (คน)</div></div>
-      <div class="stat reveal d2"><div class="stat-num">40</div><div class="stat-label">หน่วยงาน ครอบคลุมทั่วประเทศ</div></div>
-      <div class="stat reveal d3"><div class="stat-num">1,000<span style="font-size:1.2rem;">+</span></div><div class="stat-label">เครื่องมือและห้องปฏิบัติการมาตรฐานสากล</div></div>
+      <div class="stat reveal d1"><div class="stat-num" data-counter="2300">0</div><div class="stat-label">บุคลากร (คน)</div></div>
+      <div class="stat reveal d2"><div class="stat-num" data-counter="40">0</div><div class="stat-label">หน่วยงาน ครอบคลุมทั่วประเทศ</div></div>
+      <div class="stat reveal d3"><div class="stat-num" data-counter="1000">0<span style="font-size:1.2rem;">+</span></div><div class="stat-label">เครื่องมือและห้องปฏิบัติการมาตรฐานสากล</div></div>
       <div class="stat reveal d4"><div class="stat-num">∞</div><div class="stat-label">เครือข่ายครอบคลุมทั้งในและต่างประเทศ</div></div>
     </div>
   </section>
@@ -290,6 +383,44 @@
     </div>
   </section>
 
+  <!-- TIMELINE -->
+  <section id="timeline-section" style="padding:100px 0;">
+    <div class="eyebrow">Strategic Roadmap</div>
+    <h2 class="reveal">เส้นทางการขับเคลื่อน 2570–2574</h2>
+    <div class="timeline">
+      <div class="timeline-items">
+        <div class="timeline-item">
+          <div class="timeline-marker"></div>
+          <div class="timeline-content">
+            <div class="timeline-year">2570 (2027)</div>
+            <div class="timeline-desc"><strong>Phase 1: Foundation</strong><br>เตรียมโครงสร้างพื้นฐาน พัฒนาระบบบริหารจัดการวิจัยและนวัตกรรม</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-marker"></div>
+          <div class="timeline-content">
+            <div class="timeline-year">2571 (2028)</div>
+            <div class="timeline-desc"><strong>Phase 2: Acceleration</strong><br>ขยายเครือข่าย เปิดห้องปฏิบัติการใหม่ เพิ่มศักยภาพบุคลากร</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-marker"></div>
+          <div class="timeline-content">
+            <div class="timeline-year">2572 (2029)</div>
+            <div class="timeline-desc"><strong>Phase 3: Consolidation</strong><br>ประสานความสำเร็จของเสาหลัก 6 ด้าน ปรับปรุงตามผลประเมิน</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-marker"></div>
+          <div class="timeline-content">
+            <div class="timeline-year">2573–2574 (2030–2031)</div>
+            <div class="timeline-desc"><strong>Phase 4: Recognition</strong><br>บรรลุวิสัยทัศน์ — องค์การชั้นนำด้านวิทยาศาสตร์การแพทย์ 1 ใน 3 ของเอเชีย</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- 05 MISSION GRID -->
   <section id="s5">
     <div class="eyebrow">05 · Mission</div>
@@ -303,8 +434,119 @@
     </div>
   </section>
 
+  <!-- PILLAR INTERACTIVE GRID -->
+  <section id="s6">
+    <div class="eyebrow">06 · Strategic Pillars Overview</div>
+    <h2 class="reveal">เสาหลักยุทธศาสตร์วิจัยและนวัตกรรม (6 ด้าน)</h2>
+    <p class="reveal d1" style="margin-bottom:32px; color:rgba(13,43,43,0.7);">คลิกแต่ละการ์ดเพื่อดูรายละเอียด กิจกรรม และผลลัพธ์</p>
+
+    <div class="pillar-toggle-grid">
+      <div class="pillar-card reveal d1">
+        <div class="pillar-card-header">
+          <div>
+            <div class="pillar-card-num">01</div>
+            <div class="pillar-card-title">พัฒนาศักยภาพการบริการตรวจวินิจฉัย</div>
+          </div>
+          <div class="pillar-card-toggle">+</div>
+        </div>
+        <div class="pillar-card-content">
+          <div class="pillar-card-content-inner">
+            <p><strong>วัตถุประสงค์:</strong> เป็นห้องปฏิบัติการอ้างอิงที่แม่นยำ รวดเร็ว สำหรับระบบสาธารณสุขของประเทศ</p>
+            <p><strong>กิจกรรมหลัก:</strong> ถอดรหัสพันธุกรรม ชุดตรวจแม่นยำสูง (POCT) ระบบเฝ้าระวังโรค AI ห้องปฏิบัติการ</p>
+            <p><strong>ผลลัพธ์:</strong> ชุดตรวจวินิจฉัยแบบพกพา ระบบ AI เฝ้าระวังวัณโรค</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pillar-card reveal d2">
+        <div class="pillar-card-header">
+          <div>
+            <div class="pillar-card-num">02</div>
+            <div class="pillar-card-title">ชีวเภสัชภัณฑ์ วัคซีน ผลิตภัณฑ์การแพทย์</div>
+          </div>
+          <div class="pillar-card-toggle">+</div>
+        </div>
+        <div class="pillar-card-content">
+          <div class="pillar-card-content-inner">
+            <p><strong>วัตถุประสงค์:</strong> สนับสนุนกระบวนการผลิตวัคซีน ชีววัตถุ และยาที่จำเป็น</p>
+            <p><strong>กิจกรรมหลัก:</strong> ห้องปฏิบัติการ ATMPs วิเคราะห์วัคซีน ยกระดับโครงสร้างพื้นฐาน</p>
+            <p><strong>ผลลัพธ์:</strong> NK cell therapy MSC cells มาตรฐานวัคซีน</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pillar-card reveal d3">
+        <div class="pillar-card-header">
+          <div>
+            <div class="pillar-card-num">03</div>
+            <div class="pillar-card-title">ศูนย์ทดสอบมาตรฐานเครื่องมือแพทย์</div>
+          </div>
+          <div class="pillar-card-toggle">+</div>
+        </div>
+        <div class="pillar-card-content">
+          <div class="pillar-card-content-inner">
+            <p><strong>วัตถุประสงค์:</strong> หน่วยงานกลางด้านมาตรฐาน สนับสนุนนวัตกรรมเครื่องมือแพทย์</p>
+            <p><strong>กิจกรรมหลัก:</strong> วิธีทดสอบตามมาตรฐานสากล แบบจำลองชีววิทยา ทดสอบ IVD</p>
+            <p><strong>ผลลัพธ์:</strong> NQI ครอบคลุม 22 กลุ่ม Biocompatibility ตาม ISO 10993</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pillar-card reveal d4">
+        <div class="pillar-card-header">
+          <div>
+            <div class="pillar-card-num">04</div>
+            <div class="pillar-card-title">อุตสาหกรรมอาหารใหม่ Future Food</div>
+          </div>
+          <div class="pillar-card-toggle">+</div>
+        </div>
+        <div class="pillar-card-content">
+          <div class="pillar-card-content-inner">
+            <p><strong>วัตถุประสงค์:</strong> นวัตกรรม Future Food สู่ครัวโลกด้วยความปลอดภัยห้องปฏิบัติการ</p>
+            <p><strong>กิจกรรมหลัก:</strong> วิธีตรวจวิเคราะห์สารสำคัญ ศูนย์ประเมินความปลอดภัยอาหาร</p>
+            <p><strong>ผลลัพธ์:</strong> วิธีตรวจวิเคราะห์สารสำคัญ ฐานข้อมูล Positive List</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pillar-card reveal d5">
+        <div class="pillar-card-header">
+          <div>
+            <div class="pillar-card-num">05</div>
+            <div class="pillar-card-title">ยกระดับสมุนไพรไทยระดับสากล</div>
+          </div>
+          <div class="pillar-card-toggle">+</div>
+        </div>
+        <div class="pillar-card-content">
+          <div class="pillar-card-content-inner">
+            <p><strong>วัตถุประสงค์:</strong> เพิ่มมูลค่าสมุนไพรไทยสู่การยอมรับระดับสากล</p>
+            <p><strong>กิจกรรมหลัก:</strong> ตำรา THP สารมาตรฐาน วิจัยพืชเศรษฐกิจ</p>
+            <p><strong>ผลลัพธ์:</strong> ตำรา THP 100 โมโนกราฟ นวัตกรรมสมุนไพร</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pillar-card reveal d6">
+        <div class="pillar-card-header">
+          <div>
+            <div class="pillar-card-num">06</div>
+            <div class="pillar-card-title">การท่องเที่ยวสุขภาพแบบครบวงจร</div>
+          </div>
+          <div class="pillar-card-toggle">+</div>
+        </div>
+        <div class="pillar-card-content">
+          <div class="pillar-card-content-inner">
+            <p><strong>วัตถุประสงค์:</strong> เพิ่มมูลค่าธุรกิจท่องเที่ยวด้วยกระบวนการห้องปฏิบัติการ</p>
+            <p><strong>กิจกรรมหลัก:</strong> มาตรฐานห้องปฏิบัติการคลินิก เฝ้าระวังสิ่งแวดล้อม</p>
+            <p><strong>ผลลัพธ์:</strong> มาตรฐาน Wellness ห้องปฏิบัติการ EEC/AWC/Herbal City</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- PILLAR SECTIONS -->
-  <div class="eyebrow" style="max-width:920px;margin:0 auto;padding:60px 28px 0 64px;">06 · เสาหลักยุทธศาสตร์วิจัยและนวัตกรรม 6 ด้าน</div>
+  <div class="eyebrow" style="max-width:920px;margin:0 auto;padding:60px 28px 0 64px;">Detailed Pillar Overview</div>
 
   <!-- PILLAR 1 -->
   <section class="pillar-band" data-bpm="84">
@@ -527,6 +769,69 @@
     });
   }, { threshold:0.4 });
   bpmSections.forEach(el=>bpmObserver.observe(el));
+
+  // Counter animation for stats
+  function animateCounter(el, target, duration = 1500) {
+    let current = 0;
+    const increment = target / (duration / 16);
+    const timer = setInterval(() => {
+      current += increment;
+      if (current >= target) {
+        current = target;
+        clearInterval(timer);
+      }
+      el.textContent = Math.floor(current).toLocaleString('th-TH');
+    }, 16);
+  }
+
+  const counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.target.dataset.counter) {
+        const target = parseInt(e.target.dataset.counter, 10);
+        animateCounter(e.target, target);
+        counterObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.5 });
+
+  document.querySelectorAll('[data-counter]').forEach(el => counterObserver.observe(el));
+
+  // Interactive pillar cards
+  document.querySelectorAll('.pillar-card').forEach(card => {
+    card.addEventListener('click', () => {
+      card.classList.toggle('is-open');
+    });
+  });
+
+  // Video intro with AI voice
+  const videoIntro = document.getElementById('videoIntro');
+  if (videoIntro) {
+    videoIntro.addEventListener('click', () => {
+      playIntroNarration();
+    });
+  }
+
+  function playIntroNarration() {
+    const script = `กรมวิทยาศาสตร์การแพทย์ มีวิสัยทัศน์ที่ชัดเจน คือ การเป็นองค์การชั้นนำด้านวิทยาศาสตร์การแพทย์และสาธารณสุข หนึ่งในสามขององค์กรดังกล่าวของเอเชีย ภายในปีพ.ศ. 2570
+
+    แผนยุทธศาสตร์วิจัยและนวัตกรรมนี้ ครอบคลุมหกเสาหลัก ได้แก่ การพัฒนาศักยภาพการบริการตรวจวินิจฉัยโรค การเสริมสร้างความเข้มแข็งทางชีวเภสัชภัณฑ์ การพัฒนาศูนย์ทดสอบมาตรฐานเครื่องมือแพทย์ การสนับสนุนอุตสาหกรรมอาหารใหม่ การยกระดับสมุนไพรไทย และการสนับสนุนการท่องเที่ยวสุขภาพ
+
+    ทั้งหมดนี้ เพื่อสร้างความมั่นคงทางการแพทย์ สุขภาพ และเศรษฐกิจสุขภาพของประเทศไทย`;
+
+    if ('speechSynthesis' in window) {
+      speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(script);
+      utterance.lang = 'th-TH';
+      utterance.rate = 0.9;
+      utterance.pitch = 1;
+      speechSynthesis.speak(utterance);
+
+      videoIntro.style.opacity = '0.7';
+      utterance.onend = () => { videoIntro.style.opacity = '1'; };
+    } else {
+      alert('Text-to-Speech ไม่รองรับในเบราว์เซอร์นี้ สามารถใช้เบราว์เซอร์ Chrome, Edge, Safari หรือ Firefox เพื่อฟังเสียงบรรยาย');
+    }
+  }
 </script>
 
 </body>
