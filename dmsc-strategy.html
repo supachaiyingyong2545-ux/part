@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>แผนยุทธศาสตร์วิจัยและนวัตกรรม DMSc 2570–2574</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@400;600;700&family=Noto+Sans+Thai:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0d2b2b;
+    --paper:#eef3ee;
+    --paper-2:#e2ebe4;
+    --teal:#12a594;
+    --teal-deep:#0a6e64;
+    --amber:#e8a33d;
+    --red:#c74c42;
+    --line:rgba(13,43,43,0.14);
+    --mono: 'IBM Plex Mono', monospace;
+    --grotesk: 'Space Grotesk', sans-serif;
+    --thai-serif: 'Noto Serif Thai', serif;
+    --thai-sans: 'Noto Sans Thai', sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--thai-sans);
+    line-height:1.7;
+    overflow-x:hidden;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important;}
+  }
+
+  /* ---------- background texture ---------- */
+  .grid-bg{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size:56px 56px;
+    opacity:0.5;
+    mask-image:radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 90%);
+  }
+
+  /* ---------- pulse rail (signature element) ---------- */
+  .pulse-rail{
+    position:fixed;
+    left:18px; top:0; bottom:0;
+    width:3px;
+    z-index:40;
+    background:rgba(13,43,43,0.12);
+    border-radius:3px;
+  }
+  .pulse-rail-fill{
+    position:absolute; left:0; top:0; width:100%;
+    height:0%;
+    background:linear-gradient(180deg, var(--teal), var(--teal-deep));
+    border-radius:3px;
+    box-shadow:0 0 12px rgba(18,165,148,0.55);
+    transition:height 60ms linear;
+  }
+  .pulse-dot{
+    position:absolute; left:50%; top:0%;
+    width:14px; height:14px; margin-left:-7px; margin-top:-7px;
+    border-radius:50%;
+    background:var(--teal);
+    box-shadow:0 0 0 6px rgba(18,165,148,0.18);
+    animation:beat 1.15s ease-in-out infinite;
+  }
+  @keyframes beat{
+    0%,100%{transform:scale(1);}
+    35%{transform:scale(1.45);}
+    50%{transform:scale(0.92);}
+  }
+  @media (max-width:720px){ .pulse-rail{left:8px;} }
+
+  /* ---------- vitals HUD ---------- */
+  .hud{
+    position:fixed; top:22px; right:22px; z-index:40;
+    display:flex; align-items:center; gap:10px;
+    background:rgba(238,243,238,0.85);
+    backdrop-filter:blur(6px);
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:8px 16px 8px 10px;
+    font-family:var(--mono);
+  }
+  .hud svg{ width:34px; height:20px; display:block; }
+  .hud-path{
+    fill:none; stroke:var(--teal); stroke-width:2;
+    stroke-linecap:round; stroke-linejoin:round;
+    stroke-dasharray:120; stroke-dashoffset:0;
+    animation:ekg 1.15s linear infinite;
+  }
+  @keyframes ekg{ from{stroke-dashoffset:120;} to{stroke-dashoffset:0;} }
+  .hud-num{ font-size:13px; font-weight:600; color:var(--teal-deep); letter-spacing:0.02em; white-space:nowrap;}
+  @media (max-width:600px){ .hud{ top:12px; right:12px; padding:6px 12px 6px 8px;} .hud-num{font-size:11px;} }
+
+  /* ---------- layout shell ---------- */
+  main{ position:relative; z-index:1; max-width:920px; margin:0 auto; padding:0 28px 0 64px; }
+  @media (max-width:720px){ main{ padding:0 20px 0 40px; } }
+
+  section{ padding:120px 0; border-bottom:1px solid var(--line); }
+  section:last-of-type{ border-bottom:none; }
+
+  .reveal{ opacity:0; transform:translateY(28px); transition:opacity 0.8s ease, transform 0.8s ease; }
+  .reveal.is-visible{ opacity:1; transform:translateY(0); }
+  .reveal.d1{ transition-delay:0.05s; } .reveal.d2{ transition-delay:0.15s; }
+  .reveal.d3{ transition-delay:0.25s; } .reveal.d4{ transition-delay:0.35s; }
+  .reveal.d5{ transition-delay:0.45s; } .reveal.d6{ transition-delay:0.55s; }
+
+  .eyebrow{
+    font-family:var(--mono); font-size:12px; letter-spacing:0.18em; text-transform:uppercase;
+    color:var(--teal-deep); display:flex; align-items:center; gap:10px; margin-bottom:18px;
+  }
+  .eyebrow::before{ content:""; width:26px; height:1px; background:var(--teal-deep); display:inline-block; }
+
+  h1,h2,h3{ font-family:var(--thai-serif); font-weight:700; margin:0 0 0.4em; color:var(--ink); }
+  .display{ font-size:clamp(2.6rem, 6vw, 4.6rem); line-height:1.08; letter-spacing:-0.01em; }
+  h2{ font-size:clamp(1.9rem, 3.6vw, 2.7rem); line-height:1.2; }
+  .en-label{ font-family:var(--grotesk); font-weight:600; letter-spacing:0.01em; }
+
+  p{ margin:0 0 1em; max-width:62ch; color:rgba(13,43,43,0.86); }
+  .lede{ font-size:1.15rem; max-width:56ch; }
+
+  /* ---------- hero ---------- */
+  .hero{ min-height:92vh; display:flex; flex-direction:column; justify-content:center; padding-top:80px; border-bottom:1px solid var(--line); }
+  .hero .kicker{ font-family:var(--mono); font-size:13px; color:var(--teal-deep); letter-spacing:0.14em; margin-bottom:22px;}
+  .hero .sub{ font-family:var(--mono); font-size:14px; color:rgba(13,43,43,0.6); margin-top:22px; letter-spacing:0.03em;}
+  .scroll-cue{ margin-top:64px; font-family:var(--mono); font-size:12px; color:var(--teal-deep); display:flex; align-items:center; gap:8px; }
+  .scroll-cue .arrow{ display:inline-block; animation:bob 1.6s ease-in-out infinite; }
+  @keyframes bob{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(6px);} }
+
+  /* ---------- stat grid ---------- */
+  .stat-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:28px 40px; margin-top:44px; }
+  @media (max-width:560px){ .stat-grid{ grid-template-columns:1fr; } }
+  .stat{ border-top:1px solid var(--line); padding-top:14px; }
+  .stat-num{ font-family:var(--grotesk); font-size:2.4rem; font-weight:700; color:var(--teal-deep); }
+  .stat-label{ font-family:var(--thai-sans); font-size:0.95rem; color:rgba(13,43,43,0.7); }
+
+  /* ---------- simple lists ---------- */
+  .list-plain{ list-style:none; margin:32px 0 0; padding:0; display:flex; flex-direction:column; }
+  .list-plain li{
+    display:flex; gap:20px; align-items:baseline;
+    padding:18px 0; border-top:1px solid var(--line);
+  }
+  .list-plain li:last-child{ border-bottom:1px solid var(--line); }
+  .list-plain .num{ font-family:var(--mono); font-size:13px; color:var(--teal); flex:0 0 28px; }
+  .list-plain .txt{ font-size:1.02rem; }
+
+  /* ---------- vision block ---------- */
+  .vision{ text-align:left; padding:150px 0; }
+  .vision blockquote{
+    margin:0; font-family:var(--thai-serif); font-weight:600;
+    font-size:clamp(1.7rem, 4vw, 2.6rem); line-height:1.35; color:var(--ink);
+    border-left:3px solid var(--red); padding-left:28px;
+  }
+  .vision .quote-en{ font-family:var(--mono); font-size:0.85rem; color:rgba(13,43,43,0.55); margin-top:18px; letter-spacing:0.02em;}
+  .goals{ margin-top:56px; display:grid; gap:20px; }
+  .goal-card{ border:1px solid var(--line); border-radius:14px; padding:22px 24px; background:rgba(255,255,255,0.4); }
+
+  /* ---------- mission grid ---------- */
+  .mission-grid{ display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:40px; }
+  @media (max-width:640px){ .mission-grid{ grid-template-columns:1fr; } }
+  .mission-card{ padding:20px 0; border-top:1px solid var(--line); }
+  .mission-card .idx{ font-family:var(--mono); font-size:12px; color:var(--teal); }
+
+  /* ---------- pillar sections ---------- */
+  .pillar{ position:relative; }
+  .pillar-head{ display:flex; align-items:flex-start; gap:24px; margin-bottom:8px; }
+  .pillar-num{
+    font-family:var(--grotesk); font-weight:700; font-size:3.2rem; color:var(--teal);
+    line-height:1; flex:0 0 auto;
+  }
+  .pillar-icon{ width:52px; height:52px; flex:0 0 auto; margin-top:6px; }
+  .pillar-icon svg{ width:100%; height:100%; stroke:var(--teal-deep); fill:none; stroke-width:1.5; }
+  .pillar-obj{
+    margin-top:26px; font-family:var(--mono); font-size:13px; color:var(--teal-deep);
+    text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px;
+  }
+  .pillar-obj-txt{ font-size:1.05rem; color:var(--ink); margin-bottom:8px; }
+
+  .subhead{ font-family:var(--mono); font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:rgba(13,43,43,0.5); margin:34px 0 14px; }
+  .chip-row{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:8px; }
+  .chip{
+    font-size:0.92rem; padding:9px 16px; border-radius:999px;
+    border:1px solid var(--line); background:rgba(255,255,255,0.5);
+  }
+  .result-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; }
+  .result-list li{ position:relative; padding-left:22px; font-size:0.98rem; }
+  .result-list li::before{
+    content:""; position:absolute; left:0; top:0.55em; width:8px; height:8px;
+    background:var(--amber); border-radius:2px; transform:rotate(45deg);
+  }
+
+  .pillar-band{ padding:64px 0; }
+  .pillar-band:nth-of-type(even){ background:var(--paper-2); }
+
+  /* ---------- closing ---------- */
+  .closing{ text-align:left; padding:140px 0 160px; }
+  .closing .display{ margin-bottom:24px; }
+  .tagline{ font-family:var(--mono); font-size:14px; color:var(--teal-deep); margin-top:8px; }
+  footer{ font-family:var(--mono); font-size:12px; color:rgba(13,43,43,0.5); padding:40px 0 60px; text-align:left; }
+
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<div class="pulse-rail">
+  <div class="pulse-rail-fill" id="railFill">
+    <div class="pulse-dot"></div>
+  </div>
+</div>
+
+<div class="hud">
+  <svg viewBox="0 0 60 24"><path class="hud-path" d="M0,12 L14,12 L18,2 L24,22 L28,12 L60,12"/></svg>
+  <span class="hud-num" id="bpmNum">62 BPM</span>
+</div>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="kicker">DMSc · กรมวิทยาศาสตร์การแพทย์ · 2570–2574</div>
+    <h1 class="display">แผนยุทธศาสตร์<br>วิจัยและนวัตกรรม</h1>
+    <div class="sub en-label">DMSC RESEARCH &amp; INNOVATION STRATEGY 2027–2031</div>
+    <p class="lede" style="margin-top:28px;">ฉบับอ่านง่าย เคลื่อนไหวได้ — สรุปเนื้อหาแผนยุทธศาสตร์ของกรมวิทยาศาสตร์การแพทย์ กระทรวงสาธารณสุข จากเอกสารต้นฉบับ ให้อยู่ในรูปที่มีจังหวะและลมหายใจของตัวเอง</p>
+    <div class="scroll-cue">เลื่อนลงเพื่อฟังชีพจร <span class="arrow">↓</span></div>
+  </section>
+
+  <!-- 01 WELCOME -->
+  <section id="s1">
+    <div class="eyebrow">01 · Welcome</div>
+    <h2 class="reveal">รู้จักกรมวิทยาศาสตร์การแพทย์</h2>
+    <p class="reveal d1">องค์กรหลักด้านวิทยาศาสตร์การแพทย์ ทำหน้าที่ศึกษาวิจัย พัฒนามาตรฐาน และตรวจวิเคราะห์ทางห้องปฏิบัติการ เพื่อคุ้มครองสุขภาพและพัฒนาคุณภาพชีวิตของประชาชน ครอบคลุมด้านผลิตภัณฑ์สุขภาพ การชันสูตรโรค และความปลอดภัยทางอาหารและยา</p>
+    <div class="stat-grid">
+      <div class="stat reveal d1"><div class="stat-num">2,300<span style="font-size:1.2rem;">+</span></div><div class="stat-label">บุคลากร (คน)</div></div>
+      <div class="stat reveal d2"><div class="stat-num">40</div><div class="stat-label">หน่วยงาน ครอบคลุมทั่วประเทศ</div></div>
+      <div class="stat reveal d3"><div class="stat-num">1,000<span style="font-size:1.2rem;">+</span></div><div class="stat-label">เครื่องมือและห้องปฏิบัติการมาตรฐานสากล</div></div>
+      <div class="stat reveal d4"><div class="stat-num">∞</div><div class="stat-label">เครือข่ายครอบคลุมทั้งในและต่างประเทศ</div></div>
+    </div>
+  </section>
+
+  <!-- 02 MISSION (ORGANIZATION) -->
+  <section id="s2">
+    <div class="eyebrow">02 · Our Organization</div>
+    <h2 class="reveal">ภารกิจ กรมวิทยาศาสตร์การแพทย์</h2>
+    <ul class="list-plain">
+      <li class="reveal d1"><span class="num">01</span><span class="txt">ตรวจวิเคราะห์และเฝ้าระวังคุณภาพผลิตภัณฑ์สุขภาพ</span></li>
+      <li class="reveal d2"><span class="num">02</span><span class="txt">วิจัย พัฒนาองค์ความรู้และนวัตกรรมด้านวิทยาศาสตร์การแพทย์</span></li>
+      <li class="reveal d3"><span class="num">03</span><span class="txt">กำหนดและรับรองมาตรฐานห้องปฏิบัติการและผลิตภัณฑ์สุขภาพ</span></li>
+      <li class="reveal d4"><span class="num">04</span><span class="txt">กำกับดูแลตามกฎหมายและพัฒนาระบบคุณภาพ</span></li>
+      <li class="reveal d5"><span class="num">05</span><span class="txt">ถ่ายทอดองค์ความรู้และสนับสนุนระบบสุขภาพของประเทศ</span></li>
+    </ul>
+  </section>
+
+  <!-- 03 WHY FUTURE -->
+  <section id="s3">
+    <div class="eyebrow">03 · Why Future</div>
+    <h2 class="reveal">ทำไมเราจึงต้องก้าวไปข้างหน้า</h2>
+    <ul class="list-plain">
+      <li class="reveal d1"><span class="num">↗</span><span class="txt">สังคมสูงวัยและโรคไม่ติดต่อเรื้อรังเพิ่มขึ้น</span></li>
+      <li class="reveal d2"><span class="num">↗</span><span class="txt">โรคอุบัติใหม่ ภัยคุกคามด้านสุขภาพ</span></li>
+      <li class="reveal d3"><span class="num">↗</span><span class="txt">ความก้าวหน้าทางเทคโนโลยีและข้อมูลสุขภาพขนาดใหญ่</span></li>
+      <li class="reveal d4"><span class="num">↗</span><span class="txt">ความต้องการการผลิตยาคุณภาพและนวัตกรรมทางการแพทย์</span></li>
+      <li class="reveal d5"><span class="num">↗</span><span class="txt">การสนับสนุนจากนโยบายสุขภาพของรัฐบาล</span></li>
+    </ul>
+  </section>
+
+  <!-- 04 VISION -->
+  <section id="s4" class="vision" data-bpm="80">
+    <div class="eyebrow">04 · Vision</div>
+    <blockquote class="reveal">"กรมวิทยาศาสตร์การแพทย์ เป็นองค์การชั้นนำด้านวิทยาศาสตร์การแพทย์และสาธารณสุข <span style="color:var(--red);">1 ใน 3 ของเอเชีย</span> ภายในปี พ.ศ. 2570"</blockquote>
+
+    <div style="margin-top:70px;" class="reveal d1">
+      <div class="subhead">วิสัยทัศน์ · แผนยุทธศาสตร์วิจัยและนวัตกรรม</div>
+      <h3 style="font-size:1.5rem;">นวัตกรรมวิทยาศาสตร์การแพทย์ระดับสากล เพื่อความมั่นคงทางการแพทย์และเศรษฐกิจสุขภาพ</h3>
+      <div class="quote-en">GLOBAL MEDICAL INNOVATIONS FOR HEALTH SECURITY AND WELLNESS ECONOMY</div>
+    </div>
+
+    <div class="goals">
+      <div class="goal-card reveal d2"><strong>เป้าประสงค์ 1 —</strong> ระบบสาธารณสุขของประเทศมีศักยภาพทางห้องปฏิบัติการ เพื่อการตรวจวินิจฉัยและเฝ้าระวังภัยสุขภาพได้ทันต่อสถานการณ์ ครอบคลุมทุกพื้นที่</div>
+      <div class="goal-card reveal d3"><strong>เป้าประสงค์ 2 —</strong> ยกระดับผลิตภัณฑ์และบริการทางการแพทย์ของไทยด้วยนวัตกรรมทางห้องปฏิบัติการให้ได้มาตรฐานสากล เพื่อขับเคลื่อนเศรษฐกิจสุขภาพ</div>
+    </div>
+  </section>
+
+  <!-- 05 MISSION GRID -->
+  <section id="s5">
+    <div class="eyebrow">05 · Mission</div>
+    <h2 class="reveal">พันธกิจ</h2>
+    <div class="mission-grid">
+      <div class="mission-card reveal d1"><div class="idx">01</div>ศึกษา วิจัย และพัฒนาเพื่อให้ได้องค์ความรู้ เทคโนโลยี และนวัตกรรมด้านวิทยาศาสตร์การแพทย์และสาธารณสุข</div>
+      <div class="mission-card reveal d2"><div class="idx">02</div>เฝ้าระวัง ประเมิน สื่อสาร แจ้งเตือนภัย และกำหนดมาตรการจัดการความเสี่ยงจากโรคและภัยสุขภาพ</div>
+      <div class="mission-card reveal d3"><div class="idx">03</div>บริการตรวจวิเคราะห์ทางห้องปฏิบัติการด้านวิทยาศาสตร์การแพทย์ ในฐานะห้องปฏิบัติการอ้างอิง</div>
+      <div class="mission-card reveal d4"><div class="idx">04</div>พัฒนาและกำหนดมาตรการเพื่อสนับสนุนการป้องกันและแก้ไขปัญหาสุขภาพ</div>
+      <div class="mission-card reveal d5"><div class="idx">05</div>สื่อสารสาธารณะโดยอาศัยข้อมูลด้านวิทยาศาสตร์การแพทย์และสาธารณสุขของประเทศและเอเชีย</div>
+    </div>
+  </section>
+
+  <!-- PILLAR SECTIONS -->
+  <div class="eyebrow" style="max-width:920px;margin:0 auto;padding:60px 28px 0 64px;">06 · เสาหลักยุทธศาสตร์วิจัยและนวัตกรรม 6 ด้าน</div>
+
+  <!-- PILLAR 1 -->
+  <section class="pillar-band" data-bpm="84">
+    <main style="padding:0;">
+    <div class="pillar" style="max-width:100%;">
+      <div class="pillar-head reveal">
+        <div class="pillar-num">01</div>
+        <div class="pillar-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M8 8a4 4 0 0 0 8 0M6 21h12M9 21v-4a3 3 0 0 1 6 0v4"/></svg></div>
+        <div><h3 style="font-size:1.6rem;margin-bottom:0;">พัฒนาศักยภาพการบริการตรวจวินิจฉัยโรคของประเทศไทย</h3></div>
+      </div>
+      <div class="pillar-obj reveal d1">วัตถุประสงค์</div>
+      <p class="pillar-obj-txt reveal d1">เป็นห้องปฏิบัติการอ้างอิงที่แม่นยำ รวดเร็ว สำหรับระบบสาธารณสุขของประเทศ</p>
+
+      <div class="subhead reveal d2">กิจกรรม</div>
+      <div class="chip-row reveal d2">
+        <span class="chip">ถอดรหัสพันธุกรรมโรคหายาก/มะเร็ง/เภสัชพันธุศาสตร์</span>
+        <span class="chip">ชุดตรวจแม่นยำสูง (POCT)</span>
+        <span class="chip">ระบบตรวจวินิจฉัยและเฝ้าระวังโรคติดเชื้อ</span>
+        <span class="chip">ระบบสารสนเทศและ AI ห้องปฏิบัติการ</span>
+        <span class="chip">การแพทย์แม่นยำเพื่อส่งเสริมสุขภาพ</span>
+      </div>
+
+      <div class="subhead reveal d3">ผลลัพธ์สำคัญ</div>
+      <ul class="result-list reveal d3">
+        <li>นวัตกรรมตรวจวิเคราะห์พันธุกรรมโรคติดเชื้ออุบัติใหม่/อุบัติซ้ำ</li>
+        <li>ผลักดันนวัตกรรมสู่ชุดสิทธิประโยชน์ทางสุขภาพ: วัณโรค, ธาลัสซีเมีย</li>
+        <li>ชุดตรวจวินิจฉัยแบบพกพาแม่นยำสูง: วัณโรค, โรคติดเชื้อในเด็ก, แอนแทรกซ์, อาหารเป็นพิษ (Salmonella, Shigella)</li>
+        <li>ระบบฐานข้อมูลสารสนเทศทางห้องปฏิบัติการ ใช้ AI + แอปผูกพันธุ์ เฝ้าระวังวัณโรคและวัณโรคเทียม</li>
+      </ul>
+    </div>
+    </main>
+  </section>
+
+  <!-- PILLAR 2 -->
+  <section class="pillar-band" data-bpm="90">
+    <main style="padding:0;">
+    <div class="pillar" style="max-width:100%;">
+      <div class="pillar-head reveal">
+        <div class="pillar-num">02</div>
+        <div class="pillar-icon"><svg viewBox="0 0 24 24"><path d="M9 2h6M10 2v5l-5 9a3 3 0 0 0 3 4h8a3 3 0 0 0 3-4l-5-9V2"/><path d="M7 15h10"/></svg></div>
+        <div><h3 style="font-size:1.5rem;margin-bottom:0;">เสริมสร้างความเข้มแข็งและยกระดับมาตรฐานอุตสาหกรรมชีวเภสัชภัณฑ์ วัคซีน และผลิตภัณฑ์การแพทย์ขั้นสูง เพื่อความมั่นคงทางสุขภาพ</h3></div>
+      </div>
+      <div class="pillar-obj reveal d1">วัตถุประสงค์</div>
+      <p class="pillar-obj-txt reveal d1">มีนวัตกรรมสนับสนุนกระบวนการผลิตวัคซีน ชีววัตถุ และยาที่จำเป็นต่อระบบบริการสุขภาพของประเทศ</p>
+
+      <div class="subhead reveal d2">กิจกรรม</div>
+      <div class="chip-row reveal d2">
+        <span class="chip">ห้องปฏิบัติการควบคุมคุณภาพสำหรับ ATMPs</span>
+        <span class="chip">วิเคราะห์วัคซีนและชีวเภสัชภัณฑ์ (วิจัย–ขึ้นทะเบียน)</span>
+        <span class="chip">ยกระดับห้องปฏิบัติการและโครงสร้างพื้นฐานชีวภาพ</span>
+      </div>
+
+      <div class="subhead reveal d3">ผลลัพธ์สำคัญ</div>
+      <ul class="result-list reveal d3">
+        <li>ผลิตภัณฑ์ต้นแบบ ATMPs: NK cell (รักษามะเร็ง), MSC (ฟื้นฟูเนื้อเยื่อ/ภูมิคุ้มกัน), DC &amp; CIK cells</li>
+        <li>มาตรฐานวิธีทดสอบหรือควบคุมคุณภาพ ATMP</li>
+        <li>มาตรฐานวัคซีน/ชีวเภสัชภัณฑ์: วัคซีนรวมคอตีบ-บาดทะยัก-ไอกรน, เซรุ่มแก้พิษงู</li>
+        <li>มาตรฐานยาชีววัตถุ: ยารักษาโรคกระดูก มะเร็ง ฮอร์โมนระบบสืบพันธุ์</li>
+        <li>โครงสร้างพื้นฐานรองรับงานวิจัยและพัฒนา (R&amp;D)</li>
+      </ul>
+    </div>
+    </main>
+  </section>
+
+  <!-- PILLAR 3 -->
+  <section class="pillar-band" data-bpm="86">
+    <main style="padding:0;">
+    <div class="pillar" style="max-width:100%;">
+      <div class="pillar-head reveal">
+        <div class="pillar-num">03</div>
+        <div class="pillar-icon"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/></svg></div>
+        <div><h3 style="font-size:1.6rem;margin-bottom:0;">พัฒนาศูนย์ทดสอบมาตรฐานเครื่องมือแพทย์ระดับชาติแบบครบวงจร</h3></div>
+      </div>
+      <div class="pillar-obj reveal d1">วัตถุประสงค์</div>
+      <p class="pillar-obj-txt reveal d1">เป็นหน่วยงานกลางทางด้านมาตรฐาน สนับสนุนนวัตกรรมและการผลิตเครื่องมือแพทย์ของประเทศไทย</p>
+
+      <div class="subhead reveal d2">กิจกรรม</div>
+      <div class="chip-row reveal d2">
+        <span class="chip">วิจัยพัฒนาวิธีทดสอบตามมาตรฐานสากล</span>
+        <span class="chip">แบบจำลอง/เสมือนจริงทดแทนสัตว์ทดลอง</span>
+        <span class="chip">ระบบประเมินประสิทธิภาพเครื่องมือแพทย์ IVD</span>
+        <span class="chip">ความปลอดภัยเครื่องมือแพทย์ด้านไฟฟ้า ฟิสิกส์ รังสี</span>
+      </div>
+
+      <div class="subhead reveal d3">ผลลัพธ์สำคัญ</div>
+      <ul class="result-list reveal d3">
+        <li>โครงสร้างพื้นฐานคุณภาพ (NQI) ครอบคลุม 22 กลุ่มหลัก ตามประกาศกระทรวงสาธารณสุข</li>
+        <li>ห้องปฏิบัติการทดสอบ Biocompatibility ตาม ISO 10993 และรับรอง OECD GLP — ใช้ขึ้นทะเบียนในประเทศสมาชิก OECD ได้โดยไม่ต้องทดสอบซ้ำ</li>
+      </ul>
+    </div>
+    </main>
+  </section>
+
+  <!-- PILLAR 4 -->
+  <section class="pillar-band" data-bpm="82">
+    <main style="padding:0;">
+    <div class="pillar" style="max-width:100%;">
+      <div class="pillar-head reveal">
+        <div class="pillar-num">04</div>
+        <div class="pillar-icon"><svg viewBox="0 0 24 24"><path d="M6 2v8a4 4 0 0 0 4 4v8M10 2v6M14 2v6M18 2v20"/></svg></div>
+        <div><h3 style="font-size:1.6rem;margin-bottom:0;">สนับสนุนและพัฒนาศักยภาพอุตสาหกรรมอาหารใหม่ของประเทศไทย</h3></div>
+      </div>
+      <div class="pillar-obj reveal d1">วัตถุประสงค์</div>
+      <p class="pillar-obj-txt reveal d1">นวัตกรรม Future Food ของประเทศสู่ครัวโลกด้วยความปลอดภัยของห้องปฏิบัติการสำหรับผลักดันอาหาร</p>
+
+      <div class="subhead reveal d2">กิจกรรม</div>
+      <div class="chip-row reveal d2">
+        <span class="chip">วิธีตรวจวิเคราะห์สารสำคัญและส่วนประกอบของอาหาร</span>
+        <span class="chip">ศูนย์ประเมินความปลอดภัยอาหารอนาคต</span>
+        <span class="chip">ฐานข้อมูลโภชนาการเชิงลึกเพื่อการกล่าวอ้างทางสุขภาพ</span>
+      </div>
+
+      <div class="subhead reveal d3">ผลลัพธ์สำคัญ</div>
+      <ul class="result-list reveal d3">
+        <li>วิธีตรวจวิเคราะห์สารสำคัญ ส่วนประกอบ และประเมินความปลอดภัยของอาหารใหม่ ตามประกาศกระทรวงสาธารณสุข (ฉบับที่ 376) โดย อย. กำหนด Positive List</li>
+      </ul>
+    </div>
+    </main>
+  </section>
+
+  <!-- PILLAR 5 -->
+  <section class="pillar-band" data-bpm="78">
+    <main style="padding:0;">
+    <div class="pillar" style="max-width:100%;">
+      <div class="pillar-head reveal">
+        <div class="pillar-num">05</div>
+        <div class="pillar-icon"><svg viewBox="0 0 24 24"><path d="M12 22V10M12 10C7 10 5 6 5 2c5 0 7 3 7 8zM12 10c5 0 7-4 7-8-5 0-7 3-7 8z"/></svg></div>
+        <div><h3 style="font-size:1.6rem;margin-bottom:0;">ยกระดับสมุนไพรไทยสู่ยาและผลิตภัณฑ์สุขภาพระดับสากล</h3></div>
+      </div>
+      <div class="pillar-obj reveal d1">วัตถุประสงค์</div>
+      <p class="pillar-obj-txt reveal d1">เพิ่มมูลค่าผลิตภัณฑ์สมุนไพรไทยสู่การยอมรับในระดับสากล</p>
+
+      <div class="subhead reveal d2">กิจกรรม</div>
+      <div class="chip-row reveal d2">
+        <span class="chip">ตำรามาตรฐานยาสมุนไพรไทย (THP)</span>
+        <span class="chip">สารมาตรฐานกรมวิทย์ด้านสมุนไพร</span>
+        <span class="chip">วิจัยพืชสมุนไพรเศรษฐกิจสำคัญ ตั้งแต่วัตถุดิบถึงผลิตภัณฑ์</span>
+      </div>
+
+      <div class="subhead reveal d3">ผลลัพธ์สำคัญ</div>
+      <ul class="result-list reveal d3">
+        <li>ตำรามาตรฐานยาสมุนไพรไทย (THP) สำหรับอ้างอิงในบัญชียาหลักแห่งชาติ จำนวน 100 โมโนกราฟ</li>
+        <li>นวัตกรรมสมุนไพรตอบโจทย์ตามกลุ่มโรค — ระดับ 1: ฟ้าทะลายโจร ขมิ้นชัน กระชายดำ ใบบัวบก / ระดับ 2: กระท่อม มะระขี้นก ว่านหางจระเข้ ขิง พริกไทย</li>
+      </ul>
+    </div>
+    </main>
+  </section>
+
+  <!-- PILLAR 6 -->
+  <section class="pillar-band" data-bpm="70">
+    <main style="padding:0;">
+    <div class="pillar" style="max-width:100%;">
+      <div class="pillar-head reveal">
+        <div class="pillar-num">06</div>
+        <div class="pillar-icon"><svg viewBox="0 0 24 24"><path d="M2 16s2-3 5-3 5 3 5 3M12 16s2-3 5-3 5 3 5 3"/><path d="M12 3v6M9 6l3-3 3 3"/></svg></div>
+        <div><h3 style="font-size:1.6rem;margin-bottom:0;">สนับสนุนเส้นทางการท่องเที่ยวสุขภาพแบบครบวงจร</h3></div>
+      </div>
+      <div class="pillar-obj reveal d1">วัตถุประสงค์</div>
+      <p class="pillar-obj-txt reveal d1">เพิ่มมูลค่าจากธุรกิจการท่องเที่ยว ด้วยกระบวนการตรวจวิเคราะห์ทางห้องปฏิบัติการทางการแพทย์และสาธารณสุข</p>
+
+      <div class="subhead reveal d2">กิจกรรม</div>
+      <div class="chip-row reveal d2">
+        <span class="chip">มาตรฐานห้องปฏิบัติการคลินิก/Wellness Center ในแหล่งท่องเที่ยว</span>
+        <span class="chip">เฝ้าระวังด้านอาหาร ผลิตภัณฑ์สุขภาพ และสิ่งแวดล้อมในพื้นที่ท่องเที่ยว</span>
+      </div>
+
+      <div class="subhead reveal d3">ผลลัพธ์สำคัญ</div>
+      <ul class="result-list reveal d3">
+        <li>ระบบมาตรฐานห้องปฏิบัติการเพื่อการท่องเที่ยวเชิงสุขภาพ รองรับคลินิกชะลอวัยและศูนย์ฟื้นฟูผู้สูงอายุ — พื้นที่เป้าหมาย: EEC, AWC และ Herbal City</li>
+        <li>ระบบฐานข้อมูลเฝ้าระวังแบบบูรณาการ ครอบคลุมอาหาร ผลิตภัณฑ์สุขภาพ และสิ่งแวดล้อม เชื่อมระบบแจ้งเตือนภัยและสนับสนุนการตัดสินใจเชิงนโยบาย</li>
+      </ul>
+    </div>
+    </main>
+  </section>
+
+  <!-- CLOSING -->
+  <section class="closing" data-bpm="66">
+    <div class="eyebrow">Closing</div>
+    <h2 class="display reveal" style="font-size:clamp(2rem,4.4vw,3rem);">เชื่อมโยงทุกความคิด<br>ร่วมสร้างอนาคตวิทยาศาสตร์การแพทย์</h2>
+    <p class="tagline reveal d1">เชื่อมเครือข่าย · ขับเคลื่อนวิจัยและนวัตกรรม · สู่การมีอายุยืนยาวอย่างมีสุขภาพดี</p>
+    <p class="reveal d2" style="margin-top:36px;">อ้างอิงเนื้อหาจากเอกสาร "แผนยุทธศาสตร์วิจัยและนวัตกรรม กรมวิทยาศาสตร์การแพทย์ พ.ศ. 2570–2574" ฉบับเต็มมี QR code สำหรับสแกนอ่านในเอกสารต้นฉบับ</p>
+  </section>
+
+  <footer>DMSc RESEARCH &amp; INNOVATION STRATEGY 2027–2031 — ฉบับสรุปแบบโต้ตอบ, จัดทำใหม่จากเนื้อหาต้นฉบับ</footer>
+
+</main>
+
+<script>
+  // pulse rail fill = scroll progress
+  const railFill = document.getElementById('railFill');
+  const bpmNum = document.getElementById('bpmNum');
+  const bpmSections = Array.from(document.querySelectorAll('[data-bpm]'));
+
+  function onScroll(){
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = docHeight > 0 ? Math.min(100, (scrollTop / docHeight) * 100) : 0;
+    railFill.style.height = pct + '%';
+  }
+  window.addEventListener('scroll', onScroll, { passive:true });
+  onScroll();
+
+  // reveal-on-scroll
+  const revealEls = document.querySelectorAll('.reveal');
+  const revealObserver = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ e.target.classList.add('is-visible'); }
+    });
+  }, { threshold:0.15 });
+  revealEls.forEach(el=>revealObserver.observe(el));
+
+  // bpm HUD tied to which data-bpm section is in view
+  let currentBpm = 62;
+  const bpmObserver = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        const val = e.target.getAttribute('data-bpm');
+        if(val){ currentBpm = parseInt(val,10); bpmNum.textContent = currentBpm + ' BPM'; }
+      }
+    });
+  }, { threshold:0.4 });
+  bpmSections.forEach(el=>bpmObserver.observe(el));
+</script>
+
+</body>
+</html>
