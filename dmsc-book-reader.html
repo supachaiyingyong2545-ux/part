@@ -51,7 +51,7 @@
 
   .giant{
     font-family:var(--thai); font-weight:900; letter-spacing:-0.02em;
-    font-size:clamp(2.6rem, 8vw, 7.5rem); line-height:0.98;
+    font-size:clamp(3rem, 10vw, 8rem); line-height:1.0;
   }
   .giant.latin{ font-family:var(--grotesk); font-weight:700; letter-spacing:-0.01em; }
   .grad-text{
@@ -119,26 +119,31 @@
   .tag{ font-family:var(--mono); font-size:14px; letter-spacing:0.08em; margin-top:22px; opacity:0.7; }
 
   @media (max-width:640px){
-    section{ padding:70px 5vw; }
+    section{ padding:80px 6vw 100px; }
     .pillar-ghost{ display:none; }
-    .eyebrow{ font-size:10px; margin-bottom:16px; }
-    .giant{ font-size:clamp(2rem, 7vw, 3.2rem); }
-    .stat-row{ gap:4vw; margin-top:16px; }
-    .stat-num{ font-size:clamp(2rem, 8vw, 4rem); }
-    .stat-label{ font-size:10px; margin-top:8px; }
-    .body-txt{ font-size:0.95rem; }
-    .klist .row{ gap:16px; padding:16px 0; }
-    .klist .row .txt{ font-size:clamp(1rem, 2.4vw, 1.2rem); }
-    .pillar-title{ font-size:clamp(1.5rem, 4vw, 2.4rem); }
-    .ticker-wrap{ margin-top:24px; padding:10px 0; }
+    .eyebrow{ font-size:11px; margin-bottom:18px; letter-spacing:0.16em; }
+    .giant{ font-size:clamp(2.6rem, 11vw, 4.2rem); line-height:1.05; }
+    .stat-row{ gap:8vw; margin-top:20px; flex-direction:column; }
+    .stat-num{ font-size:clamp(3.2rem, 14vw, 5rem); }
+    .stat-label{ font-size:11px; margin-top:10px; }
+    .body-txt{ font-size:1rem; line-height:1.85; }
+    .klist .row{ gap:18px; padding:18px 0; align-items:flex-start; }
+    .klist .row .txt{ font-size:1rem; line-height:1.7; }
+    .klist .row .idx{ font-size:1rem; flex:0 0 28px; margin-top:2px; }
+    .pillar-title{ font-size:clamp(2rem, 7vw, 2.8rem); line-height:1.15; }
+    .pillar-obj-txt{ font-size:1rem; line-height:1.75; }
+    .ticker-wrap{ margin-top:24px; padding:12px 0; }
     .ticker{ gap:20px; }
-    .ticker span{ font-size:0.75rem; }
-    .result-list{ gap:8px; }
-    .result-list li{ font-size:0.9rem; padding-left:18px; }
-    .timeline-items{ gap:32px; padding-left:30px; }
-    .timeline-dot{ left:-22px; width:16px; height:16px; border-width:2px; }
-    .timeline-year{ font-size:1.1rem; }
-    .timeline-desc{ font-size:0.9rem; margin-top:6px; }
+    .ticker span{ font-size:0.82rem; }
+    .result-list{ gap:14px; }
+    .result-list li{ font-size:0.97rem; padding-left:20px; line-height:1.7; }
+    .timeline-items{ gap:36px; padding-left:32px; }
+    .timeline-dot{ left:-24px; width:18px; height:18px; border-width:2px; }
+    .timeline-year{ font-size:1.2rem; }
+    .timeline-desc{ font-size:0.97rem; margin-top:8px; line-height:1.7; }
+    .sub{ font-size:12px; }
+    .scroll-cue{ display:none; }
+    .indexer{ font-size:9px; right:14px; bottom:18px; }
   }
 </style>
 </head>
@@ -195,14 +200,14 @@
 <!-- VISION (climax) -->
 <section class="sec-dark" data-tab="04 / VISION">
   <div class="eyebrow">04 · Vision · วิสัยทัศน์</div>
-  <div class="giant kinetic grad-text" id="visionTitle" style="font-size:clamp(2rem,6vw,4.4rem);">1 ใน 3<br>ของเอเชีย</div>
-  <p class="body-txt">กรมวิทยาศาสตร์การแพทย์เป็นองค์การชั้นนำด้านวิทยาศาสตร์การแพทย์และสาธารณสุข <span style="font-weight:700;">1 ใน 3 ของเอเชีย</span> ภายในปี พ.ศ. 2570</p>
-  <div class="sub" style="margin-top:40px;">นวัตกรรมวิทยาศาสตร์การแพทย์ระดับสากล เพื่อความมั่นคงทางการแพทย์และเศรษฐกิจสุขภาพ<br><span style="font-size:0.9rem;">GLOBAL MEDICAL INNOVATIONS FOR HEALTH SECURITY AND WELLNESS ECONOMY</span></div>
+  <div class="giant kinetic grad-text" id="visionTitle">1 ใน 3<br>ของเอเชีย</div>
+  <p class="body-txt" style="margin-top:32px;">กรมวิทยาศาสตร์การแพทย์ เป็นองค์การชั้นนำด้านวิทยาศาสตร์การแพทย์และสาธารณสุข <strong style="font-size:1.15em;">1 ใน 3 ของเอเชีย</strong> ภายในปี พ.ศ. 2570</p>
 </section>
 
-<!-- MISSION GRID -->
+<!-- MISSION - DMSC -->
 <section class="sec-light" data-tab="05 / MISSION">
-  <div class="eyebrow">05 · Mission — พันธกิจ</div>
+  <div class="eyebrow">05 · Mission · ภารกิจ</div>
+  <div class="giant kinetic" style="font-size:clamp(2.2rem,6vw,4rem);">ภารกิจ<br>กรมวิทยาศาสตร์<br>การแพทย์</div>
   <div class="klist">
     <div class="row"><span class="idx">01</span><span class="txt">ศึกษา วิจัย และพัฒนาเพื่อให้ได้องค์ความรู้ เทคโนโลยี และนวัตกรรมด้านวิทยาศาสตร์การแพทย์และสาธารณสุข</span></div>
     <div class="row"><span class="idx">02</span><span class="txt">บริการตรวจวิเคราะห์ทางห้องปฏิบัติการด้านวิทยาศาสตร์การแพทย์และสาธารณสุขในฐานะห้องปฏิบัติการอ้างอิง</span></div>
@@ -212,18 +217,52 @@
   </div>
 </section>
 
-<!-- STRATEGIC ROADMAP - VISION -->
-<section class="sec-dark" data-tab="05.25 / STRATEGIC ROADMAP">
-  <div class="eyebrow">Strategic Vision · วิสัยทัศน์ยุทธศาสตร์</div>
-  <div class="giant kinetic grad-text" style="font-size:clamp(2.8rem, 10vw, 5.5rem); line-height:1.1;">นวัตกรรมวิทยาศาสตร์<br>การแพทย์ระดับสากล</div>
-  <p class="body-txt" style="margin-top:34px; font-size:1.15rem;">เพื่อความมั่นคงทางการแพทย์และเศรษฐกิจสุขภาพ</p>
-  <div class="sub" style="margin-top:28px; font-size:0.95rem; letter-spacing:0.08em;">GLOBAL MEDICAL INNOVATIONS FOR HEALTH SECURITY AND WELLNESS ECONOMY</div>
+<!-- STRATEGIC PLAN VISION -->
+<section class="sec-dark" data-tab="05.5 / STRATEGIC VISION">
+  <div class="eyebrow">Strategic Plan · วิสัยทัศน์แผนยุทธศาสตร์</div>
+  <div class="giant kinetic grad-text" style="font-size:clamp(2.6rem, 9vw, 5rem); line-height:1.15;">นวัตกรรมวิทยาศาสตร์<br>การแพทย์ระดับสากล</div>
+  <p class="body-txt" style="margin-top:32px; font-size:1.15rem; font-weight:500;">เพื่อความมั่นคงทางการแพทย์และเศรษฐกิจสุขภาพ</p>
+  <div class="sub" style="margin-top:26px; font-size:0.95rem; letter-spacing:0.08em;">GLOBAL MEDICAL INNOVATIONS FOR HEALTH SECURITY AND WELLNESS ECONOMY</div>
+
+  <div style="margin-top:48px;">
+    <div class="eyebrow" style="color:var(--a2); margin-bottom:20px;">เป้าประสงค์ของแผนยุทธศาสตร์</div>
+    <div class="klist" style="opacity:1;">
+      <div class="row"><span class="idx">1</span><span class="txt">ระบบสาธารณสุขของประเทศมีศักยภาพทางห้องปฏิบัติการ เพื่อการตรวจวินิจฉัยและเฝ้าระวังภัยสุขภาพได้ทันต่อสถานการณ์ครอบคลุมทุกพื้นที่</span></div>
+      <div class="row"><span class="idx">2</span><span class="txt">ยกระดับผลิตภัณฑ์และบริการทางการแพทย์ของไทยด้วยนวัตกรรมทางห้องปฏิบัติการให้ได้มาตรฐานสากล เพื่อขับเคลื่อนเศรษฐกิจสุขภาพ</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- STRATEGIC PLAN MISSION -->
+<section class="sec-light" data-tab="05.75 / STRATEGIC MISSION">
+  <div class="eyebrow">Strategic Plan · พันธกิจแผนยุทธศาสตร์</div>
+  <div class="giant kinetic" style="font-size:clamp(2.2rem,6vw,4rem);">พันธกิจ<br>แผนยุทธศาสตร์</div>
+  <div class="klist">
+    <div class="row"><span class="idx">1</span><span class="txt">วิจัยและพัฒนานวัตกรรมทางห้องปฏิบัติการทางการแพทย์และสาธารณสุขให้มีมาตรฐานสากล เพื่อสนับสนุนการวินิจฉัย การเฝ้าระวังโรค และการรักษาเฉพาะบุคคล</span></div>
+    <div class="row"><span class="idx">2</span><span class="txt">เป็นห้องปฏิบัติการอ้างอิงระดับชาติในการกำหนดมาตรฐาน และรับรองคุณภาพผลิตภัณฑ์ทางการแพทย์ ชีวเภสัชภัณฑ์ เครื่องมือแพทย์ อาหาร และสมุนไพร เพื่อสร้างความเชื่อมั่นในระดับสากล</span></div>
+    <div class="row"><span class="idx">3</span><span class="txt">สนับสนุนและถ่ายทอดเทคโนโลยีทางห้องปฏิบัติการสู่ภาคอุตสาหกรรมและบริการสุขภาพ เพื่อลดพึ่งพิงจากต่างประเทศ และเพิ่มมูลค่าทางเศรษฐกิจของประเทศ</span></div>
+    <div class="row"><span class="idx">4</span><span class="txt">พัฒนาโครงสร้างพื้นฐานและยกระดับศักยภาพห้องปฏิบัติการเครือข่ายทั่วประเทศ เพื่อให้ประชาชนเข้าถึงบริการสุขภาพที่มีคุณภาพอย่างทั่วถึงและรวดเร็ว</span></div>
+  </div>
+</section>
+
+<!-- 6 PILLARS OVERVIEW -->
+<section class="sec-dark" data-tab="06 / 6 PILLARS">
+  <div class="eyebrow">06 · เสาหลักยุทธศาสตร์ทั้ง 6</div>
+  <div class="giant kinetic" style="font-size:clamp(2.6rem,8vw,5rem); line-height:1.05;"><span class="grad-text">6</span> เสาหลัก<br>ยุทธศาสตร์</div>
+  <div class="klist" style="margin-top:40px;">
+    <div class="row"><span class="idx" style="font-size:1.1rem; font-weight:700; color:var(--a2);">01</span><span class="txt">พัฒนาศักยภาพการบริการตรวจวินิจฉัยโรคเพื่อความมั่นคงทางสุขภาพ</span></div>
+    <div class="row"><span class="idx" style="font-size:1.1rem; font-weight:700; color:var(--a2);">02</span><span class="txt">เสริมสร้างความเข้มแข็งและยกระดับมาตรฐานอุตสาหกรรมชีวเภสัชภัณฑ์ วัคซีน และผลิตภัณฑ์การแพทย์ขั้นสูง</span></div>
+    <div class="row"><span class="idx" style="font-size:1.1rem; font-weight:700; color:var(--a2);">03</span><span class="txt">พัฒนาศูนย์ทดสอบมาตรฐานเครื่องมือแพทย์ระดับชาติแบบครบวงจร</span></div>
+    <div class="row"><span class="idx" style="font-size:1.1rem; font-weight:700; color:var(--a2);">04</span><span class="txt">สนับสนุนและพัฒนาศักยภาพอุตสาหกรรมอาหารใหม่ของประเทศไทย</span></div>
+    <div class="row"><span class="idx" style="font-size:1.1rem; font-weight:700; color:var(--a2);">05</span><span class="txt">ยกระดับสมุนไพรไทยสู่ยาและผลิตภัณฑ์สุขภาพระดับสากล</span></div>
+    <div class="row"><span class="idx" style="font-size:1.1rem; font-weight:700; color:var(--a2);">06</span><span class="txt">สนับสนุนเส้นทางการท่องเที่ยวสุขภาพแบบครบวงจร</span></div>
+  </div>
 </section>
 
 <!-- TIMELINE -->
-<section class="sec-dark" data-tab="05.5 / ROADMAP">
-  <div class="eyebrow">05.5 · Implementation Roadmap · เส้นทางการขับเคลื่อน</div>
-  <div class="giant kinetic" style="font-size:clamp(2rem,5vw,3.6rem);">4 ระยะ<br>2570 – 2574</div>
+<section class="sec-light" data-tab="06.5 / ROADMAP">
+  <div class="eyebrow">06.5 · Roadmap · เส้นทางการขับเคลื่อน</div>
+  <div class="giant kinetic" style="font-size:clamp(2.4rem,7vw,4.5rem);">4 ระยะ<br>2570–2574</div>
   <p class="body-txt" style="margin-top:28px;">ยุทธศาสตร์วิจัยและนวัตกรรมครอบคลุม 4 ระยะการขับเคลื่อน ตั้งแต่ปี 2570 ถึง 2574</p>
   <div class="timeline-wrap">
     <div class="timeline-line"></div>
@@ -253,10 +292,10 @@
 </section>
 
 <!-- PILLAR TEMPLATE x6 -->
-<section class="sec-dark" data-tab="06 / PILLAR 01">
+<section class="sec-dark" data-tab="07 / PILLAR 01">
   <div class="pillar-ghost">01</div>
   <div class="pillar-content">
-    <div class="eyebrow">06 · เสาหลักที่ 1</div>
+    <div class="eyebrow">07 · เสาหลักที่ 1</div>
     <div class="pillar-title kinetic">พัฒนาศักยภาพการบริการ<br>ตรวจวินิจฉัยโรคเพื่อ<br>ความมั่นคงทางสุขภาพ</div>
     <div class="pillar-obj">วัตถุประสงค์</div>
     <div class="pillar-obj-txt">เป็นห้องปฏิบัติการอ้างอิงที่แม่นยำ รวดเร็ว สำหรับระบบสาธารณสุขของประเทศ</div>
@@ -283,10 +322,10 @@
   </div>
 </section>
 
-<section class="sec-light" data-tab="06 / PILLAR 02">
+<section class="sec-light" data-tab="07 / PILLAR 02">
   <div class="pillar-ghost">02</div>
   <div class="pillar-content">
-    <div class="eyebrow">06 · เสาหลักที่ 2</div>
+    <div class="eyebrow">07 · เสาหลักที่ 2</div>
     <div class="pillar-title kinetic">เสริมสร้างความเข้มแข็ง<br>ยกระดับมาตรฐาน<br>ชีวเภสัชภัณฑ์ วัคซีน ผลิตภัณฑ์</div>
     <div class="pillar-obj">วัตถุประสงค์</div>
     <div class="pillar-obj-txt">มีนวัตกรรมสนับสนุนกระบวนการผลิตวัคซีน ชีววัตถุ และยาที่จำเป็นต่อระบบบริการสุขภาพของประเทศ</div>
@@ -309,10 +348,10 @@
   </div>
 </section>
 
-<section class="sec-dark" data-tab="06 / PILLAR 03">
+<section class="sec-dark" data-tab="07 / PILLAR 03">
   <div class="pillar-ghost">03</div>
   <div class="pillar-content">
-    <div class="eyebrow">06 · เสาหลักที่ 3</div>
+    <div class="eyebrow">07 · เสาหลักที่ 3</div>
     <div class="pillar-title kinetic">ศูนย์ทดสอบมาตรฐาน<br>เครื่องมือแพทย์ครบวงจร</div>
     <div class="pillar-obj">วัตถุประสงค์</div>
     <div class="pillar-obj-txt">เป็นหน่วยงานกลางด้านมาตรฐาน สนับสนุนนวัตกรรมและการผลิตเครื่องมือแพทย์ของไทย</div>
@@ -335,10 +374,10 @@
   </div>
 </section>
 
-<section class="sec-light" data-tab="06 / PILLAR 04">
+<section class="sec-light" data-tab="07 / PILLAR 04">
   <div class="pillar-ghost">04</div>
   <div class="pillar-content">
-    <div class="eyebrow">06 · เสาหลักที่ 4</div>
+    <div class="eyebrow">07 · เสาหลักที่ 4</div>
     <div class="pillar-title kinetic">พัฒนาศักยภาพ<br>อุตสาหกรรมอาหารใหม่<br>ของประเทศไทย</div>
     <div class="pillar-obj">วัตถุประสงค์</div>
     <div class="pillar-obj-txt">ห้องปฏิบัติการสำหรับผลักดันอาหารนวัตกรรม (Future Food) ของประเทศสู่ครัวโลกด้วยความปลอดภัย</div>
@@ -358,10 +397,10 @@
   </div>
 </section>
 
-<section class="sec-dark" data-tab="06 / PILLAR 05">
+<section class="sec-dark" data-tab="07 / PILLAR 05">
   <div class="pillar-ghost">05</div>
   <div class="pillar-content">
-    <div class="eyebrow">06 · เสาหลักที่ 5</div>
+    <div class="eyebrow">07 · เสาหลักที่ 5</div>
     <div class="pillar-title kinetic">สมุนไพรไทยสู่ยา<br>ระดับสากล</div>
     <div class="pillar-obj">วัตถุประสงค์</div>
     <div class="pillar-obj-txt">เพิ่มมูลค่าผลิตภัณฑ์สมุนไพรไทยสู่การยอมรับในระดับสากล</div>
@@ -383,10 +422,10 @@
   </div>
 </section>
 
-<section class="sec-light" data-tab="06 / PILLAR 06">
+<section class="sec-light" data-tab="07 / PILLAR 06">
   <div class="pillar-ghost">06</div>
   <div class="pillar-content">
-    <div class="eyebrow">06 · เสาหลักที่ 6</div>
+    <div class="eyebrow">07 · เสาหลักที่ 6</div>
     <div class="pillar-title kinetic">สนับสนุนเส้นทาง<br>ท่องเที่ยวสุขภาพ<br>แบบครบวงจร</div>
     <div class="pillar-obj">วัตถุประสงค์</div>
     <div class="pillar-obj-txt">เพิ่มมูลค่าจากธุรกิจการท่องเที่ยว ด้วยกระบวนการตรวจวิเคราะห์ทางห้องปฏิบัติการทางการแพทย์และสาธารณสุข</div>
@@ -406,7 +445,7 @@
 </section>
 
 <!-- CONTACT (Page 21 - Deferred) -->
-<section class="sec-light" data-tab="07 / CONTACT">
+<section class="sec-dark" data-tab="08 / CONTACT">
   <div class="eyebrow">21 · Contact — ช่องทางติดต่อ</div>
   <div class="giant kinetic" style="font-size:clamp(2rem,5vw,3.6rem);">ติดต่อ<br>สอบถาม</div>
   <p class="body-txt" style="margin-top:26px;">ช่องทางการติดต่อสำหรับแต่ละเสาหลักยุทธศาสตร์วิจัยและนวัตกรรม</p>
@@ -422,7 +461,7 @@
 </section>
 
 <!-- CLOSING -->
-<section class="sec-dark" data-tab="08 / CLOSE">
+<section class="sec-dark" data-tab="09 / CLOSE">
   <div class="eyebrow">Closing</div>
   <div class="giant kinetic">เชื่อมโยงทุกความคิด<br>ร่วมสร้างอนาคต<br><span class="grad-text">วิทยาศาสตร์การแพทย์</span></div>
   <div class="tag">เชื่อมเครือข่าย · ขับเคลื่อนวิจัยและนวัตกรรม · สู่การมีอายุยืนยาวอย่างมีสุขภาพดี</div>
