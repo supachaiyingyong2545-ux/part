@@ -40,7 +40,12 @@
   .sec-light{ background:var(--light); color:var(--ink-on-light); }
   .dim{ opacity:0.6; }
 
-  .eyebrow{ font-family:var(--mono); font-size:12px; letter-spacing:0.22em; text-transform:uppercase; margin-bottom:22px; }
+  .eyebrow{
+    font-family:var(--mono); font-size:12px; letter-spacing:0.22em; text-transform:uppercase;
+    margin-bottom:22px; font-weight:600;
+  }
+  .sec-dark .eyebrow{ color:var(--a2); }
+  .sec-light .eyebrow{ color:var(--a1); }
 
   .kinetic{ will-change:transform, opacity; transition:opacity 0.1s linear; }
 
@@ -99,12 +104,41 @@
   .result-list li{ font-size:0.98rem; padding-left:22px; position:relative; }
   .result-list li::before{ content:"→"; position:absolute; left:0; font-family:var(--grotesk); }
 
+  /* timeline */
+  .timeline-wrap{ margin-top:44px; position:relative; }
+  .timeline-line{ position:absolute; left:0; top:0; width:2px; height:100%; background:var(--grad); }
+  .timeline-items{ display:flex; flex-direction:column; gap:48px; position:relative; padding-left:40px; }
+  .timeline-item{ position:relative; }
+  .timeline-dot{ position:absolute; left:-24px; top:0; width:20px; height:20px; border-radius:50%; background:var(--a2); border:3px solid; z-index:2; }
+  .sec-dark .timeline-dot{ border-color:var(--dark); }
+  .sec-light .timeline-dot{ border-color:var(--light); }
+  .timeline-year{ font-family:var(--grotesk); font-weight:700; font-size:1.4rem; color:var(--a2); }
+  .timeline-desc{ font-size:1rem; margin-top:8px; opacity:0.9; }
+
   /* closing */
   .tag{ font-family:var(--mono); font-size:14px; letter-spacing:0.08em; margin-top:22px; opacity:0.7; }
 
   @media (max-width:640px){
-    section{ padding:90px 7vw; }
+    section{ padding:70px 5vw; }
     .pillar-ghost{ display:none; }
+    .eyebrow{ font-size:10px; margin-bottom:16px; }
+    .giant{ font-size:clamp(2rem, 7vw, 3.2rem); }
+    .stat-row{ gap:4vw; margin-top:16px; }
+    .stat-num{ font-size:clamp(2rem, 8vw, 4rem); }
+    .stat-label{ font-size:10px; margin-top:8px; }
+    .body-txt{ font-size:0.95rem; }
+    .klist .row{ gap:16px; padding:16px 0; }
+    .klist .row .txt{ font-size:clamp(1rem, 2.4vw, 1.2rem); }
+    .pillar-title{ font-size:clamp(1.5rem, 4vw, 2.4rem); }
+    .ticker-wrap{ margin-top:24px; padding:10px 0; }
+    .ticker{ gap:20px; }
+    .ticker span{ font-size:0.75rem; }
+    .result-list{ gap:8px; }
+    .result-list li{ font-size:0.9rem; padding-left:18px; }
+    .timeline-items{ gap:32px; padding-left:30px; }
+    .timeline-dot{ left:-22px; width:16px; height:16px; border-width:2px; }
+    .timeline-year{ font-size:1.1rem; }
+    .timeline-desc{ font-size:0.9rem; margin-top:6px; }
   }
 </style>
 </head>
@@ -175,6 +209,38 @@
     <div class="row"><span class="idx">03</span><span class="txt">บริการตรวจวิเคราะห์ทางห้องปฏิบัติการ ในฐานะห้องปฏิบัติการอ้างอิง</span></div>
     <div class="row"><span class="idx">04</span><span class="txt">พัฒนาและกำหนดมาตรการเพื่อสนับสนุนการป้องกันและแก้ไขปัญหาสุขภาพ</span></div>
     <div class="row"><span class="idx">05</span><span class="txt">สื่อสารสาธารณะโดยอาศัยข้อมูลด้านวิทยาศาสตร์การแพทย์และสาธารณสุขของประเทศและเอเชีย</span></div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section class="sec-dark" data-tab="05.5 / ROADMAP">
+  <div class="eyebrow">05.5 · Strategic Roadmap</div>
+  <div class="giant kinetic" style="font-size:clamp(2rem,5vw,3.6rem);">เส้นทางการ<br>ขับเคลื่อน</div>
+  <p class="body-txt" style="margin-top:28px;">ยุทธศาสตร์วิจัยและนวัตกรรมครอบคลุม 4 ระยะการขับเคลื่อน ตั้งแต่ปี 2570 ถึง 2574</p>
+  <div class="timeline-wrap">
+    <div class="timeline-line"></div>
+    <div class="timeline-items">
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">Phase 1 · 2570 (2027)</div>
+        <div class="timeline-desc">Foundation — เตรียมโครงสร้างพื้นฐาน พัฒนาระบบบริหารจัดการวิจัยและนวัตกรรม</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">Phase 2 · 2571 (2028)</div>
+        <div class="timeline-desc">Acceleration — ขยายเครือข่าย เปิดห้องปฏิบัติการใหม่ เพิ่มศักยภาพบุคลากร</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">Phase 3 · 2572 (2029)</div>
+        <div class="timeline-desc">Consolidation — ประสานความสำเร็จของเสาหลัก 6 ด้าน ปรับปรุงตามผลประเมิน</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">Phase 4 · 2573–2574 (2030–2031)</div>
+        <div class="timeline-desc">Recognition — บรรลุวิสัยทัศน์ องค์การชั้นนำด้านวิทยาศาสตร์การแพทย์ 1 ใน 3 ของเอเชีย</div>
+      </div>
+    </div>
   </div>
 </section>
 
