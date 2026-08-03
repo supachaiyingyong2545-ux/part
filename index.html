@@ -1772,13 +1772,14 @@
                 // Real-time Supabase listener
                 (async () => {
                     try {
-                        // Initial load
+                        // Initial load - get recent comments only (faster)
                         console.log('Fetching comments from Supabase...');
                         const { data, error } = await supabase
                             .from('comments')
                             .select('*')
                             .eq('status', 'approved')
-                            .order('created_at', { ascending: false });
+                            .order('created_at', { ascending: false })
+                            .limit(50); // Load only 50 recent comments for speed
 
                         console.log('Supabase response:', { data, error });
                         if (error) throw error;
@@ -1943,7 +1944,8 @@
                         const { data, error } = await supabase
                             .from('comments')
                             .select('*')
-                            .order('created_at', { ascending: false });
+                            .order('created_at', { ascending: false })
+                            .limit(100); // Load 100 recent for admin
 
                         if (error) throw error;
 
