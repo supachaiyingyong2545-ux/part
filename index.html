@@ -2,514 +2,308 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DMSc CONNECT 2026 — Feedback System</title>
-    <meta name="theme-color" content="#1769C2">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DMSc CONNECT 2026 — Feedback Dashboard</title>
+    <meta name="theme-color" content="#F5F1E8">
 
-    <!-- Fonts & Libraries -->
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
-        :root {
-            --primary-blue: #1769C2;
-            --secondary-cyan: #38BDF8;
-            --mint-green: #38CFA7;
-            --accent-orange: #FFB547;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
             font-family: 'Sarabun', sans-serif;
-            background: repeating-linear-gradient(
-                90deg,
-                #8B6F47 0px,
-                #8B6F47 2px,
-                #9B7F57 2px,
-                #9B7F57 4px,
-                #A68560 4px,
-                #A68560 6px,
-                #8B6F47 6px,
-                #8B6F47 8px
-            );
-            background-size: 100% 100%;
-            color: #1e293b;
+            background: linear-gradient(135deg, #F5F1E8 0%, #F9F7F2 50%, #F5F1E8 100%);
+            color: #2D2D2D;
             overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-            position: relative;
+            min-height: 100vh;
         }
 
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image:
-                radial-gradient(circle at 20% 30%, rgba(0,0,0,0.03) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(0,0,0,0.05) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        body > * {
-            position: relative;
-            z-index: 1;
-        }
-
+        /* Smooth animations */
         @keyframes fadeInScale {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        .featured-enter {
-            animation: fadeInScale 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
         @keyframes slideInUp {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .list-enter {
-            animation: slideInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            opacity: 0;
-        }
-
-        @keyframes pulseSoft {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
-        }
-        .skeleton-pulse {
-            animation: pulseSoft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        #smallCardsWrapper {
-            scroll-behavior: smooth !important;
-            transition: scroll-top 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        .card-enter {
+            animation: fadeInScale 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        .sticky-note {
-            background: linear-gradient(135deg, #ffffff 0%, #f8fffe 100%);
-            border: none;
-            box-shadow:
-                0 12px 28px rgba(0, 0, 0, 0.3),
-                0 0 0 1px rgba(0, 0, 0, 0.08),
-                inset 0 1px 0 rgba(255, 255, 255, 0.8);
-            border-radius: 0.75rem;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
+        .title-enter {
+            animation: slideInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Card Styling */
+        .feedback-card {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
             overflow: hidden;
-            break-inside: avoid;
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             display: flex;
             flex-direction: column;
+            padding: 40px;
+            min-height: 280px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
         }
 
-        .sticky-note::before {
-            content: '';
+        .feedback-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+            opacity: 0.7;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            line-height: 1.3;
+            color: #2D2D2D;
+        }
+
+        .card-text {
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 24px;
+            flex-grow: 1;
+            color: #555555;
+        }
+
+        .card-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            opacity: 0.8;
+        }
+
+        .card-button:hover {
+            opacity: 1;
+            transform: translateX(4px);
+        }
+
+        /* Decorative shapes */
+        .card-shape {
             position: absolute;
-            top: -8px;
-            left: 20%;
-            width: 30px;
-            height: 14px;
-            background: radial-gradient(ellipse at center, #FFE135, #FFD700);
+            bottom: -30%;
+            right: -15%;
+            width: 280px;
+            height: 280px;
             border-radius: 50%;
-            box-shadow:
-                0 2px 6px rgba(0, 0, 0, 0.25),
-                inset -0.5px -0.5px 2px rgba(0, 0, 0, 0.15),
-                inset 0.5px 0.5px 2px rgba(255, 255, 255, 0.7);
-            z-index: 10;
+            opacity: 0.15;
+            pointer-events: none;
         }
 
-        .sticky-note:hover {
-            transform: translateY(-6px);
-            box-shadow:
-                0 18px 38px rgba(0, 0, 0, 0.35),
-                0 0 0 1px rgba(0, 0, 0, 0.08),
-                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        .card-shape.shape-2 {
+            border-radius: 40% 60% 70% 30%;
+            bottom: -20%;
+            right: -10%;
+            width: 240px;
+            height: 240px;
         }
 
-        .featured-card .new-badge {
-            background: linear-gradient(135deg, var(--secondary-cyan) 0%, var(--mint-green) 100%);
-            animation: fadeInScale 0.4s ease forwards;
+        .card-shape.shape-3 {
+            width: 200px;
+            height: 200px;
+            bottom: -10%;
+            right: -5%;
         }
 
+        /* Header */
+        header {
+            padding: 60px 40px;
+            text-align: center;
+        }
 
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(56, 189, 248, 0.3); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(56, 189, 248, 0.6); }
+        .header-title {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #2D2D2D;
+            line-height: 1.2;
+        }
+
+        .header-subtitle {
+            font-size: 18px;
+            color: #666666;
+            font-weight: 400;
+        }
+
+        /* Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 32px;
+            padding: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 1280px) {
+            .cards-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1920px) {
+            .cards-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        /* Pastel Colors */
+        .bg-cream { background: linear-gradient(135deg, #FFF9F0 0%, #FFFBF7 100%); }
+        .bg-blue { background: linear-gradient(135deg, #E8F2FF 0%, #F0F7FF 100%); }
+        .bg-green { background: linear-gradient(135deg, #E8F5F0 0%, #F0FBF8 100%); }
+        .bg-pink { background: linear-gradient(135deg, #FFE8F0 0%, #FFF0F8 100%); }
+        .bg-purple { background: linear-gradient(135deg, #F0E8FF 0%, #F8F0FF 100%); }
+        .bg-yellow { background: linear-gradient(135deg, #FFF8E8 0%, #FFFBF0 100%); }
+
+        .text-cream { color: #D4A574; }
+        .text-blue { color: #4A90E2; }
+        .text-green { color: #5CB85C; }
+        .text-pink { color: #E91E63; }
+        .text-purple { color: #9C27B0; }
+        .text-yellow { color: #F39C12; }
+
+        .shape-cream { background: #D4A574; }
+        .shape-blue { background: #4A90E2; }
+        .shape-green { background: #5CB85C; }
+        .shape-pink { background: #E91E63; }
+        .shape-purple { background: #9C27B0; }
+        .shape-yellow { background: #F39C12; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col select-none overflow-hidden">
+<body>
 
-<!-- ================= HEADER ================= -->
-<header class="bg-slate-900/90 backdrop-blur-sm py-3 px-4 lg:px-8 flex justify-between items-center relative z-20 shrink-0 border-b border-slate-800 shadow-lg">
-    <div class="flex items-center space-x-3 lg:space-x-4 flex-1">
-        <div>
-            <h1 class="text-xl lg:text-2xl font-bold text-white">
-                DMSc CONNECT 2026
-            </h1>
-            <p class="text-slate-300 text-xs font-medium mt-0.5">ระบบระดมความคิดเห็น</p>
-        </div>
-    </div>
-
-    <div class="flex items-center space-x-3 shrink-0">
-        <div class="bg-slate-700/80 px-4 py-2 rounded-xl flex items-center space-x-2 border border-slate-600 hidden sm:flex">
-            <i data-lucide="clock" class="w-4 h-4 text-white"></i>
-            <div id="clockTime" class="text-sm font-bold text-white tabular-nums">--:--:--</div>
-        </div>
-        <button onclick="toggleFormPage()" class="w-10 h-10 lg:w-11 lg:h-11 rounded-xl text-white hover:scale-110 active:scale-95 transition-all shadow-md flex items-center justify-center font-bold"
-            style="background: linear-gradient(135deg, var(--secondary-cyan) 0%, var(--mint-green) 100%);" title="แบบฟอร์ม">
-            <i data-lucide="edit-3" class="w-5 h-5"></i>
-        </button>
-        <button onclick="toggleStatsPage()" class="w-10 h-10 lg:w-11 lg:h-11 rounded-xl text-white hover:scale-110 active:scale-95 transition-all shadow-md flex items-center justify-center font-bold"
-            style="background: var(--primary-blue);" title="สถิติ">
-            <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
-        </button>
-    </div>
+<!-- HEADER -->
+<header class="title-enter">
+    <h1 class="header-title">DMSc CONNECT 2026</h1>
+    <p class="header-subtitle">ร่วมแสดงความคิดเห็น เชื่อมโยงทุกความคิด</p>
 </header>
 
-<!-- ================= MAIN FEEDBACK DISPLAY ================= -->
-<main id="mainPage" class="flex-grow overflow-y-auto p-6 lg:p-8">
-    <div class="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6 space-y-6 mx-auto max-w-7xl">
-        <div id="feedbackBoard">
-            <!-- Sticky notes will be displayed here -->
-        </div>
-    </div>
-</main>
-
-<!-- ================= FORM PAGE ================= -->
-<div id="formPage" class="hidden fixed inset-0 z-[150] bg-gradient-to-br from-white via-sky-50 to-emerald-50 overflow-y-auto flex flex-col">
-    <header class="bg-white/80 backdrop-blur-sm py-3 px-4 lg:px-8 flex justify-between items-center sticky top-0 z-10 border-b border-sky-100/50">
-        <div>
-            <h1 class="text-xl lg:text-2xl font-bold" style="color: var(--primary-blue);">แบบฟอร์มความคิดเห็น</h1>
-            <p class="text-slate-500 text-xs font-medium mt-0.5">DMSc CONNECT 2026</p>
-        </div>
-        <button onclick="toggleFormPage()" class="w-10 h-10 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center transition-all">
-            <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
-    </header>
-
-    <div class="flex-grow flex items-center justify-center p-4 lg:p-8">
-        <div class="w-full max-w-2xl">
-            <form id="feedbackForm" class="space-y-5">
-                <div>
-                    <label class="block text-sm font-bold text-slate-800 mb-2">ความคิดเห็นของคุณ</label>
-                    <textarea id="feedbackText" placeholder="แบ่งปันความคิดเห็นของคุณที่นี่..." maxlength="500" required
-                        class="w-full px-4 py-3 border-2 border-sky-200 rounded-xl focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all resize-none text-slate-700 font-medium"
-                        rows="5"></textarea>
-                    <div class="text-xs text-slate-500 mt-1 text-right"><span id="charCounter">0</span>/500</div>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-bold text-slate-800 mb-2">เสาหลักที่เกี่ยวข้อง</label>
-                    <select id="pillar" required
-                        class="w-full px-4 py-3 border-2 border-sky-200 rounded-xl focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all text-slate-700 font-medium">
-                        <option value="">เลือกเสาหลัก...</option>
-                        <option value="pillar1">พัฒนาศักยภาพการบริการตรวจวินิจฉัยโรคของประเทศไทย</option>
-                        <option value="pillar2">เสริมสร้างความเข้มแข็งและยกระดับมาตรฐานอุตสาหกรรมชีววัคซีน และผลิตภัณฑ์การแพทย์ขั้นสูง</option>
-                        <option value="pillar3">พัฒนาศูนย์ทดสอบมาตรฐานเครื่องมือแพทย์ระดับชาติแบบครบวงจร</option>
-                        <option value="pillar4">สนับสนุนและพัฒนาศักยภาพอุตสาหกรรมอาหารใหม่ของประเทศไทย</option>
-                        <option value="pillar5">ยกระดับสมุนไพรไทยสู่ยาและผลิตภัณฑ์สุขภาพระดับสากล</option>
-                        <option value="pillar6">สนับสนุนเส้นทางการท่องเที่ยวสุขภาพแบบครบวงจร</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-bold text-slate-800 mb-2">ประเภทบุคลากร</label>
-                    <select id="staffType" required
-                        class="w-full px-4 py-3 border-2 border-sky-200 rounded-xl focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all text-slate-700 font-medium">
-                        <option value="">เลือกประเภท...</option>
-                        <option value="internal">บุคคลภายใน</option>
-                        <option value="external">บุคคลภายนอก</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-bold text-slate-800 mb-2">ชื่อของคุณ (ไม่บังคับ)</label>
-                    <div class="flex gap-3">
-                        <input type="text" id="author" placeholder="ใส่ชื่อของคุณ..."
-                            class="flex-1 px-4 py-3 border-2 border-sky-200 rounded-xl focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all text-slate-700 font-medium">
-                        <button type="button" id="anonBtn" onclick="toggleAnonymous()"
-                            class="px-5 py-3 bg-slate-100 text-slate-600 font-bold rounded-lg border-2 border-slate-200 hover:bg-sky-100 hover:border-sky-300 hover:text-blue-600 transition-all active:scale-95 whitespace-nowrap">
-                            ไม่ระบุชื่อ
-                        </button>
-                    </div>
-                </div>
-
-                <button type="submit"
-                    class="w-full py-3 text-white font-bold rounded-xl hover:shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2"
-                    style="background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-cyan) 100%);">
-                    <i data-lucide="send" class="w-4 h-4"></i>
-                    ส่งความคิดเห็น
-                </button>
-            </form>
-
-            <p class="text-xs text-slate-400 text-center mt-8">✨ ระบบระดมความคิดเห็นแบบ Real-time — DMSc CONNECT 2026</p>
-        </div>
-    </div>
+<!-- CARDS GRID -->
+<div class="cards-grid" id="cardsContainer">
+    <!-- Cards will be generated here -->
 </div>
 
-<!-- ================= STATS PAGE ================= -->
-<div id="statsPage" class="hidden fixed inset-0 z-[200] bg-gradient-to-br from-white via-sky-50 to-emerald-50 overflow-y-auto">
-    <header class="bg-white/80 backdrop-blur-sm py-3 px-4 lg:px-8 flex justify-between items-center sticky top-0 z-10 border-b border-sky-100/50">
-        <div>
-            <h1 class="text-xl lg:text-2xl font-bold" style="color: var(--primary-blue);">สถิติความคิดเห็น</h1>
-            <p class="text-slate-500 text-xs font-medium mt-0.5">DMSc CONNECT 2026</p>
-        </div>
-        <button onclick="toggleStatsPage()" class="w-10 h-10 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center transition-all">
-            <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
-    </header>
-
-    <div class="p-4 lg:p-8 max-w-[1920px] mx-auto">
-        <!-- Stats Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <div class="bg-white/80 backdrop-blur rounded-xl p-6 border border-sky-100 text-center">
-                <div class="w-12 h-12 text-white rounded-lg flex items-center justify-center mx-auto mb-3 font-bold" style="background: linear-gradient(135deg, var(--secondary-cyan) 0%, var(--primary-blue) 100%);">
-                    <i data-lucide="users" class="w-6 h-6"></i>
-                </div>
-                <div id="stat_people" class="text-3xl font-bold" style="color: var(--primary-blue);">0</div>
-                <p class="text-sm text-slate-500 font-medium mt-2">ผู้เข้าร่วม</p>
-            </div>
-
-            <div class="bg-white/80 backdrop-blur rounded-xl p-6 border border-emerald-100 text-center">
-                <div class="w-12 h-12 text-white rounded-lg flex items-center justify-center mx-auto mb-3 font-bold" style="background: var(--mint-green);">
-                    <i data-lucide="message-circle" class="w-6 h-6"></i>
-                </div>
-                <div id="stat_feedback" class="text-3xl font-bold" style="color: var(--mint-green);">0</div>
-                <p class="text-sm text-slate-500 font-medium mt-2">ความคิดเห็น</p>
-            </div>
-
-            <div class="bg-white/80 backdrop-blur rounded-xl p-6 border border-amber-100 text-center">
-                <div class="w-12 h-12 text-white rounded-lg flex items-center justify-center mx-auto mb-3 font-bold" style="background: var(--accent-orange);">
-                    <i data-lucide="heart" class="w-6 h-6"></i>
-                </div>
-                <div id="stat_likes" class="text-3xl font-bold" style="color: var(--accent-orange);">0</div>
-                <p class="text-sm text-slate-500 font-medium mt-2">ถูกใจ</p>
-            </div>
-
-            <div class="bg-white/80 backdrop-blur rounded-xl p-6 border border-slate-100 text-center">
-                <div class="w-12 h-12 text-white rounded-lg flex items-center justify-center mx-auto mb-3 font-bold" style="background: var(--primary-blue);">
-                    <i data-lucide="trending-up" class="w-6 h-6"></i>
-                </div>
-                <div id="stat_latest" class="text-lg font-bold text-slate-700 truncate">-</div>
-                <p class="text-sm text-slate-500 font-medium mt-2">เสาหลักล่าสุด</p>
-            </div>
-        </div>
-
-        <!-- Pillar Breakdown -->
-        <div class="bg-white/80 backdrop-blur rounded-xl p-6 lg:p-8 border border-sky-100">
-            <h2 class="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">
-                <span style="color: var(--mint-green);">📊</span>
-                การกระจายตัวตามเสาหลัก
-            </h2>
-            <div id="pillarBreakdown" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <!-- Pillar stats จะแสดงที่นี่ -->
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- ================= SUCCESS MODAL ================= -->
-<div id="successModal" class="hidden fixed inset-0 z-[120] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
-    <div class="bg-white rounded-2xl p-8 max-w-sm w-full text-center shadow-2xl">
-        <div class="w-20 h-20 text-white rounded-full flex items-center justify-center mx-auto mb-5 font-bold" style="background: linear-gradient(135deg, var(--secondary-cyan) 0%, var(--mint-green) 100%);">
-            <i data-lucide="check-circle" class="w-10 h-10"></i>
-        </div>
-        <h3 class="text-2xl font-bold text-slate-800 mb-2">ส่งสำเร็จ!</h3>
-        <p class="text-sm text-slate-500 mb-6">ขอบคุณที่ร่วมแสดงความคิดเห็น</p>
-        <button onclick="closeSuccess()" class="w-full text-white font-bold py-3 rounded-xl hover:shadow-lg transition-all active:scale-95"
-            style="background: var(--primary-blue);">
-            ปิด
-        </button>
-    </div>
-</div>
-
-<!-- ================= JAVASCRIPT ================= -->
+<!-- SCRIPT -->
 <script>
     lucide.createIcons();
 
     const GAS_URL = 'https://script.google.com/macros/s/AKfycbwJLxRLl8nbyo3nxTCqOAANyMOKh9mQG5yJcOR8UWsaPQNEZI71G-f7TpZoHg6RgMXKBA/exec';
 
-    const PILLAR_NAMES = {
-        'pillar1': 'พัฒนาศักยภาพการบริการตรวจวินิจฉัยโรคของประเทศไทย',
-        'pillar2': 'เสริมสร้างความเข้มแข็งและยกระดับมาตรฐานอุตสาหกรรมชีววัคซีน และผลิตภัณฑ์การแพทย์ขั้นสูง',
-        'pillar3': 'พัฒนาศูนย์ทดสอบมาตรฐานเครื่องมือแพทย์ระดับชาติแบบครบวงจร',
-        'pillar4': 'สนับสนุนและพัฒนาศักยภาพอุตสาหกรรมอาหารใหม่ของประเทศไทย',
-        'pillar5': 'ยกระดับสมุนไพรไทยสู่ยาและผลิตภัณฑ์สุขภาพระดับสากล',
-        'pillar6': 'สนับสนุนเส้นทางการท่องเที่ยวสุขภาพแบบครบวงจร'
-    };
+    // Sample data for testing
+    const mockFeedback = [
+        {
+            pillar: 'พัฒนาศักยภาพการบริการตรวจวินิจฉัยโรคของประเทศไทย',
+            text: 'อยากให้มีระบบเชื่อมโยงข้อมูลระหว่างหน่วยงานมากขึ้น เพื่อให้การตรวจวินิจฉัยรวดเร็วและแม่นยำมากขึ้น',
+            author: 'สมศรี',
+            timestamp: new Date().toISOString()
+        },
+        {
+            pillar: 'เสริมสร้างความเข้มแข็งและยกระดับมาตรฐานอุตสาหกรรมชีววัคซีน และผลิตภัณฑ์การแพทย์ขั้นสูง',
+            text: 'ควรมีการนำ AI มาช่วยวิเคราะห์ข้อมูลเพื่อการบริการที่รวดเร็วขึ้น และลดข้อผิดพลาด',
+            author: 'สมชาย',
+            timestamp: new Date(Date.now() - 60000).toISOString()
+        },
+        {
+            pillar: 'พัฒนาศูนย์ทดสอบมาตรฐานเครื่องมือแพทย์ระดับชาติแบบครบวงจร',
+            text: 'อยากให้มี dashboard ที่เข้าใจง่ายและดูทันสมัย พร้อมรายงานแบบเรียลไทม์',
+            author: 'สมหญิง',
+            timestamp: new Date(Date.now() - 120000).toISOString()
+        },
+        {
+            pillar: 'สนับสนุนและพัฒนาศักยภาพอุตสาหกรรมอาหารใหม่ของประเทศไทย',
+            text: 'เสนอให้มีช่องทางรับฟังความคิดเห็นแบบ real-time ในทุกกิจกรรม เพื่อความโปร่งใส',
+            author: 'สมปัญญา',
+            timestamp: new Date(Date.now() - 180000).toISOString()
+        }
+    ];
 
-    const PILLAR_COLORS = {
-        'pillar1': { bg: '#E3F2FD', bar: '#1769C2', text: '#1769C2', icon: '⚗️' },
-        'pillar2': { bg: '#E0F7F4', bar: '#38BDF8', text: '#38BDF8', icon: '💊' },
-        'pillar3': { bg: '#F0FFFE', bar: '#38CFA7', text: '#38CFA7', icon: '⚙️' },
-        'pillar4': { bg: '#FFF9E6', bar: '#FFB547', text: '#FFB547', icon: '🍴' },
-        'pillar5': { bg: '#F0FFF8', bar: '#38CFA7', text: '#38CFA7', icon: '🌿' },
-        'pillar6': { bg: '#F3F4F6', bar: '#1769C2', text: '#1769C2', icon: '🏥' }
-    };
-
+    const colors = ['cream', 'blue', 'green', 'pink', 'purple', 'yellow'];
     let allFeedback = [];
-    let isAnonymous = false;
-    let autoScrollPosition = 0;
-    let autoScrollTimer = null;
+    let displayIndex = 0;
 
-    // ================= CLOCK =================
-    function updateClock() {
-        const now = new Date();
-        document.getElementById('clockTime').innerText = now.toLocaleTimeString('th-TH', { hour12: false });
-    }
-    setInterval(updateClock, 1000);
-    updateClock();
-
-    // ================= PAGE TOGGLE =================
-    function toggleFormPage() {
-        const page = document.getElementById('formPage');
-        const main = document.getElementById('mainPage');
-        page.classList.toggle('hidden');
-        if (!page.classList.contains('hidden')) {
-            main.classList.add('hidden');
-            document.getElementById('feedbackText').focus();
-        } else {
-            main.classList.remove('hidden');
-        }
+    function getColorScheme(index) {
+        return colors[index % colors.length];
     }
 
-    function toggleStatsPage() {
-        const page = document.getElementById('statsPage');
-        const main = document.getElementById('mainPage');
-        page.classList.toggle('hidden');
-        if (!page.classList.contains('hidden')) {
-            main.classList.add('hidden');
-        } else {
-            main.classList.remove('hidden');
-        }
+    function escapeHtml(text) {
+        const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+        return text.replace(/[&<>"']/g, m => map[m]);
     }
 
-    // ================= FORM HANDLERS =================
-    function toggleAnonymous() {
-        isAnonymous = !isAnonymous;
-        const btn = document.getElementById('anonBtn');
-        const inp = document.getElementById('author');
-        if (isAnonymous) {
-            btn.style.background = 'linear-gradient(135deg, #38BDF8 0%, #38CFA7 100%)';
-            btn.style.color = 'white';
-            btn.style.borderColor = '#38BDF8';
-            inp.disabled = true;
-            inp.value = '';
-        } else {
-            btn.style.background = '#f3f4f6';
-            btn.style.color = '#4b5563';
-            btn.style.borderColor = '#e2e8f0';
-            inp.disabled = false;
-        }
+    function formatTime(timestamp) {
+        const date = new Date(timestamp);
+        return date.toLocaleString('th-TH', {
+            hour: '2-digit',
+            minute: '2-digit',
+            day: 'numeric',
+            month: 'short'
+        });
     }
 
-    document.getElementById('feedbackText').addEventListener('input', function() {
-        document.getElementById('charCounter').textContent = this.value.length;
-    });
+    function renderCards() {
+        const container = document.getElementById('cardsContainer');
+        const itemsToDisplay = allFeedback.slice(0, 4);
 
-    document.getElementById('feedbackForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const btn = this.querySelector('button[type="submit"]');
-        btn.disabled = true;
-        btn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 animate-spin"></i> กำลังส่ง...';
-
-        try {
-            const formData = new FormData();
-            formData.append('action', 'addFeedback');
-            formData.append('text', document.getElementById('feedbackText').value);
-            formData.append('pillar', PILLAR_NAMES[document.getElementById('pillar').value]);
-            formData.append('staffType', document.getElementById('staffType').value === 'internal' ? 'บุคคลภายใน' : 'บุคคลภายนอก');
-            formData.append('author', isAnonymous ? 'Anonymous' : (document.getElementById('author').value || 'Anonymous'));
-
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 15000);
-
-            const res = await fetch(GAS_URL, {
-                method: 'POST',
-                body: formData,
-                signal: controller.signal
-            });
-
-            clearTimeout(timeoutId);
-
-            if (res.ok) {
-                document.getElementById('successModal').classList.remove('hidden');
-                this.reset();
-                document.getElementById('charCounter').textContent = '0';
-                isAnonymous = false;
-                toggleFormPage();
-                setTimeout(() => updateDisplay(), 500);
-            } else {
-                alert('ส่งข้อมูลไม่สำเร็จ ลองอีกครั้ง');
-            }
-        } catch (error) {
-            alert('ส่งข้อมูลช้าเกินไป ลองอีกครั้ง');
-        } finally {
-            btn.disabled = false;
-            btn.innerHTML = '<i data-lucide="send" class="w-4 h-4"></i> ส่งความคิดเห็น';
-            lucide.createIcons();
-        }
-    });
-
-    function closeSuccess() {
-        document.getElementById('successModal').classList.add('hidden');
-    }
-
-
-    function renderFeedbackBoard() {
-        const board = document.getElementById('feedbackBoard');
-
-        if (allFeedback.length === 0) {
-            board.innerHTML = `
-                <div class="col-span-full text-center text-slate-400 py-20">
-                    <i data-lucide="message-square" class="w-16 h-16 mx-auto mb-4 opacity-30"></i>
-                    <p class="text-lg font-medium">ยังไม่มีความคิดเห็นเข้ามา</p>
-                </div>`;
-            return;
-        }
-
-        const pillarGradients = {
-            'pillar1': 'linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 50%, #90CAF9 100%)',
-            'pillar2': 'linear-gradient(135deg, #E0F7F4 0%, #B2DFDB 50%, #80DEEA 100%)',
-            'pillar3': 'linear-gradient(135deg, #F0FFFE 0%, #B2EBF2 50%, #80DEEA 100%)',
-            'pillar4': 'linear-gradient(135deg, #FFF9E6 0%, #FFE082 50%, #FFC107 100%)',
-            'pillar5': 'linear-gradient(135deg, #F0FFF8 0%, #C8E6C9 50%, #81C784 100%)',
-            'pillar6': 'linear-gradient(135deg, #F3F4F6 0%, #BDBDBD 50%, #9E9E9E 100%)'
-        };
-
-        board.innerHTML = allFeedback.map((item, idx) => {
-            const pillarKey = Object.keys(PILLAR_NAMES).find(k => PILLAR_NAMES[k] === item.pillar);
-            const colors = PILLAR_COLORS[pillarKey] || { text: '#1769C2', icon: '💬' };
-            const gradientBg = pillarGradients[pillarKey] || pillarGradients['pillar1'];
-
-            const timestamp = new Date(item.timestamp).toLocaleString('th-TH', {
-                hour: '2-digit',
-                minute: '2-digit',
-                day: 'numeric',
-                month: 'short'
-            });
-
-            const rotation = (Math.random() - 0.5) * 3;
+        container.innerHTML = itemsToDisplay.map((item, idx) => {
+            const color = getColorScheme(idx);
+            const shortPillar = item.pillar.substring(0, 20) + '...';
+            const shortText = item.text.substring(0, 120) + (item.text.length > 120 ? '...' : '');
 
             return `
-                <div class="sticky-note p-5 list-enter" style="background: ${gradientBg}; transform: rotate(${rotation}deg); animation-delay: ${idx * 0.05}s; min-height: 180px;">
-                    <div class="flex-1 flex flex-col h-full">
-                        <div class="flex items-start gap-2 mb-3">
-                            <span class="text-2xl">${colors.icon}</span>
-                            <p class="text-xs font-bold uppercase tracking-wide" style="color: ${colors.text}; line-height: 1.2;">${item.pillar || '-'}</p>
-                        </div>
-
-                        <p class="flex-1 font-bold text-slate-800 text-sm line-clamp-5 mb-3">${escapeHtml(item.text)}</p>
-
-                        <div class="text-xs pt-2 border-t" style="border-color: ${colors.text}30; color: ${colors.text};">
-                            ${timestamp}
-                        </div>
-                    </div>
+                <div class="feedback-card card-enter ${`bg-${color}`}" style="animation-delay: ${idx * 0.1}s;">
+                    <div class="card-shape ${`shape-${color}`}"></div>
+                    <div class="card-label ${`text-${color}`}">เสาหลัก</div>
+                    <h3 class="card-title">${escapeHtml(shortPillar)}</h3>
+                    <p class="card-text">${escapeHtml(shortText)}</p>
+                    <a href="#" class="card-button ${`text-${color}`}">
+                        อ่านเพิ่มเติม
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
                 </div>
             `;
         }).join('');
@@ -517,8 +311,7 @@
         lucide.createIcons();
     }
 
-    // ================= DISPLAY FUNCTIONS =================
-    async function updateDisplay() {
+    async function updateFeedback() {
         try {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 10000);
@@ -534,62 +327,29 @@
             const data = await res.json();
             if (data.success && data.feedback) {
                 allFeedback = data.feedback;
-                renderFeedbackBoard();
-                updateStats();
+                renderCards();
             }
         } catch (error) {
-            console.error('Error:', error);
+            console.error('Error fetching feedback:', error);
+            // Use mock data if fetch fails
+            if (allFeedback.length === 0) {
+                allFeedback = mockFeedback;
+                renderCards();
+            }
         }
     }
 
-    function updateStats() {
-        const feedbackCount = allFeedback.length;
-        const participantsCount = new Set(allFeedback.map(f => f.author)).size;
-        const likesCount = feedbackCount * 5;
-        const latestPillar = allFeedback.length > 0 ? (allFeedback[0].pillar || '-') : '-';
+    // Auto-rotate cards every 30 seconds
+    setInterval(() => {
+        if (allFeedback.length > 4) {
+            displayIndex = (displayIndex + 1) % (allFeedback.length - 3);
+            renderCards();
+        }
+    }, 30000);
 
-        document.getElementById('stat_people').textContent = participantsCount || 0;
-        document.getElementById('stat_feedback').textContent = feedbackCount || 0;
-        document.getElementById('stat_likes').textContent = likesCount || 0;
-        document.getElementById('stat_latest').textContent = latestPillar;
-
-        // Pillar breakdown
-        const pillarCounts = {};
-        allFeedback.forEach(f => {
-            const p = f.pillar || 'อื่นๆ';
-            pillarCounts[p] = (pillarCounts[p] || 0) + 1;
-        });
-
-        const maxCount = Math.max(...Object.values(pillarCounts), 1);
-        const pillarHtml = Object.entries(pillarCounts)
-            .sort((a, b) => b[1] - a[1])
-            .map(([pillar, count]) => {
-                const pct = Math.round((count / maxCount) * 100);
-                const pillarKey = Object.keys(PILLAR_NAMES).find(k => PILLAR_NAMES[k] === pillar);
-                const colors = PILLAR_COLORS[pillarKey] || { bg: '#f3f4f6', bar: '#1769C2', text: '#1769C2' };
-                return `
-                    <div style="background: ${colors.bg};" class="rounded-xl p-5 border border-sky-100">
-                        <div class="flex justify-between items-center mb-3">
-                            <p class="font-bold text-slate-800">${pillar}</p>
-                            <span class="text-2xl font-bold" style="color: ${colors.text};">${count}</span>
-                        </div>
-                        <div class="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
-                            <div style="background: ${colors.bar};" class="h-full rounded-full transition-all" style="width: ${pct}%"></div>
-                        </div>
-                        <p class="text-xs text-slate-500 mt-2 text-right">${pct}%</p>
-                    </div>`;
-            }).join('');
-        document.getElementById('pillarBreakdown').innerHTML = pillarHtml;
-    }
-
-    function escapeHtml(text) {
-        const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
-        return text.replace(/[&<>"']/g, m => map[m]);
-    }
-
-    // ================= INIT =================
-    updateDisplay();
-    setInterval(updateDisplay, 1000);
+    // Initial load and poll every 5 seconds
+    updateFeedback();
+    setInterval(updateFeedback, 5000);
 </script>
 
 </body>
