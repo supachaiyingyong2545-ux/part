@@ -211,39 +211,28 @@
             margin-bottom: 12px;
         }
 
-        /* ========== TV VIEW - BEAUTIFUL ========== */
+        /* ========== TV VIEW - AUTO-SCROLLING CAROUSEL ========== */
         .tv-view {
             width: 100vw;
             height: 100vh;
             display: none;
             position: relative;
             overflow: hidden;
-            background: radial-gradient(circle at 48% 43%, #fff 0 28%, rgba(255,255,255,.58) 52%, transparent 76%), linear-gradient(155deg, #f9fdff, #eef8ff 58%, #e8f5ff);
+            background: linear-gradient(135deg, #f5f9ff 0%, #e8f4ff 100%);
         }
         .tv-view.active { display: block; }
 
-        .tv-view::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            opacity: 0.45;
-            background-image: radial-gradient(circle, #4fbbef 1.2px, transparent 1.4px);
-            background-size: 34px 34px;
-            mask-image: linear-gradient(90deg, #0000, #000 25%, #000 74%, #0000);
-            pointer-events: none;
-        }
-
         header {
             position: absolute;
-            left: 3.5%;
-            right: 3.5%;
-            top: 2%;
+            left: 5%;
+            right: 5%;
+            top: 3%;
             text-align: center;
             z-index: 2;
         }
         header h1 {
             margin: 0;
-            font-size: clamp(32px, 3.3vw, 64px);
+            font-size: clamp(32px, 3vw, 56px);
             line-height: 1;
             color: var(--navy);
             font-weight: 900;
@@ -252,263 +241,184 @@
             color: var(--secondary-cyan);
         }
         header p {
-            margin: 0.5vh 0 1.3vh;
-            font-size: clamp(16px, 1.45vw, 28px);
+            margin: 0.5vh 0 1vh;
+            font-size: clamp(14px, 1.2vw, 24px);
             color: #666;
         }
         header h2 {
             margin: 0;
-            font-size: clamp(25px, 2.45vw, 49px);
+            font-size: clamp(20px, 2vw, 40px);
             color: #102f61;
             font-weight: 900;
         }
 
         .stage {
             position: absolute;
-            left: 2.4%;
-            right: 2.4%;
-            top: 24%;
-            bottom: 18%;
+            left: 5%;
+            right: 5%;
+            top: 18%;
+            height: 55%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
         }
 
-        .network {
-            position: absolute;
-            inset: 3%;
-            opacity: 0.22;
-            background: linear-gradient(25deg, transparent 42%, #39aeea 42.2% 42.45%, transparent 42.7%), linear-gradient(155deg, transparent 46%, #39aeea 46.2% 46.45%, transparent 46.7%);
+        .carousel-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .carousel-track {
+            display: flex;
+            gap: 24px;
+            width: 100%;
+            height: 100%;
+            align-items: center;
+            transition: transform 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+
+        .carousel-item {
+            flex-shrink: 0;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .card {
-            position: absolute;
-            min-height: 105px;
-            padding: 24px 24px 24px 84px;
-            border: 1px solid rgba(82, 164, 219, 0.16);
-            border-radius: 20px;
-            background: rgba(255, 255, 255, 0.96);
-            box-shadow: 0 9px 24px rgba(38, 92, 139, 0.15);
-            display: grid;
-            align-content: center;
-            animation: show 0.6s both;
+            width: 100%;
+            max-width: 900px;
+            min-height: 250px;
+            padding: 40px 50px;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 16px;
+            background: white;
+            box-shadow: 0 8px 24px rgba(23, 105, 194, 0.12);
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            animation: slideIn 0.8s ease-out;
         }
 
-        .card p {
-            margin: 0 0 22px;
-            font-size: clamp(13px, 1.05vw, 20px);
-            line-height: 1.45;
-            font-weight: 700;
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         .icon {
-            position: absolute;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 50px;
-            height: 50px;
+            flex-shrink: 0;
+            width: 80px;
+            height: 80px;
             display: grid;
             place-items: center;
-            border-radius: 50%;
-            font-size: 27px;
+            border-radius: 16px;
+            font-size: 40px;
+            background: #f0f8ff;
+            color: #1e96e5;
         }
 
         .icon.blue { color: #1e96e5; background: #dff4ff; }
         .icon.mint { color: #10a78c; background: #dcf9f1; }
         .icon.orange { color: #ee900d; background: #fff0d8; }
 
+        .card-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .card p {
+            margin: 0 0 16px;
+            font-size: clamp(18px, 1.5vw, 28px);
+            line-height: 1.5;
+            font-weight: 600;
+            color: #163352;
+        }
+
+        .card-meta {
+            display: flex;
+            gap: 24px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .card-pillar {
+            display: inline-block;
+            padding: 6px 16px;
+            background: linear-gradient(135deg, #dff4ff, #e8f4ff);
+            border-radius: 12px;
+            color: #0969d7;
+            font-weight: 600;
+            margin-right: 16px;
+        }
+
         .time {
-            position: absolute;
-            left: 84px;
-            bottom: 13px;
-            color: #94a6bb;
-            font-size: clamp(11px, 0.85vw, 16px);
+            color: #999;
+            font-size: 13px;
         }
 
         .like {
-            position: absolute;
-            right: 20px;
-            bottom: 13px;
-            font-size: clamp(12px, 0.9vw, 17px);
-            color: #119ee8;
-        }
-
-        .featured {
-            left: 26%;
-            top: 25%;
-            width: 46%;
-            min-height: 38%;
-            padding: 60px 46px 40px 125px;
-            border-radius: 28px;
-            z-index: 4;
-        }
-
-        .featured p {
-            margin: 0;
-            font-size: clamp(20px, 1.7vw, 34px);
-            line-height: 1.3;
-        }
-
-        .featured .icon {
-            left: 42px;
-            top: 40%;
-            width: 74px;
-            height: 74px;
-            font-size: 40px;
-        }
-
-        .featured .time {
-            left: 46px;
-            bottom: 24px;
-        }
-
-        .featured .like {
-            right: 40px;
-            bottom: 24px;
-            font-size: clamp(17px, 1.35vw, 26px);
-        }
-
-        .pill {
-            position: absolute;
-            left: 11%;
-            top: -16px;
-            padding: 8px 24px;
-            border-radius: 18px;
-            color: #fff;
-            background: linear-gradient(90deg, #0969d7, #118fea);
-            font-size: clamp(12px, 1vw, 18px);
-            font-weight: 700;
-        }
-
-        .p1 { left: 1%; top: 4%; width: 29%; }
-        .p2 { right: 5%; top: 2%; width: 27%; }
-        .p3 { left: 0; top: 40%; width: 23%; }
-        .p4 { right: 1%; top: 40%; width: 25%; }
-        .p5 { left: 5%; bottom: 0; width: 26%; }
-        .p6 { right: 3%; bottom: 0; width: 27%; }
-        .p7 { left: 34%; bottom: -5%; width: 31%; }
-
-        aside {
-            position: absolute;
-            right: 1.8%;
-            top: 20%;
-            width: 17.4%;
-            bottom: 17%;
-            border: 2px solid rgba(41, 146, 226, 0.22);
-            border-radius: 28px;
-            background: #fff;
-            box-shadow: 0 10px 28px rgba(28, 107, 174, 0.18);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        aside h3 {
-            margin: 0;
-            padding: 16px 12px;
-            color: #fff;
-            background: linear-gradient(135deg, #0b63c5, #087ee0);
-            font-size: clamp(14px, 1.2vw, 20px);
-            line-height: 1.3;
-            text-align: center;
-            flex-shrink: 0;
-        }
-
-        .feedback-list {
-            flex: 1;
-            overflow-y: auto;
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .feedback-item {
-            background: linear-gradient(135deg, #f8fbff 0%, #f0f8ff 100%);
-            border-left: 4px solid #38BDF8;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: clamp(11px, 0.9vw, 14px);
-            line-height: 1.35;
-            transition: all 0.3s ease;
-        }
-
-        .feedback-item:hover {
-            background: linear-gradient(135deg, #e8f4ff 0%, #ddeeff 100%);
-            border-left-color: #0969d7;
-            transform: translateX(2px);
-        }
-
-        .feedback-item-text {
-            color: #163352;
-            font-weight: 600;
-            margin-bottom: 6px;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .feedback-item-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: clamp(10px, 0.8vw, 12px);
-            color: #94a6bb;
-            margin-top: 6px;
-            padding-top: 6px;
-            border-top: 1px solid rgba(56, 189, 248, 0.2);
-        }
-
-        .feedback-item-author {
-            font-weight: 600;
             color: #38BDF8;
-        }
-
-        .feedback-item-time {
-            color: #999;
+            font-weight: 600;
         }
 
         footer {
             position: absolute;
-            left: 10%;
-            right: 10%;
-            bottom: 2.3%;
-            height: 13%;
-            min-height: 84px;
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            border-radius: 23px;
-            background: #fff;
-            box-shadow: 0 8px 23px rgba(25, 91, 142, 0.18);
-        }
-
-        .stat {
-            min-width: 25%;
+            left: 5%;
+            right: 5%;
+            bottom: 3%;
+            height: auto;
+            min-height: 80px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 18px;
+            gap: 48px;
+            border-radius: 16px;
+            background: white;
+            box-shadow: 0 6px 20px rgba(23, 105, 194, 0.1);
+            padding: 20px 40px;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            flex-direction: column;
         }
 
         .bubble {
             width: 64px;
             height: 64px;
-            border-radius: 50%;
+            border-radius: 16px;
             display: grid;
             place-items: center;
-            font-size: 29px;
+            font-size: 28px;
         }
 
         .stat p {
             margin: 0;
-            font-size: clamp(15px, 1.2vw, 23px);
-            font-weight: 700;
+            font-size: clamp(13px, 1vw, 18px);
+            font-weight: 600;
+            color: #666;
         }
 
         .stat strong {
             display: block;
-            font-size: clamp(30px, 2.8vw, 56px);
-            line-height: 0.95;
+            font-size: clamp(24px, 2.2vw, 42px);
+            line-height: 1;
+            margin-top: 4px;
         }
 
         .s1 { color: #1769d4; }
@@ -517,8 +427,8 @@
 
         .sep {
             width: 1px;
-            height: 55%;
-            background: #c9d7e4;
+            height: 50px;
+            background: #ddd;
         }
 
         @keyframes show {
@@ -624,32 +534,42 @@
         </header>
 
         <section class="stage">
-            <div class="network"></div>
-            <div id="cardsContainer"></div>
-            <article class="card featured" id="featured">
-                <b class="pill" id="pillarLabel">ความคิดเห็นล่าสุด</b>
-                <span class="icon blue" id="featuredIcon">⚗</span>
-                <p id="latestText">รอความคิดเห็น...</p>
-                <span class="time" id="latestTime">เพิ่งส่งเข้ามา</span>
-                <span class="like" id="latestLike">♥ 0</span>
-            </article>
+            <div class="carousel-container">
+                <div class="carousel-track" id="carouselTrack">
+                    <div class="carousel-item">
+                        <div class="card">
+                            <span class="icon blue">⚗</span>
+                            <div class="card-content">
+                                <p>รอความคิดเห็น...</p>
+                                <div class="card-meta">
+                                    <span class="card-pillar">เสาหลัก</span>
+                                    <span class="time">เพิ่งเดี๋ยวนี้</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
 
 
         <footer>
             <div class="stat s1">
-                <span class="bubble" style="background: #dff4ff;">♟</span>
-                <p>ผู้เข้าร่วม<strong id="people">0</strong></p>
+                <span class="bubble" style="background: #dff4ff;">👥</span>
+                <p>ผู้เข้าร่วม</p>
+                <strong id="people">0</strong>
             </div>
             <div class="sep"></div>
             <div class="stat s2">
-                <span class="bubble" style="background: #dcf9f1;">•••</span>
-                <p>ความคิดเห็น<strong id="comments">0</strong></p>
+                <span class="bubble" style="background: #dcf9f1;">💬</span>
+                <p>ความคิดเห็น</p>
+                <strong id="comments">0</strong>
             </div>
             <div class="sep"></div>
             <div class="stat s3">
                 <span class="bubble" style="background: #fff0d8;">♥</span>
-                <p>ถูกใจ<strong id="likes">0</strong></p>
+                <p>ถูกใจ</p>
+                <strong id="likes">0</strong>
             </div>
         </footer>
     </div>
@@ -782,10 +702,13 @@
         }
 
         // ========== TV ==========
+        let carouselIndex = 0;
+        let autoScrollTimeout;
+
         function initTV() {
             updateDisplay();
             setInterval(updateDisplay, 1000);
-            setInterval(rotateFeatured, 35000);
+            startAutoScroll();
         }
 
         async function updateDisplay() {
@@ -804,9 +727,7 @@
                 const data = await res.json();
                 if (data.success && data.feedback) {
                     allFeedback = data.feedback;
-                    renderFeaturedCard();
-                    renderSurroundingCards();
-                    renderFeedbackList();
+                    renderCarousel();
                     updateStats();
                 }
             } catch (error) {
@@ -814,91 +735,69 @@
             }
         }
 
-        function renderFeaturedCard() {
-            if (allFeedback.length === 0) return;
-
-            const item = allFeedback[currentFeaturedIndex % allFeedback.length];
-            const iconIndex = currentFeaturedIndex % icons.length;
-            const timeAgo = getTimeAgo(item.timestamp);
-
-            document.getElementById('featuredIcon').textContent = icons[iconIndex];
-            document.getElementById('featuredIcon').className = `icon ${iconClasses[iconIndex]}`;
-            document.getElementById('latestText').textContent = escapeHtml(item.text);
-            document.getElementById('latestTime').textContent = timeAgo;
-            document.getElementById('latestLike').textContent = `♥ ${Math.floor(Math.random() * 50)}`;
-
-            const pillarName = item.pillar || 'ไม่ระบุ';
-            const shortPillar = pillarName.substring(0, 25) + (pillarName.length > 25 ? '...' : '');
-            document.getElementById('pillarLabel').textContent = escapeHtml(shortPillar);
-
-            // Adjust font size based on text length
-            const textElement = document.getElementById('latestText');
-            if (item.text.length > 100) {
-                textElement.style.fontSize = 'clamp(20px, 1.5vw, 28px)';
-            } else {
-                textElement.style.fontSize = 'clamp(20px, 1.7vw, 34px)';
-            }
-        }
-
-        function renderSurroundingCards() {
-            const container = document.getElementById('cardsContainer');
-            container.innerHTML = '';
-
-            const positions = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7'];
-            const cardsToShow = allFeedback.slice(1, 8);
-
-            cardsToShow.forEach((item, idx) => {
-                const iconIndex = (idx + 1) % icons.length;
-                const timeAgo = getTimeAgo(item.timestamp);
-                const likes = Math.floor(Math.random() * 30);
-
-                const card = document.createElement('article');
-                card.className = `card ${positions[idx]}`;
-                card.innerHTML = `
-                    <span class="icon ${iconClasses[iconIndex]}">${icons[iconIndex]}</span>
-                    <p>${escapeHtml(item.text.substring(0, 60))}${item.text.length > 60 ? '...' : ''}</p>
-                    <span class="time">${timeAgo}</span>
-                    <span class="like">♥ ${likes}</span>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        function renderFeedbackList() {
-            const container = document.getElementById('feedbackList');
-            if (!container) return;
+        function renderCarousel() {
+            const track = document.getElementById('carouselTrack');
+            track.innerHTML = '';
 
             if (allFeedback.length === 0) {
-                container.innerHTML = '<div style="text-align: center; color: #999; padding: 20px; font-size: 13px;">รอความคิดเห็น...</div>';
-                return;
-            }
-
-            // Show latest 8 feedback items
-            const itemsToShow = allFeedback.slice(0, 8);
-
-            container.innerHTML = itemsToShow.map((item, idx) => {
-                const timeAgo = getTimeAgo(item.timestamp);
-                const authorName = (item.author || 'Anonymous').substring(0, 15);
-
-                return `
-                    <div class="feedback-item">
-                        <div class="feedback-item-text">${escapeHtml(item.text.substring(0, 80))}</div>
-                        <div class="feedback-item-meta">
-                            <span class="feedback-item-author">${escapeHtml(authorName)}</span>
-                            <span class="feedback-item-time">${timeAgo}</span>
+                const emptyItem = document.createElement('div');
+                emptyItem.className = 'carousel-item';
+                emptyItem.innerHTML = `
+                    <div class="card">
+                        <span class="icon blue">📝</span>
+                        <div class="card-content">
+                            <p>รอความคิดเห็นจากผู้เข้าร่วม...</p>
+                            <div class="card-meta">
+                                <span class="card-pillar">DMSc CONNECT</span>
+                                <span class="time">เพิ่งเดี๋ยวนี้</span>
+                            </div>
                         </div>
                     </div>
                 `;
-            }).join('');
+                track.appendChild(emptyItem);
+                return;
+            }
+
+            allFeedback.forEach((item, idx) => {
+                const iconIndex = idx % icons.length;
+                const timeAgo = getTimeAgo(item.timestamp);
+                const pillarName = item.pillar || 'ไม่ระบุ';
+                const shortPillar = pillarName.substring(0, 30);
+
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'carousel-item';
+                itemDiv.innerHTML = `
+                    <div class="card">
+                        <span class="icon ${iconClasses[iconIndex]}">${icons[iconIndex]}</span>
+                        <div class="card-content">
+                            <p>${escapeHtml(item.text)}</p>
+                            <div class="card-meta">
+                                <span class="card-pillar">${escapeHtml(shortPillar)}</span>
+                                <span class="time">${timeAgo}</span>
+                                <span class="like">♥ ${Math.floor(Math.random() * 50)}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                track.appendChild(itemDiv);
+            });
         }
 
-        function rotateFeatured() {
-            const featured = document.getElementById('featured');
-            featured.style.animation = 'none';
-            void featured.offsetWidth;
-            featured.style.animation = 'show 0.6s both';
-            currentFeaturedIndex++;
-            renderFeaturedCard();
+        function startAutoScroll() {
+            clearTimeout(autoScrollTimeout);
+            autoScrollTimeout = setTimeout(() => {
+                scrollToNext();
+                startAutoScroll();
+            }, 35000);
+        }
+
+        function scrollToNext() {
+            const track = document.getElementById('carouselTrack');
+            if (!track || allFeedback.length === 0) return;
+
+            carouselIndex = (carouselIndex + 1) % allFeedback.length;
+            const offset = -carouselIndex * 100;
+            track.style.transform = `translateX(${offset}%)`;
         }
 
         function getTimeAgo(timestamp) {
