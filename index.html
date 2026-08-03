@@ -1819,8 +1819,6 @@
 
                 // Poll every 2 seconds
                 setInterval(loadCommentsFromSupabase, 2000);
-
-                }
             } else if (firebaseReady && db) {
                 // Real Firebase listener (kept for backward compatibility)
                 (async () => {
