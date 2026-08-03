@@ -1576,7 +1576,9 @@
         let boardReady = false;
         let autoScrollInterval = null;
         let currentScrollPosition = 0;
-        const AUTO_SCROLL_SPEED = 30; // ms between small scrolls (smooth effect)
+        const AUTO_SCROLL_SPEED = 20; // ms between scrolls
+        const SCROLL_AMOUNT = 5; // pixels per scroll
+        const PAUSE_TIME = 2000; // ms pause at each card
 
         const pillarLabels = {
             'pillar1': 'เสาหลักที่ 1',
@@ -1710,17 +1712,16 @@
         function startAutoScroll() {
             if (autoScrollInterval) clearInterval(autoScrollInterval);
 
-            let scrollAmount = 2; // pixels per interval (smooth continuous scroll)
             let pauseCounter = 0;
-            const pauseAtCard = 3000; // pause for 3 seconds at each card
+            const pauseFrames = PAUSE_TIME / AUTO_SCROLL_SPEED;
 
             autoScrollInterval = setInterval(() => {
                 const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
 
                 pauseCounter++;
 
-                // Pause every 3 seconds (to show each card)
-                if (pauseCounter < pauseAtCard / AUTO_SCROLL_SPEED) {
+                // Pause at each card
+                if (pauseCounter < pauseFrames) {
                     return; // Stay still
                 }
 
@@ -1732,7 +1733,7 @@
                 } else {
                     // Scroll down smoothly
                     pauseCounter = 0;
-                    window.scrollBy(0, scrollAmount);
+                    window.scrollBy(0, SCROLL_AMOUNT);
                 }
             }, AUTO_SCROLL_SPEED);
         }
