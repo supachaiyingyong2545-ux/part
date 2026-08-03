@@ -53,8 +53,8 @@
   .sub{font-family:var(--mono);font-size:clamp(12px,2.2vw,14px);letter-spacing:.06em;margin-top:26px;max-width:60ch;line-height:1.7;}
   .body-txt{font-size:clamp(1rem,2.5vw,1.1rem);line-height:1.85;max-width:56ch;margin-top:20px;}
 
-  .scroll-cue{position:absolute;bottom:44px;left:8vw;font-family:var(--mono);font-size:11px;letter-spacing:.14em;opacity:.5;}
-  .scroll-cue .arrow{display:inline-block;animation:bob 1.5s ease-in-out infinite;}
+  .scroll-cue{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:11px;letter-spacing:.14em;opacity:.5;display:flex;flex-direction:column;align-items:center;gap:6px;white-space:nowrap;}
+  .scroll-cue .arrow{display:inline-block;animation:bob 1.5s ease-in-out infinite;font-size:18px;}
   @keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(6px);}}
 
   /* stats */
@@ -131,10 +131,13 @@
     .timeline-year{font-size:1.2rem;}
     .timeline-desc{font-size:.97rem;margin-top:8px;line-height:1.7;}
     .sub{font-size:12px;line-height:1.75;}
-    .scroll-cue{display:none;}
+    .scroll-cue{bottom:24px;font-size:10px;}
     .indexer{font-size:9px;right:12px;bottom:14px;}
     .tag{font-size:13px;}
   }
+  /* Scroll-to-top button */
+  #totop{position:fixed;bottom:28px;left:20px;width:46px;height:46px;border-radius:50%;background:var(--a2);color:var(--dark);border:none;font-size:22px;font-weight:700;cursor:pointer;opacity:0;pointer-events:none;transform:translateY(10px);transition:opacity .3s,transform .3s;z-index:90;line-height:1;display:flex;align-items:center;justify-content:center;}
+  #totop.show{opacity:1;pointer-events:auto;transform:translateY(0);}
   /* Accordion contact */
   .acc-wrap{margin-top:28px;display:flex;flex-direction:column;gap:10px;width:100%;}
   .acc-item{border:1.5px solid rgba(31,143,224,.2);border-radius:14px;overflow:hidden;}
@@ -156,6 +159,7 @@
 <body>
 
 <div class="progress" id="progress"></div>
+<button id="totop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="กลับด้านบน">↑</button>
 <div class="indexer" id="indexer">00 / INTRO</div>
 
 <!-- HERO -->
@@ -237,7 +241,8 @@
 <!-- 06 STRATEGIC VISION -->
 <section class="sec-light" data-tab="06 / STRATEGIC VISION">
   <div class="eyebrow">06 · Strategic Vision — วิสัยทัศน์แผนยุทธศาสตร์</div>
-  <div class="giant kinetic grad-text">นวัตกรรมวิทยาศาสตร์<br>การแพทย์ระดับสากล<br>เพื่อความมั่นคงทางการแพทย์<br>และเศรษฐกิจสุขภาพ</div>
+  <div class="giant kinetic grad-text">นวัตกรรมวิทยาศาสตร์<br>การแพทย์ระดับสากล</div>
+  <div class="kinetic grad-text" style="font-size:clamp(1.5rem,5.5vw,3.8rem);font-weight:900;line-height:1.15;margin-top:10px;">เพื่อความมั่นคงทางการแพทย์<br>และเศรษฐกิจสุขภาพ</div>
   <div class="sub">GLOBAL MEDICAL INNOVATIONS FOR HEALTH SECURITY AND WELLNESS ECONOMY</div>
   <div style="margin-top:48px;">
     <div class="eyebrow" style="margin-bottom:20px;">เป้าประสงค์ของแผนยุทธศาสตร์</div>
@@ -597,6 +602,9 @@
     });
   },{threshold:.5});
   counters.forEach(c=>cntObs.observe(c));
+
+  const totop=document.getElementById('totop');
+  window.addEventListener('scroll',()=>{totop.classList.toggle('show',window.scrollY>window.innerHeight*.7);},{passive:true});
 
   function toggleAcc(hd){
     const isOpen=hd.classList.contains('open');
