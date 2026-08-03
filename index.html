@@ -1565,6 +1565,9 @@
         let displayedCardIds = new Set();
         let boardGrid = null;
         let boardReady = false;
+        let autoScrollInterval = null;
+        let currentScrollPosition = 0;
+        const AUTO_SCROLL_SPEED = 2000; // ms per card
 
         const pillarLabels = {
             'pillar1': 'เสาหลักที่ 1',
@@ -1670,6 +1673,9 @@
                 boardPreparing.style.display = 'none';
                 boardContainer.classList.add('ready');
                 boardReady = true;
+
+                // Start auto-scroll for TV display
+                startAutoScroll();
             } catch (error) {
                 console.error('Board initialization error:', error);
                 boardPreparing.style.display = 'none';
@@ -1682,9 +1688,40 @@
 
             const card = renderCard(feedback, true);
             if (card) {
-                boardGrid.appendChild(card);
+                boardGrid.insertBefore(card, boardGrid.firstChild);
                 emptyState.classList.remove('show');
                 feedbackCountEl.textContent = allFeedback.length;
+
+                // Reset scroll to top when new card arrives
+                boardContainer.scrollTop = 0;
+                currentScrollPosition = 0;
+            }
+        }
+
+        function startAutoScroll() {
+            if (autoScrollInterval) clearInterval(autoScrollInterval);
+
+            autoScrollInterval = setInterval(() => {
+                const cards = document.querySelectorAll('.feedback-card');
+                if (cards.length === 0) return;
+
+                const cardHeight = cards[0].offsetHeight + 20; // 20px gap
+                currentScrollPosition += cardHeight;
+
+                // Reset to top when reaching end
+                const maxScroll = boardContainer.scrollHeight - boardContainer.clientHeight;
+                if (currentScrollPosition >= maxScroll) {
+                    currentScrollPosition = 0;
+                }
+
+                boardContainer.scrollTop = currentScrollPosition;
+            }, AUTO_SCROLL_SPEED);
+        }
+
+        function stopAutoScroll() {
+            if (autoScrollInterval) {
+                clearInterval(autoScrollInterval);
+                autoScrollInterval = null;
             }
         }
 
