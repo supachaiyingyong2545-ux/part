@@ -1576,9 +1576,9 @@
         let boardReady = false;
         let autoScrollInterval = null;
         let currentScrollPosition = 0;
-        const AUTO_SCROLL_SPEED = 20; // ms between scrolls
-        const SCROLL_AMOUNT = 5; // pixels per scroll
-        const PAUSE_TIME = 1500; // ms pause at each card (reduced)
+        const AUTO_SCROLL_SPEED = 15; // ms between scrolls (faster)
+        const SCROLL_AMOUNT = 8; // pixels per scroll (faster)
+        const PAUSE_TIME = 1000; // ms pause at each card (faster)
         let pendingUpdates = [];
         let updateProcessing = false;
 
