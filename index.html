@@ -536,81 +536,248 @@
         }
 
         .board-container {
-            position: relative;
             width: 100%;
-            height: 100vh;
-            overflow: hidden;
+            overflow-y: auto;
             padding-top: 200px;
+            padding-left: 40px;
+            padding-right: 40px;
+            padding-bottom: 40px;
             flex: 1;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.5s ease;
         }
 
-        .sticky-note {
-            position: absolute;
-            width: 280px;
-            height: 280px;
+        .board-container.ready {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .board-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 24px;
+            max-width: 2000px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 1200px) {
+            .board-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Modern Card Design */
+        .feedback-card {
+            display: grid;
+            grid-template-columns: 1fr 180px;
+            gap: 20px;
             padding: 24px;
-            border-radius: 4px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             overflow: hidden;
             cursor: pointer;
             transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            animation: noteAppear 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            min-height: 200px;
+            animation: cardFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        .sticky-note:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.16);
+        .feedback-card:hover {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            transform: translateY(-4px);
         }
 
-        @keyframes noteAppear {
+        .feedback-card.new {
+            animation: cardSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes cardFadeIn {
             from {
                 opacity: 0;
-                transform: scale(0.8);
             }
             to {
                 opacity: 1;
-                transform: scale(1);
             }
         }
 
-        /* Pastel Colors */
-        .bg-cream { background: linear-gradient(135deg, #FFF9F0 0%, #FFFBF7 100%); border-left: 4px solid #D4A574; }
-        .bg-blue { background: linear-gradient(135deg, #E8F2FF 0%, #F0F7FF 100%); border-left: 4px solid #4A90E2; }
-        .bg-green { background: linear-gradient(135deg, #E8F5F0 0%, #F0FBF8 100%); border-left: 4px solid #5CB85C; }
-        .bg-pink { background: linear-gradient(135deg, #FFE8F0 0%, #FFF0F8 100%); border-left: 4px solid #E91E63; }
-        .bg-purple { background: linear-gradient(135deg, #F0E8FF 0%, #F8F0FF 100%); border-left: 4px solid #9C27B0; }
-        .bg-yellow { background: linear-gradient(135deg, #FFF8E8 0%, #FFFBF0 100%); border-left: 4px solid #F39C12; }
+        @keyframes cardSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-        .note-author {
-            font-size: 11px;
+        /* Pillar 1 - Peach */
+        .card.pillar1 {
+            background: #FCE8D5;
+        }
+        .card.pillar1 .card-label {
+            background: #FFF6EC;
+            color: #F2A56F;
+        }
+        .card.pillar1 .card-graphic {
+            background: linear-gradient(135deg, #F2A56F 0%, rgba(242, 165, 111, 0.3) 100%);
+        }
+
+        /* Pillar 2 - Lavender */
+        .card.pillar2 {
+            background: #EAE6F1;
+        }
+        .card.pillar2 .card-label {
+            background: #F7F4FC;
+            color: #9E83D5;
+        }
+        .card.pillar2 .card-graphic {
+            background: linear-gradient(135deg, #9E83D5 0%, rgba(158, 131, 213, 0.3) 100%);
+        }
+
+        /* Pillar 3 - Mint */
+        .card.pillar3 {
+            background: #E4F1DF;
+        }
+        .card.pillar3 .card-label {
+            background: #F3FAF0;
+            color: #69B878;
+        }
+        .card.pillar3 .card-graphic {
+            background: linear-gradient(135deg, #69B878 0%, rgba(105, 184, 120, 0.3) 100%);
+        }
+
+        /* Pillar 4 - Pink */
+        .card.pillar4 {
+            background: #F8E2F1;
+        }
+        .card.pillar4 .card-label {
+            background: #FFF3FB;
+            color: #D878C8;
+        }
+        .card.pillar4 .card-graphic {
+            background: linear-gradient(135deg, #D878C8 0%, rgba(216, 120, 200, 0.3) 100%);
+        }
+
+        /* Pillar 5 - Sky Blue */
+        .card.pillar5 {
+            background: #DDEFF7;
+        }
+        .card.pillar5 .card-label {
+            background: #F1FAFD;
+            color: #5BAAC8;
+        }
+        .card.pillar5 .card-graphic {
+            background: linear-gradient(135deg, #5BAAC8 0%, rgba(91, 170, 200, 0.3) 100%);
+        }
+
+        /* Pillar 6 - Cream Yellow */
+        .card.pillar6 {
+            background: #F7EFCF;
+        }
+        .card.pillar6 .card-label {
+            background: #FFF9E8;
+            color: #D5AE4A;
+        }
+        .card.pillar6 .card-graphic {
+            background: linear-gradient(135deg, #D5AE4A 0%, rgba(213, 174, 74, 0.3) 100%);
+        }
+
+        .card-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-label {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 10px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            opacity: 0.6;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
+            width: fit-content;
         }
 
-        .note-message {
-            font-size: 18px;
-            line-height: 1.4;
+        .card-message {
+            font-size: 16px;
+            line-height: 1.5;
             font-weight: 500;
             color: var(--text);
-            flex: 1;
+            margin-bottom: 12px;
             overflow: hidden;
             display: -webkit-box;
-            -webkit-line-clamp: 10;
+            -webkit-line-clamp: 5;
             -webkit-box-orient: vertical;
-            word-wrap: break-word;
             word-break: break-word;
         }
 
-        .note-time {
-            font-size: 10px;
-            color: var(--text-light);
-            margin-top: 8px;
-            opacity: 0.7;
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .card-author {
+            font-weight: 600;
+        }
+
+        .card-type {
+            font-size: 11px;
+            opacity: 0.8;
+        }
+
+        .card-graphic {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            opacity: 0.8;
+        }
+
+        .card-graphic::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+            animation: graphicShift 6s ease-in-out infinite;
+        }
+
+        @keyframes graphicShift {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(10px, 10px); }
+        }
+
+        .board-preparing {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 100;
+            background: linear-gradient(135deg, var(--bg) 0%, var(--bg-alt) 50%, var(--bg) 100%);
+        }
+
+        .board-preparing h2 {
+            font-size: 24px;
+            margin-bottom: 16px;
+            color: var(--text);
+        }
+
+        .board-preparing p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 0;
         }
 
         .board-loading {
@@ -1082,6 +1249,12 @@
             </div>
         </div>
 
+        <div class="board-preparing" id="boardPreparing">
+            <div class="loading-spinner"></div>
+            <h2>DMSc CONNECT 2026</h2>
+            <p>กำลังเตรียมกระดานความคิดเห็น...</p>
+        </div>
+
         <div class="board-container" id="board-container">
             <div class="empty-state" id="emptyState">
                 <div class="empty-state-icon">📝</div>
@@ -1263,9 +1436,6 @@
                         currentUser = user;
                         updateAdminUI();
                     });
-
-                    // Setup board listener
-                    setupBoardListener();
                 } catch (error) {
                     console.error('Firebase initialization error:', error);
                     DEMO_MODE = true;
@@ -1400,14 +1570,29 @@
 
         // ===== BOARD PAGE =====
         const boardContainer = document.getElementById('board-container');
+        const boardPreparing = document.getElementById('boardPreparing');
         const feedbackCountEl = document.getElementById('feedbackCount');
         const emptyState = document.getElementById('emptyState');
         const qrCodeContainer = document.getElementById('qrCode');
 
-        const colors = ['cream', 'blue', 'green', 'pink', 'purple', 'yellow'];
         let allFeedback = [];
-        let displayedNoteIds = new Set();
-        let rotationIndex = 0;
+        let displayedCardIds = new Set();
+        let boardGrid = null;
+        let boardReady = false;
+
+        const pillarLabels = {
+            'pillar1': 'เสาหลักที่ 1',
+            'pillar2': 'เสาหลักที่ 2',
+            'pillar3': 'เสาหลักที่ 3',
+            'pillar4': 'เสาหลักที่ 4',
+            'pillar5': 'เสาหลักที่ 5',
+            'pillar6': 'เสาหลักที่ 6'
+        };
+
+        const staffTypeLabels = {
+            'internal': 'บุคคลภายใน',
+            'external': 'บุคคลภายนอก'
+        };
 
         function generateQRCode() {
             try {
@@ -1426,163 +1611,203 @@
             }
         }
 
-        function getColorScheme(index) {
-            return colors[index % colors.length];
+        function getPillarClass(pillar) {
+            if (pillar.includes('ตรวจวินิจฉัย')) return 'pillar1';
+            if (pillar.includes('ชีวเภสัชภัณฑ์')) return 'pillar2';
+            if (pillar.includes('เครื่องมือแพทย์')) return 'pillar3';
+            if (pillar.includes('อาหาร')) return 'pillar4';
+            if (pillar.includes('สมุนไพร')) return 'pillar5';
+            if (pillar.includes('ท่องเที่ยว')) return 'pillar6';
+            return pillar.replace('pillar', 'pillar') || 'pillar1';
         }
 
-        function calculatePosition(index, totalNotes) {
-            const headerHeight = 200;
-            const margin = 20;
-            const noteWidth = 280;
-            const noteHeight = 280;
+        function renderCard(feedback, isNew = false) {
+            if (displayedCardIds.has(feedback.id)) return null;
+            displayedCardIds.add(feedback.id);
 
-            const maxX = Math.max(window.innerWidth - noteWidth - margin, 0);
-            const maxY = Math.max(window.innerHeight - noteHeight - margin - headerHeight, 0);
-            const minY = headerHeight + margin;
+            const card = document.createElement('div');
+            card.className = `feedback-card card ${getPillarClass(feedback.pillar)} ${isNew ? 'new' : ''}`;
+            card.id = `card-${feedback.id}`;
 
-            const seed = allFeedback[index]?.displaySeed || index;
-            const rand1 = seededRandom(seed);
-            const rand2 = seededRandom(seed + 1000);
+            const pillarLabel = pillarLabels[getPillarClass(feedback.pillar)] || 'เสาหลัก';
+            const staffType = staffTypeLabels[feedback.staffType] || feedback.staffType || '';
+            const messageText = feedback.message || '';
 
-            const x = Math.max(margin, Math.floor(rand1 * maxX));
-            const y = Math.max(minY, Math.floor(rand2 * maxY));
-
-            const rotationSeed = seededRandom(seed + 2000);
-            const rotation = ((rotationSeed * 12) - 6);
-
-            const scaleSeed = seededRandom(seed + 3000);
-            const scale = 0.95 + (scaleSeed * 0.1);
-
-            return { x, y, rotation, scale };
-        }
-
-        function renderNote(feedback, index) {
-            if (displayedNoteIds.has(feedback.id)) return;
-            displayedNoteIds.add(feedback.id);
-
-            const pos = calculatePosition(index, allFeedback.length);
-            const color = getColorScheme(index);
-
-            const noteEl = document.createElement('div');
-            noteEl.className = `sticky-note bg-${color}`;
-            noteEl.id = `note-${feedback.id}`;
-            noteEl.style.left = pos.x + 'px';
-            noteEl.style.top = pos.y + 'px';
-            noteEl.style.transform = `rotate(${pos.rotation}deg) scale(${pos.scale})`;
-            noteEl.style.animationDelay = (index * 0.05) + 's';
-
-            const authorName = feedback.name || 'ผู้เข้าร่วมงาน';
-            const messageText = feedback.message.substring(0, 150);
-
-            noteEl.innerHTML = `
-                <div class="note-author">${escapeHtml(authorName)}</div>
-                <div class="note-message">${escapeHtml(messageText)}</div>
-                <div class="note-time">${formatDate(feedback.createdAt)}</div>
+            card.innerHTML = `
+                <div class="card-content">
+                    <div>
+                        <div class="card-label">${pillarLabel}</div>
+                        <div class="card-message">${escapeHtml(messageText)}</div>
+                    </div>
+                    <div class="card-meta">
+                        <span>
+                            <span class="card-author">${escapeHtml(feedback.name || 'ผู้เข้าร่วมงาน')}</span>
+                            ${staffType ? `<br><span class="card-type">${escapeHtml(staffType)}</span>` : ''}
+                        </span>
+                        <span style="font-size: 10px;">${formatDate(feedback.createdAt)}</span>
+                    </div>
+                </div>
+                <div class="card-graphic"></div>
             `;
 
-            boardContainer.appendChild(noteEl);
+            return card;
         }
 
-        function clearBoard() {
-            boardContainer.querySelectorAll('.sticky-note').forEach(el => el.remove());
-            displayedNoteIds.clear();
+        async function initializeBoard() {
+            boardPreparing.style.display = 'flex';
+            boardContainer.classList.remove('ready');
+
+            try {
+                await document.fonts.ready;
+
+                boardGrid = document.createElement('div');
+                boardGrid.className = 'board-grid';
+                boardContainer.appendChild(boardGrid);
+
+                if (allFeedback.length > 0) {
+                    const fragment = document.createDocumentFragment();
+                    allFeedback.forEach((feedback) => {
+                        const card = renderCard(feedback, false);
+                        if (card) fragment.appendChild(card);
+                    });
+                    boardGrid.appendChild(fragment);
+                    emptyState.classList.remove('show');
+                } else {
+                    emptyState.classList.add('show');
+                }
+
+                feedbackCountEl.textContent = allFeedback.length;
+
+                await new Promise(resolve => requestAnimationFrame(resolve));
+                await new Promise(resolve => requestAnimationFrame(resolve));
+
+                boardPreparing.style.display = 'none';
+                boardContainer.classList.add('ready');
+                boardReady = true;
+            } catch (error) {
+                console.error('Board initialization error:', error);
+                boardPreparing.style.display = 'none';
+                boardContainer.classList.add('ready');
+            }
         }
 
-        function updateBoardDisplay() {
-            if (allFeedback.length === 0) {
-                emptyState.classList.add('show');
-                clearBoard();
-                feedbackCountEl.textContent = '0';
-                return;
-            }
+        function addNewCard(feedback) {
+            if (displayedCardIds.has(feedback.id) || !boardGrid) return;
 
-            emptyState.classList.remove('show');
-            feedbackCountEl.textContent = allFeedback.length;
-
-            let notesToDisplay = allFeedback.length;
-            let startIndex = 0;
-
-            if (allFeedback.length > 30) {
-                notesToDisplay = Math.min(20, allFeedback.length);
-                startIndex = (rotationIndex * notesToDisplay) % allFeedback.length;
-            }
-
-            clearBoard();
-            for (let i = 0; i < notesToDisplay; i++) {
-                const itemIndex = (startIndex + i) % allFeedback.length;
-                renderNote(allFeedback[itemIndex], i);
+            const card = renderCard(feedback, true);
+            if (card) {
+                boardGrid.appendChild(card);
+                emptyState.classList.remove('show');
+                feedbackCountEl.textContent = allFeedback.length;
             }
         }
 
         function setupBoardListener() {
             if (DEMO_MODE) {
                 // Demo mode board
-                const loadDemoData = () => {
+                const loadDemoData = async () => {
                     const demoData = JSON.parse(localStorage.getItem('demoFeedback') || '[]');
-                    allFeedback = demoData.filter(f => f.status === 'approved')
+                    const newFeedback = demoData.filter(f => f.status === 'approved')
                         .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-                    updateBoardDisplay();
+
+                    if (!boardReady) {
+                        allFeedback = newFeedback;
+                        await initializeBoard();
+                    } else {
+                        newFeedback.forEach(f => {
+                            if (!displayedCardIds.has(f.id)) {
+                                addNewCard(f);
+                                allFeedback.push(f);
+                            }
+                        });
+                    }
                 };
 
                 loadDemoData();
-
-                // Re-load on storage change
                 window.addEventListener('storage', loadDemoData);
             } else if (USE_GAS_ONLY) {
                 // Fetch from Google Sheets via GAS
+                let previousIds = new Set();
+
                 const loadGASData = async () => {
                     try {
                         const response = await fetch(`${GAS_ENDPOINT}?action=getAll`);
                         const result = await response.json();
 
                         if (result.success && result.feedback) {
-                            allFeedback = result.feedback.map(f => ({
+                            const newFeedback = result.feedback.map(f => ({
                                 id: f.id || f.timestamp,
                                 name: f.author,
                                 message: f.text,
-                                organization: f.organization || '',
+                                pillar: f.pillar,
+                                staffType: f.staffType,
                                 createdAt: new Date(f.timestamp),
-                                status: 'approved',
-                                displaySeed: generateDisplaySeed(f.id || f.timestamp)
-                            }));
-                            allFeedback.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                                status: 'approved'
+                            })).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+                            if (!boardReady) {
+                                allFeedback = newFeedback;
+                                await initializeBoard();
+                                newFeedback.forEach(f => previousIds.add(f.id));
+                            } else {
+                                newFeedback.forEach(f => {
+                                    if (!previousIds.has(f.id)) {
+                                        previousIds.add(f.id);
+                                        addNewCard(f);
+                                        allFeedback.unshift(f);
+                                    }
+                                });
+                            }
                         }
-                        updateBoardDisplay();
                     } catch (error) {
                         console.error('GAS board listener error:', error);
-                        emptyState.classList.add('show');
+                        if (!boardReady) {
+                            boardPreparing.style.display = 'none';
+                            boardContainer.classList.add('ready');
+                            emptyState.classList.add('show');
+                            boardReady = true;
+                        }
                     }
                 };
 
-                // Initial load
                 loadGASData();
-
-                // Poll every 5 seconds
-                setInterval(loadGASData, 5000);
+                setInterval(loadGASData, 4000);
             } else if (firebaseReady && db) {
                 // Real Firebase listener
                 (async () => {
                     const { collection, query, where, onSnapshot } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
                     const q = query(collection(db, 'comments'), where('status', '==', 'approved'));
                     onSnapshot(q,
-                        (snapshot) => {
-                            allFeedback = [];
+                        async (snapshot) => {
+                            const newFeedback = [];
                             snapshot.forEach((doc) => {
-                                allFeedback.push({ id: doc.id, ...doc.data() });
+                                newFeedback.push({ id: doc.id, ...doc.data() });
                             });
 
-                            allFeedback.sort((a, b) => {
+                            newFeedback.sort((a, b) => {
                                 const timeA = a.createdAt?.toDate?.() || new Date(0);
                                 const timeB = b.createdAt?.toDate?.() || new Date(0);
                                 return timeB - timeA;
                             });
 
-                            updateBoardDisplay();
+                            if (!boardReady) {
+                                allFeedback = newFeedback;
+                                await initializeBoard();
+                            } else {
+                                newFeedback.forEach(f => {
+                                    if (!displayedCardIds.has(f.id)) {
+                                        addNewCard(f);
+                                    }
+                                });
+                                allFeedback = newFeedback;
+                            }
                         },
                         (error) => {
                             console.error('Board listener error:', error);
-                            emptyState.classList.add('show');
-                            boardLoading.classList.remove('show');
+                            if (!boardReady) {
+                                emptyState.classList.add('show');
+                                boardReady = true;
+                            }
                         }
                     );
                 })();
@@ -1592,20 +1817,8 @@
         // QR Code on load
         window.addEventListener('load', () => {
             generateQRCode();
+            setupBoardListener();
         });
-
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            updateBoardDisplay();
-        });
-
-        // Auto-rotate for large screens
-        setInterval(() => {
-            if (allFeedback.length > 30) {
-                rotationIndex++;
-                updateBoardDisplay();
-            }
-        }, 20000);
 
         // ===== ADMIN PAGE =====
         const adminLogin = document.getElementById('adminLogin');
