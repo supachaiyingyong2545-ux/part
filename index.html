@@ -2,494 +2,237 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DMSc CONNECT 2026</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DMSc CONNECT 2026 — Feedback System</title>
+    <meta name="theme-color" content="#1e1b4b">
+
+    <!-- Fonts & Libraries -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+
     <style>
         :root {
             --primary-blue: #1769C2;
             --secondary-cyan: #38BDF8;
             --mint-green: #38CFA7;
             --accent-orange: #FFB547;
-            --navy: #123a72;
-            --text-dark: #163352;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { width: 100%; height: 100%; overflow: hidden; }
-        body { font-family: Tahoma, 'Noto Sans Thai', Arial, sans-serif; color: var(--text-dark); }
-
-        /* ========== MODE TOGGLE ========== */
-        .mode-toggle {
-            position: fixed;
-            top: 16px;
-            right: 16px;
-            background: var(--accent-orange);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            z-index: 999;
-            transition: all 0.3s;
-        }
-        .mode-toggle:hover { transform: scale(1.05); }
-
-        /* ========== MOBILE VIEW ========== */
-        .mobile-view {
-            min-height: 100vh;
-            max-width: 480px;
-            margin: 0 auto;
-            padding: 16px;
-            display: none;
-            background: linear-gradient(135deg, #F2F9FF 0%, #E8F4FF 100%);
-        }
-        .mobile-view.active { display: block; }
-
-        .header {
-            text-align: center;
-            margin-bottom: 32px;
-            padding: 24px 0;
-        }
-        .title {
-            font-size: 32px;
-            font-weight: 700;
-            color: var(--primary-blue);
-            margin-bottom: 4px;
-        }
-        .subtitle {
-            font-size: 14px;
-            color: var(--secondary-cyan);
-            font-weight: 500;
-        }
-        .tagline {
-            font-size: 16px;
-            color: var(--text-dark);
-            font-weight: 600;
-            margin-top: 12px;
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+            color: #1e293b;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
-        .question-section {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 24px;
-            box-shadow: 0 2px 8px rgba(23, 105, 194, 0.1);
-        }
-        .main-question {
-            font-size: 18px;
-            color: var(--primary-blue);
-            margin-bottom: 8px;
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
         }
 
-        .form-group {
-            margin-bottom: 20px;
-        }
-        .form-group label {
-            display: block;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-dark);
-            margin-bottom: 8px;
+        .highlight-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), inset 0 1px 1px rgba(255,255,255,1);
+            transition: all 0.3s ease;
         }
 
-        textarea, select, input[type="text"] {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #E0E7FF;
-            border-radius: 12px;
-            font-family: inherit;
-            font-size: 14px;
-            color: var(--text-dark);
-            background: white;
-        }
-        textarea:focus, select:focus, input[type="text"]:focus {
-            outline: none;
-            border-color: var(--secondary-cyan);
-            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
+        .highlight-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.1), inset 0 1px 1px rgba(255,255,255,1);
         }
 
-        textarea {
-            resize: vertical;
-            min-height: 100px;
-            max-height: 180px;
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .list-enter {
+            animation: slideInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
         }
 
-        .char-count {
-            font-size: 12px;
-            color: #999;
-            margin-top: 6px;
-            text-align: right;
+        @keyframes pulseSoft {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(0.98); }
+        }
+        .skeleton-pulse {
+            animation: pulseSoft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
 
-        select {
-            cursor: pointer;
-            appearance: none;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2315324B' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 12px center;
-            background-size: 20px;
-            padding-right: 36px;
-        }
-
-        .author-options {
-            display: flex;
-            gap: 8px;
-        }
-        input[type="text"] { flex: 1; }
-
-        .anonymous-btn {
-            padding: 10px 16px;
-            background: #F2F9FF;
-            border: 2px solid var(--secondary-cyan);
-            border-radius: 12px;
-            color: var(--secondary-cyan);
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            white-space: nowrap;
-        }
-        .anonymous-btn.active {
-            background: var(--secondary-cyan);
-            color: white;
-        }
-
-        .submit-btn {
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-cyan) 100%);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 4px 12px rgba(23, 105, 194, 0.25);
-        }
-        .submit-btn:active { transform: scale(0.98); }
-        .submit-btn:disabled { opacity: 0.8; cursor: not-allowed; }
-
-        .success-message {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(23, 105, 194, 0.95);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-        .success-message.show { display: flex; }
-
-        .message-content {
-            text-align: center;
-            color: white;
-        }
-        .message-icon {
-            font-size: 64px;
-            margin-bottom: 16px;
-            animation: bounce 1.5s ease-in-out infinite;
-        }
-        .message-text {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .footer {
-            text-align: center;
-            margin-top: 32px;
-        }
-        .footer p {
-            font-size: 13px;
-            color: #666;
-            margin-bottom: 12px;
-        }
-
-        /* ========== TV VIEW - AUTO-SCROLLING CAROUSEL ========== */
-        .tv-view {
-            width: 100vw;
-            height: 100vh;
-            display: none;
-            position: relative;
-            overflow: hidden;
-            background: linear-gradient(135deg, #f5f9ff 0%, #e8f4ff 100%);
-        }
-        .tv-view.active { display: block; }
-
-        header {
-            position: absolute;
-            left: 5%;
-            right: 5%;
-            top: 3%;
-            text-align: center;
-            z-index: 2;
-        }
-        header h1 {
-            margin: 0;
-            font-size: clamp(32px, 3vw, 56px);
-            line-height: 1;
-            color: var(--navy);
-            font-weight: 900;
-        }
-        header h1 span {
-            color: var(--secondary-cyan);
-        }
-        header p {
-            margin: 0.5vh 0 1vh;
-            font-size: clamp(14px, 1.2vw, 24px);
-            color: #666;
-        }
-        header h2 {
-            margin: 0;
-            font-size: clamp(20px, 2vw, 40px);
-            color: #102f61;
-            font-weight: 900;
-        }
-
-        .stage {
-            position: absolute;
-            left: 5%;
-            right: 5%;
-            top: 18%;
-            height: 55%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .carousel-container {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .carousel-track {
-            display: flex;
-            gap: 24px;
-            width: 100%;
-            height: 100%;
-            align-items: center;
-            transition: transform 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
-        }
-
-        .carousel-item {
-            flex-shrink: 0;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .card {
-            width: 100%;
-            max-width: 900px;
-            min-height: 250px;
-            padding: 40px 50px;
-            border: 1px solid rgba(56, 189, 248, 0.2);
-            border-radius: 16px;
-            background: white;
-            box-shadow: 0 8px 24px rgba(23, 105, 194, 0.12);
-            display: flex;
-            align-items: center;
-            gap: 30px;
-            animation: slideIn 0.8s ease-out;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(40px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        .icon {
-            flex-shrink: 0;
-            width: 80px;
-            height: 80px;
-            display: grid;
-            place-items: center;
-            border-radius: 16px;
-            font-size: 40px;
-            background: #f0f8ff;
-            color: #1e96e5;
-        }
-
-        .icon.blue { color: #1e96e5; background: #dff4ff; }
-        .icon.mint { color: #10a78c; background: #dcf9f1; }
-        .icon.orange { color: #ee900d; background: #fff0d8; }
-
-        .card-content {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .card p {
-            margin: 0 0 16px;
-            font-size: clamp(18px, 1.5vw, 28px);
-            line-height: 1.5;
-            font-weight: 600;
-            color: #163352;
-        }
-
-        .card-meta {
-            display: flex;
-            gap: 24px;
-            font-size: 14px;
-            color: #666;
-        }
-
-        .card-pillar {
-            display: inline-block;
-            padding: 6px 16px;
-            background: linear-gradient(135deg, #dff4ff, #e8f4ff);
-            border-radius: 12px;
-            color: #0969d7;
-            font-weight: 600;
-            margin-right: 16px;
-        }
-
-        .time {
-            color: #999;
-            font-size: 13px;
-        }
-
-        .like {
-            color: #38BDF8;
-            font-weight: 600;
-        }
-
-        footer {
-            position: absolute;
-            left: 5%;
-            right: 5%;
-            bottom: 3%;
-            height: auto;
-            min-height: 80px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 48px;
-            border-radius: 16px;
-            background: white;
-            box-shadow: 0 6px 20px rgba(23, 105, 194, 0.1);
-            padding: 20px 40px;
-        }
-
-        .stat {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 16px;
-            flex-direction: column;
-        }
-
-        .bubble {
-            width: 64px;
-            height: 64px;
-            border-radius: 16px;
-            display: grid;
-            place-items: center;
-            font-size: 28px;
-        }
-
-        .stat p {
-            margin: 0;
-            font-size: clamp(13px, 1vw, 18px);
-            font-weight: 600;
-            color: #666;
-        }
-
-        .stat strong {
-            display: block;
-            font-size: clamp(24px, 2.2vw, 42px);
-            line-height: 1;
-            margin-top: 4px;
-        }
-
-        .s1 { color: #1769d4; }
-        .s2 { color: #15b7d1; }
-        .s3 { color: #f28b06; }
-
-        .sep {
-            width: 1px;
-            height: 50px;
-            background: #ddd;
-        }
-
-        @keyframes show {
-            from {
-                opacity: 0;
-                transform: translateY(12px) scale(0.96);
-            }
-            to {
-                opacity: 1;
-                transform: none;
-            }
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        .feedback-list::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .feedback-list::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .feedback-list::-webkit-scrollbar-thumb {
-            background: rgba(56, 189, 248, 0.3);
-            border-radius: 3px;
-        }
-
-        .feedback-list::-webkit-scrollbar-thumb:hover {
-            background: rgba(56, 189, 248, 0.5);
-        }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
-<body>
-    <button class="mode-toggle" id="modeToggle">📺 TV</button>
+<body class="min-h-screen flex flex-col select-none lg:overflow-hidden">
 
-    <!-- ========== MOBILE VIEW ========== -->
-    <div class="mobile-view" id="mobileView">
-        <div class="header">
-            <div class="title">DMSc CONNECT Ideas</div>
-            <div class="subtitle">2026</div>
-            <div class="tagline">ร่วมแสดงความคิดเห็น เชื่อมโยงทุกความคิด</div>
+<!-- ================= HEADER ================= -->
+<header class="glass-panel py-3 px-4 lg:px-8 flex justify-between items-center relative z-20 shrink-0 sticky top-0">
+    <div class="flex items-center space-x-3 lg:space-x-4 flex-1">
+        <div>
+            <h1 class="text-xl lg:text-2xl font-extrabold text-slate-800 tracking-tight leading-normal">
+                DMSc CONNECT Ideas 2026
+            </h1>
+            <p class="text-slate-500 text-xs font-medium mt-0.5">ระบบระดมความคิดเห็นแบบเรียลไทม์</p>
+        </div>
+    </div>
+
+    <div class="flex items-center space-x-3 shrink-0">
+        <div class="bg-white/60 px-4 py-2 rounded-2xl flex items-center space-x-3 shadow-sm border border-slate-100 hidden sm:flex">
+            <i data-lucide="clock" class="text-indigo-400 w-5 h-5"></i>
+            <div class="text-right">
+                <div id="clockTime" class="text-sm lg:text-base font-bold text-slate-700 tabular-nums leading-none">--:--:--</div>
+                <div id="clockDate" class="hidden lg:block text-xs font-medium text-slate-500 mt-0.5">กำลังโหลด...</div>
+            </div>
+        </div>
+        <button id="mobileFormBtn" onclick="toggleMobileForm()" class="w-10 h-10 lg:w-11 lg:h-11 rounded-2xl bg-indigo-50 text-indigo-600 hover:bg-indigo-100 hover:text-indigo-700 hover:scale-105 active:scale-95 transition-all flex items-center justify-center shadow-sm" title="แบบฟอร์ม">
+            <i data-lucide="edit-3" class="w-5 h-5"></i>
+        </button>
+    </div>
+</header>
+
+<!-- ================= MAIN CONTENT ================= -->
+<main class="flex-grow p-4 lg:p-6 lg:px-8 max-w-[1920px] mx-auto w-full flex flex-col lg:flex-row gap-4 lg:gap-6 lg:h-[calc(100vh-80px)] overflow-y-auto lg:overflow-hidden">
+
+    <!-- ฝั่งซ้าย: ความคิดเห็นล่าสุด (65%) -->
+    <section class="w-full lg:w-[65%] flex flex-col lg:h-full min-h-[500px] glass-panel rounded-[2rem] p-5 lg:p-6 relative overflow-hidden">
+        <div class="flex items-center justify-between mb-5 pb-3 border-b border-slate-200/60 z-10 shrink-0">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
+                    <i data-lucide="message-square" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h2 class="text-lg lg:text-xl font-bold text-slate-800 flex items-center gap-2">
+                        ความคิดเห็นล่าสุด
+                        <span id="feedbackCountBadge" class="hidden text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full font-semibold">0</span>
+                    </h2>
+                    <p class="text-xs lg:text-xs text-slate-500 font-medium">From Lab to Life: Sciences for Healthy Longevity</p>
+                </div>
+            </div>
+            <div class="text-xs font-semibold text-blue-600 bg-blue-50 px-3 py-1.5 rounded-full border border-blue-100">Real-time</div>
         </div>
 
-        <div class="question-section">
-            <div class="main-question">From Lab to Life: Sciences for Healthy Longevity</div>
+        <div id="feedbackHero" class="mb-4 z-10 shrink-0">
+            <div class="bg-white rounded-[1.5rem] p-6 skeleton-pulse border border-slate-100 shadow-sm">
+                <div class="h-8 w-3/4 bg-slate-100 rounded-lg mb-4"></div>
+                <div class="h-4 w-1/2 bg-slate-100 rounded-lg mb-3"></div>
+                <div class="h-4 w-2/3 bg-slate-100 rounded-lg"></div>
+            </div>
         </div>
 
-        <form id="feedbackForm">
-            <div class="form-group">
-                <label for="feedbackText">ความคิดเห็นของคุณ</label>
-                <textarea id="feedbackText" placeholder="แบ่งปันความคิดเห็นของคุณที่นี่..." maxlength="500" required></textarea>
-                <div class="char-count"><span id="charCounter">0</span>/500</div>
+        <div class="flex-grow overflow-y-auto pr-2 space-y-3 z-10 pb-4" id="feedbackList">
+            <!-- ความคิดเห็นจะแสดงที่นี่ -->
+        </div>
+
+        <div class="absolute -bottom-10 -left-10 opacity-5 pointer-events-none z-0">
+            <i data-lucide="lightbulb" class="w-72 h-72 lg:w-96 lg:h-96 text-blue-900"></i>
+        </div>
+    </section>
+
+    <!-- ฝั่งขวา: สถิติและเสาหลัก (35%) -->
+    <section class="w-full lg:w-[35%] flex flex-col lg:h-full min-h-[400px] glass-panel rounded-[2rem] p-5 lg:p-6 relative overflow-hidden">
+        <div class="flex items-center justify-between mb-5 pb-3 border-b border-slate-200/60 z-10 shrink-0">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center">
+                    <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h2 class="text-lg lg:text-xl font-bold text-slate-800">สถิติ</h2>
+                    <p class="text-xs lg:text-xs text-slate-500 font-medium">ข้อมูลรวมเรียลไทม์</p>
+                </div>
+            </div>
+            <div class="text-xs font-semibold text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-100">Live</div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-2 gap-3 mb-5 shrink-0">
+            <div class="bg-white rounded-2xl p-4 text-center shadow-sm border border-slate-100 hover:shadow-md hover:-translate-y-0.5 transition-all">
+                <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center mx-auto mb-2">
+                    <i data-lucide="users" class="w-5 h-5"></i>
+                </div>
+                <div id="stat_people" class="text-2xl font-bold text-blue-700 leading-none">0</div>
+                <p class="text-xs text-slate-500 font-medium mt-1">ผู้เข้าร่วม</p>
             </div>
 
-            <div class="form-group">
-                <label for="pillar">เสาหลักที่เกี่ยวข้อง</label>
-                <select id="pillar" required>
+            <div class="bg-white rounded-2xl p-4 text-center shadow-sm border border-slate-100 hover:shadow-md hover:-translate-y-0.5 transition-all">
+                <div class="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center mx-auto mb-2">
+                    <i data-lucide="message-circle" class="w-5 h-5"></i>
+                </div>
+                <div id="stat_feedback" class="text-2xl font-bold text-emerald-700 leading-none">0</div>
+                <p class="text-xs text-slate-500 font-medium mt-1">ความคิดเห็น</p>
+            </div>
+
+            <div class="bg-white rounded-2xl p-4 text-center shadow-sm border border-slate-100 hover:shadow-md hover:-translate-y-0.5 transition-all">
+                <div class="w-10 h-10 bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center mx-auto mb-2">
+                    <i data-lucide="heart" class="w-5 h-5"></i>
+                </div>
+                <div id="stat_likes" class="text-2xl font-bold text-amber-700 leading-none">0</div>
+                <p class="text-xs text-slate-500 font-medium mt-1">ถูกใจ</p>
+            </div>
+
+            <div class="bg-white rounded-2xl p-4 text-center shadow-sm border border-slate-100 hover:shadow-md hover:-translate-y-0.5 transition-all">
+                <div class="w-10 h-10 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center mx-auto mb-2">
+                    <i data-lucide="trending-up" class="w-5 h-5"></i>
+                </div>
+                <div id="stat_latest" class="text-lg font-bold text-indigo-700 leading-none truncate">-</div>
+                <p class="text-xs text-slate-500 font-medium mt-1">เสาหลักล่าสุด</p>
+            </div>
+        </div>
+
+        <!-- Pillar Breakdown -->
+        <div class="flex-grow overflow-y-auto pr-2 space-y-2 z-10 pb-4">
+            <h3 class="text-sm font-bold text-slate-600 px-2">การกระจายตัวตามเสาหลัก</h3>
+            <div id="pillarBreakdown" class="space-y-2">
+                <!-- Pillar stats จะแสดงที่นี่ -->
+            </div>
+        </div>
+
+        <div class="absolute -bottom-10 -right-10 opacity-5 pointer-events-none z-0">
+            <i data-lucide="trending-up" class="w-60 h-60 lg:w-80 lg:h-80 text-emerald-900"></i>
+        </div>
+    </section>
+</main>
+
+<!-- ================= MOBILE FORM (BOTTOM SHEET) ================= -->
+<div id="mobileFormSheet" class="hidden fixed inset-0 z-[100] flex items-end justify-center bg-slate-900/50 backdrop-blur-sm p-4 overflow-y-auto">
+    <div class="bg-white w-full max-w-2xl rounded-t-[2rem] p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+        <div class="w-10 h-1 bg-slate-200 rounded-full mx-auto mb-6"></div>
+
+        <div class="flex items-center gap-4 mb-6">
+            <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center shrink-0">
+                <i data-lucide="edit-3" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <h2 class="text-2xl font-bold text-slate-800">แบบฟอร์มความคิดเห็น</h2>
+                <p class="text-sm text-slate-500 mt-1">DMSc CONNECT Ideas 2026</p>
+            </div>
+            <button onclick="toggleMobileForm()" class="ml-auto w-9 h-9 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 flex items-center justify-center">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <form id="feedbackForm" class="space-y-4">
+            <div>
+                <label class="block text-sm font-bold text-slate-800 mb-2">ความคิดเห็นของคุณ</label>
+                <textarea id="feedbackText" placeholder="แบ่งปันความคิดเห็นของคุณที่นี่..." maxlength="500" required
+                    class="w-full px-4 py-3 border-2 border-slate-200 rounded-2xl focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all resize-none text-slate-700"
+                    rows="4"></textarea>
+                <div class="text-xs text-slate-500 mt-1 text-right"><span id="charCounter">0</span>/500</div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-bold text-slate-800 mb-2">เสาหลักที่เกี่ยวข้อง</label>
+                <select id="pillar" required
+                    class="w-full px-4 py-3 border-2 border-slate-200 rounded-2xl focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all text-slate-700 font-medium">
                     <option value="">เลือกเสาหลัก...</option>
                     <option value="pillar1">พัฒนาศักยภาพการบริการตรวจวินิจฉัยโรค</option>
                     <option value="pillar2">ชีววัคซีน และผลิตภัณฑ์การแพทย์</option>
@@ -500,338 +243,289 @@
                 </select>
             </div>
 
-            <div class="form-group">
-                <label for="staffType">ประเภทบุคลากร</label>
-                <select id="staffType" required>
+            <div>
+                <label class="block text-sm font-bold text-slate-800 mb-2">ประเภทบุคลากร</label>
+                <select id="staffType" required
+                    class="w-full px-4 py-3 border-2 border-slate-200 rounded-2xl focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all text-slate-700 font-medium">
                     <option value="">เลือกประเภท...</option>
                     <option value="internal">บุคคลภายใน</option>
                     <option value="external">บุคคลภายนอก</option>
                 </select>
             </div>
 
-            <div class="form-group">
-                <label>ชื่อของคุณ (ตัวเลือก)</label>
-                <div class="author-options">
-                    <input type="text" id="author" placeholder="ใส่ชื่อของคุณ...">
-                    <button type="button" class="anonymous-btn" id="anonBtn">匿名</button>
+            <div>
+                <label class="block text-sm font-bold text-slate-800 mb-2">ชื่อของคุณ (ไม่บังคับ)</label>
+                <div class="flex gap-3">
+                    <input type="text" id="author" placeholder="ใส่ชื่อของคุณ..."
+                        class="flex-1 px-4 py-3 border-2 border-slate-200 rounded-2xl focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all text-slate-700">
+                    <button type="button" id="anonBtn" onclick="toggleAnonymous()"
+                        class="px-5 py-3 bg-slate-100 text-slate-600 font-bold rounded-2xl border-2 border-slate-200 hover:bg-indigo-100 hover:border-indigo-300 hover:text-indigo-600 transition-all active:scale-95 whitespace-nowrap">
+                        ไม่ระบุชื่อ
+                    </button>
                 </div>
             </div>
 
-            <button type="submit" class="submit-btn">ส่งความคิดเห็น</button>
+            <button type="submit"
+                class="w-full py-3 bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-bold rounded-2xl hover:shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2">
+                <i data-lucide="send" class="w-4 h-4"></i>
+                ส่งความคิดเห็น
+            </button>
         </form>
 
-        <div class="footer">
-            <p>✨ ระบบระดมความคิดเห็นแบบ Real-time</p>
-        </div>
+        <p class="text-xs text-slate-400 text-center mt-6">✨ ระบบระดมความคิดเห็นแบบ Real-time — DMSc CONNECT 2026</p>
     </div>
+</div>
 
-    <!-- ========== TV VIEW ========== -->
-    <div class="tv-view active" id="tvView">
-        <header>
-            <h1>DMSc CONNECT Ideas <span>2026</span></h1>
-            <p>From Lab to Life: Sciences for Healthy Longevity</p>
-            <h2>เชื่อมเครือข่าย ขับเคลื่อนวิจัยและนวัตกรรมสู่การมีอายุยืนยาวอย่างมีสุขภาพดี</h2>
-        </header>
+<!-- ================= SUCCESS MODAL ================= -->
+<div id="successModal" class="hidden fixed inset-0 z-[120] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+    <div class="bg-white rounded-[2rem] p-8 max-w-sm w-full text-center shadow-2xl">
+        <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-5">
+            <i data-lucide="check-circle" class="w-10 h-10"></i>
+        </div>
+        <h3 class="text-2xl font-bold text-slate-800 mb-2">ส่งสำเร็จ!</h3>
+        <p class="text-sm text-slate-500 mb-6">ขอบคุณที่ร่วมแสดงความคิดเห็น เชื่อมโยงทุกความคิด</p>
+        <button onclick="closeSuccess()" class="w-full bg-slate-800 text-white font-bold py-3 rounded-xl hover:bg-slate-700 transition-all active:scale-95">
+            ปิด
+        </button>
+    </div>
+</div>
 
-        <section class="stage">
-            <div class="carousel-container">
-                <div class="carousel-track" id="carouselTrack">
-                    <div class="carousel-item">
-                        <div class="card">
-                            <span class="icon blue">⚗</span>
-                            <div class="card-content">
-                                <p>รอความคิดเห็น...</p>
-                                <div class="card-meta">
-                                    <span class="card-pillar">เสาหลัก</span>
-                                    <span class="time">เพิ่งเดี๋ยวนี้</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+<!-- ================= JAVASCRIPT ================= -->
+<script>
+    lucide.createIcons();
+
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbwJLxRLl8nbyo3nxTCqOAANyMOKh9mQG5yJcOR8UWsaPQNEZI71G-f7TpZoHg6RgMXKBA/exec';
+
+    const PILLAR_NAMES = {
+        'pillar1': 'ตรวจวินิจฉัยโรค',
+        'pillar2': 'ชีววัคซีน',
+        'pillar3': 'มาตรฐานเครื่องมือแพทย์',
+        'pillar4': 'อาหารใหม่',
+        'pillar5': 'สมุนไพรไทย',
+        'pillar6': 'ท่องเที่ยวสุขภาพ'
+    };
+
+    const PILLAR_COLORS = {
+        'pillar1': { bg: 'bg-blue-50',     bar: 'bg-blue-500',    text: 'text-blue-700' },
+        'pillar2': { bg: 'bg-indigo-50',   bar: 'bg-indigo-500',  text: 'text-indigo-700' },
+        'pillar3': { bg: 'bg-violet-50',   bar: 'bg-violet-500',  text: 'text-violet-700' },
+        'pillar4': { bg: 'bg-purple-50',   bar: 'bg-purple-500',  text: 'text-purple-700' },
+        'pillar5': { bg: 'bg-emerald-50',  bar: 'bg-emerald-500', text: 'text-emerald-700' },
+        'pillar6': { bg: 'bg-teal-50',     bar: 'bg-teal-500',    text: 'text-teal-700' }
+    };
+
+    let allFeedback = [];
+    let isAnonymous = false;
+
+    // ================= CLOCK =================
+    function updateClock() {
+        const now = new Date();
+        document.getElementById('clockTime').innerText = now.toLocaleTimeString('th-TH', { hour12: false });
+        document.getElementById('clockDate').innerText = now.toLocaleDateString('th-TH', { day: 'numeric', month: 'long', year: 'numeric' });
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // ================= FORM HANDLERS =================
+    function toggleMobileForm() {
+        const sheet = document.getElementById('mobileFormSheet');
+        sheet.classList.toggle('hidden');
+        if (!sheet.classList.contains('hidden')) {
+            document.getElementById('feedbackText').focus();
+        }
+    }
+
+    function toggleAnonymous() {
+        isAnonymous = !isAnonymous;
+        const btn = document.getElementById('anonBtn');
+        const inp = document.getElementById('author');
+        if (isAnonymous) {
+            btn.classList.add('bg-indigo-100', 'border-indigo-300', 'text-indigo-600');
+            btn.classList.remove('bg-slate-100', 'border-slate-200', 'text-slate-600');
+            inp.disabled = true;
+            inp.value = '';
+        } else {
+            btn.classList.remove('bg-indigo-100', 'border-indigo-300', 'text-indigo-600');
+            btn.classList.add('bg-slate-100', 'border-slate-200', 'text-slate-600');
+            inp.disabled = false;
+        }
+    }
+
+    document.getElementById('feedbackText').addEventListener('input', function() {
+        document.getElementById('charCounter').textContent = this.value.length;
+    });
+
+    document.getElementById('feedbackForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const btn = this.querySelector('button[type="submit"]');
+        btn.disabled = true;
+        btn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 animate-spin"></i> กำลังส่ง...';
+
+        try {
+            const formData = new FormData();
+            formData.append('action', 'addFeedback');
+            formData.append('text', document.getElementById('feedbackText').value);
+            formData.append('pillar', PILLAR_NAMES[document.getElementById('pillar').value]);
+            formData.append('staffType', document.getElementById('staffType').value === 'internal' ? 'บุคคลภายใน' : 'บุคคลภายนอก');
+            formData.append('author', isAnonymous ? 'Anonymous' : (document.getElementById('author').value || 'Anonymous'));
+
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+            const res = await fetch(GAS_URL, {
+                method: 'POST',
+                body: formData,
+                signal: controller.signal
+            });
+
+            clearTimeout(timeoutId);
+
+            if (res.ok) {
+                document.getElementById('successModal').classList.remove('hidden');
+                this.reset();
+                document.getElementById('charCounter').textContent = '0';
+                isAnonymous = false;
+                toggleMobileForm();
+                setTimeout(() => updateDisplay(), 500);
+            } else {
+                alert('ส่งข้อมูลไม่สำเร็จ ลองอีกครั้ง');
+            }
+        } catch (error) {
+            alert('ส่งข้อมูลช้าเกินไป ลองอีกครั้ง');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i data-lucide="send" class="w-4 h-4"></i> ส่งความคิดเห็น';
+            lucide.createIcons();
+        }
+    });
+
+    function closeSuccess() {
+        document.getElementById('successModal').classList.add('hidden');
+    }
+
+    // ================= DISPLAY FUNCTIONS =================
+    async function updateDisplay() {
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+            const res = await fetch(GAS_URL + '?action=getAll', {
+                signal: controller.signal
+            });
+
+            clearTimeout(timeoutId);
+
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+            const data = await res.json();
+            if (data.success && data.feedback) {
+                allFeedback = data.feedback;
+                renderDisplay();
+                updateStats();
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    function renderDisplay() {
+        const heroContainer = document.getElementById('feedbackHero');
+        const listContainer = document.getElementById('feedbackList');
+
+        if (allFeedback.length === 0) {
+            heroContainer.innerHTML = `
+                <div class="bg-white/40 border border-slate-100 border-dashed rounded-[1.5rem] h-32
+                            flex flex-col items-center justify-center gap-2 text-slate-400">
+                    <i data-lucide="message-square" class="w-8 h-8 opacity-40"></i>
+                    <span class="text-sm font-medium">ยังไม่มีความคิดเห็นเข้ามา</span>
+                </div>`;
+            listContainer.innerHTML = '';
+            return;
+        }
+
+        const featured = allFeedback[0];
+        const heroLive = `
+            <div class="highlight-card rounded-[1.5rem] p-5 relative overflow-hidden">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="bg-indigo-600 text-white px-3 py-1 rounded-full text-xs font-bold">ล่าสุด</span>
+                    <span class="text-xs text-slate-500">เพิ่งเดี๋ยวนี้</span>
+                </div>
+                <p class="text-xl font-bold text-slate-800 mb-2 line-clamp-2">${escapeHtml(featured.text)}</p>
+                <div class="space-y-1 text-sm">
+                    <p class="text-indigo-600 font-bold">🏛️ ${featured.pillar || 'ไม่ระบุ'}</p>
+                    <p class="text-slate-600"><span class="text-slate-500">โดย:</span> ${featured.author || 'Anonymous'}</p>
+                    <p class="text-slate-600"><span class="text-slate-500">ประเภท:</span> ${featured.staffType || '-'}</p>
+                </div>
+            </div>`;
+        heroContainer.innerHTML = heroLive;
+
+        const listItems = allFeedback.slice(1).map((item, idx) => `
+            <div class="highlight-card rounded-2xl p-4 list-enter" style="animation-delay: ${Math.min(idx, 20) * 0.06}s">
+                <div class="flex justify-between items-start gap-2 mb-2">
+                    <h3 class="text-sm font-bold text-slate-800 flex-1 line-clamp-2">${escapeHtml(item.text)}</h3>
+                    <span class="text-[10px] text-slate-400 shrink-0">เมื่อสักครู่</span>
+                </div>
+                <div class="flex flex-wrap gap-2 text-xs">
+                    <span class="bg-indigo-100 text-indigo-700 px-2 py-1 rounded-lg font-medium">${item.pillar || '-'}</span>
+                    <span class="bg-slate-100 text-slate-600 px-2 py-1 rounded-lg font-medium">${item.author || 'Anonymous'}</span>
                 </div>
             </div>
-        </section>
+        `).join('');
+        listContainer.innerHTML = listItems;
+        lucide.createIcons();
+    }
 
+    function updateStats() {
+        const feedbackCount = allFeedback.length;
+        const participantsCount = new Set(allFeedback.map(f => f.author)).size;
+        const likesCount = feedbackCount * 5;
+        const latestPillar = allFeedback.length > 0 ? (allFeedback[0].pillar || '-') : '-';
 
-        <footer>
-            <div class="stat s1">
-                <span class="bubble" style="background: #dff4ff;">👥</span>
-                <p>ผู้เข้าร่วม</p>
-                <strong id="people">0</strong>
-            </div>
-            <div class="sep"></div>
-            <div class="stat s2">
-                <span class="bubble" style="background: #dcf9f1;">💬</span>
-                <p>ความคิดเห็น</p>
-                <strong id="comments">0</strong>
-            </div>
-            <div class="sep"></div>
-            <div class="stat s3">
-                <span class="bubble" style="background: #fff0d8;">♥</span>
-                <p>ถูกใจ</p>
-                <strong id="likes">0</strong>
-            </div>
-        </footer>
-    </div>
-
-    <div class="success-message" id="successMessage">
-        <div class="message-content">
-            <div class="message-icon">✓</div>
-            <div class="message-text">ส่งความคิดเห็นแล้ว!</div>
-            <div>ขอบคุณที่ร่วมแสดงความคิดเห็น</div>
-        </div>
-    </div>
-
-    <script>
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycbwJLxRLl8nbyo3nxTCqOAANyMOKh9mQG5yJcOR8UWsaPQNEZI71G-f7TpZoHg6RgMXKBA/exec';
-
-        const PILLAR_NAMES = {
-            'pillar1': 'ตรวจวินิจฉัยโรค',
-            'pillar2': 'ชีววัคซีน',
-            'pillar3': 'มาตรฐานเครื่องมือแพทย์',
-            'pillar4': 'อาหารใหม่',
-            'pillar5': 'สมุนไพรไทย',
-            'pillar6': 'ท่องเที่ยวสุขภาพ'
-        };
-
-        const icons = ['⚗', '💊', '⚙️', '🍴', '🌿', '🏥'];
-        const iconClasses = ['blue', 'mint', 'orange', 'blue', 'mint', 'orange'];
-
-        let allFeedback = [];
-        let currentFeaturedIndex = 0;
-        let isMobileMode = false;
-
-        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-        const mobileView = document.getElementById('mobileView');
-        const tvView = document.getElementById('tvView');
-        const modeToggle = document.getElementById('modeToggle');
-
-        function init() {
-            if (isMobile) {
-                mobileView.classList.add('active');
-                tvView.classList.remove('active');
-                isMobileMode = true;
-                modeToggle.textContent = '📺 TV';
-            } else {
-                tvView.classList.add('active');
-                mobileView.classList.remove('active');
-                isMobileMode = false;
-                modeToggle.textContent = '📱 Mobile';
-            }
-
-            initMobile();
-            initTV();
+        document.getElementById('stat_people').textContent = participantsCount || 0;
+        document.getElementById('stat_feedback').textContent = feedbackCount || 0;
+        document.getElementById('stat_likes').textContent = likesCount || 0;
+        document.getElementById('stat_latest').textContent = latestPillar;
+        document.getElementById('feedbackCountBadge').textContent = feedbackCount;
+        if (feedbackCount > 0) {
+            document.getElementById('feedbackCountBadge').classList.remove('hidden');
         }
 
-        modeToggle.addEventListener('click', () => {
-            isMobileMode = !isMobileMode;
-            if (isMobileMode) {
-                mobileView.classList.add('active');
-                tvView.classList.remove('active');
-                modeToggle.textContent = '📺 TV';
-            } else {
-                tvView.classList.add('active');
-                mobileView.classList.remove('active');
-                modeToggle.textContent = '📱 Mobile';
-            }
+        // Pillar breakdown
+        const pillarCounts = {};
+        allFeedback.forEach(f => {
+            const p = f.pillar || 'อื่นๆ';
+            pillarCounts[p] = (pillarCounts[p] || 0) + 1;
         });
 
-        // ========== MOBILE ==========
-        function initMobile() {
-            const form = document.getElementById('feedbackForm');
-            const text = document.getElementById('feedbackText');
-            const counter = document.getElementById('charCounter');
-            const anonBtn = document.getElementById('anonBtn');
-            const author = document.getElementById('author');
-            let isAnon = false;
-
-            text.addEventListener('input', () => {
-                counter.textContent = text.value.length;
-            });
-
-            anonBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                isAnon = !isAnon;
-                anonBtn.classList.toggle('active');
-                author.disabled = isAnon;
-                author.value = '';
-            });
-
-            form.addEventListener('submit', async (e) => {
-                e.preventDefault();
-
-                const btn = form.querySelector('.submit-btn');
-                btn.disabled = true;
-                btn.textContent = '⏳ กำลังส่ง...';
-
-                try {
-                    const formData = new FormData();
-                    formData.append('action', 'addFeedback');
-                    formData.append('text', text.value);
-                    formData.append('pillar', document.getElementById('pillar').value);
-                    formData.append('staffType', document.getElementById('staffType').value);
-                    formData.append('author', isAnon ? 'Anonymous' : (author.value || 'Anonymous'));
-
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 15000);
-
-                    const res = await fetch(GAS_URL, {
-                        method: 'POST',
-                        body: formData,
-                        signal: controller.signal
-                    });
-
-                    clearTimeout(timeoutId);
-
-                    if (res.ok) {
-                        document.getElementById('successMessage').classList.add('show');
-                        form.reset();
-                        counter.textContent = '0';
-                        setTimeout(() => {
-                            document.getElementById('successMessage').classList.remove('show');
-                        }, 2000);
-                        updateDisplay();
-                    }
-                } catch (error) {
-                    alert('ส่งข้อมูลช้าเกินไป ลองอีกครั้ง');
-                } finally {
-                    btn.disabled = false;
-                    btn.textContent = 'ส่งความคิดเห็น';
-                }
-            });
-        }
-
-        // ========== TV ==========
-        let carouselIndex = 0;
-        let autoScrollTimeout;
-
-        function initTV() {
-            updateDisplay();
-            setInterval(updateDisplay, 1000);
-            startAutoScroll();
-        }
-
-        async function updateDisplay() {
-            try {
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 10000);
-
-                const res = await fetch(GAS_URL + '?action=getAll', {
-                    signal: controller.signal
-                });
-
-                clearTimeout(timeoutId);
-
-                if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-                const data = await res.json();
-                if (data.success && data.feedback) {
-                    allFeedback = data.feedback;
-                    renderCarousel();
-                    updateStats();
-                }
-            } catch (error) {
-                console.error('❌ Error:', error.message);
-            }
-        }
-
-        function renderCarousel() {
-            const track = document.getElementById('carouselTrack');
-            track.innerHTML = '';
-
-            if (allFeedback.length === 0) {
-                const emptyItem = document.createElement('div');
-                emptyItem.className = 'carousel-item';
-                emptyItem.innerHTML = `
-                    <div class="card">
-                        <span class="icon blue">📝</span>
-                        <div class="card-content">
-                            <p>รอความคิดเห็นจากผู้เข้าร่วม...</p>
-                            <div class="card-meta">
-                                <span class="card-pillar">DMSc CONNECT</span>
-                                <span class="time">เพิ่งเดี๋ยวนี้</span>
-                            </div>
+        const maxCount = Math.max(...Object.values(pillarCounts));
+        const pillarHtml = Object.entries(pillarCounts)
+            .sort((a, b) => b[1] - a[1])
+            .map(([pillar, count]) => {
+                const pct = Math.round((count / maxCount) * 100);
+                const colors = PILLAR_COLORS[Object.keys(PILLAR_NAMES).find(k => PILLAR_NAMES[k] === pillar)] || { bg: 'bg-slate-50', bar: 'bg-slate-400', text: 'text-slate-700' };
+                return `
+                    <div class="text-xs">
+                        <div class="flex justify-between mb-1">
+                            <span class="font-semibold text-slate-700">${pillar}</span>
+                            <span class="font-bold ${colors.text}">${count}</span>
                         </div>
-                    </div>
-                `;
-                track.appendChild(emptyItem);
-                return;
-            }
-
-            allFeedback.forEach((item, idx) => {
-                const iconIndex = idx % icons.length;
-                const timeAgo = getTimeAgo(item.timestamp);
-                const pillarName = item.pillar || 'ไม่ระบุ';
-                const shortPillar = pillarName.substring(0, 30);
-
-                const itemDiv = document.createElement('div');
-                itemDiv.className = 'carousel-item';
-                itemDiv.innerHTML = `
-                    <div class="card">
-                        <span class="icon ${iconClasses[iconIndex]}">${icons[iconIndex]}</span>
-                        <div class="card-content">
-                            <p>${escapeHtml(item.text)}</p>
-                            <div class="card-meta">
-                                <span class="card-pillar">${escapeHtml(shortPillar)}</span>
-                                <span class="time">${timeAgo}</span>
-                                <span class="like">♥ ${Math.floor(Math.random() * 50)}</span>
-                            </div>
+                        <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                            <div class="${colors.bar} h-full rounded-full" style="width: ${pct}%"></div>
                         </div>
-                    </div>
-                `;
-                track.appendChild(itemDiv);
-            });
-        }
+                    </div>`;
+            }).join('');
+        document.getElementById('pillarBreakdown').innerHTML = pillarHtml;
+    }
 
-        function startAutoScroll() {
-            clearTimeout(autoScrollTimeout);
-            autoScrollTimeout = setTimeout(() => {
-                scrollToNext();
-                startAutoScroll();
-            }, 35000);
-        }
+    function escapeHtml(text) {
+        const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+        return text.replace(/[&<>"']/g, m => map[m]);
+    }
 
-        function scrollToNext() {
-            const track = document.getElementById('carouselTrack');
-            if (!track || allFeedback.length === 0) return;
+    // ================= INIT =================
+    updateDisplay();
+    setInterval(updateDisplay, 1000);
+</script>
 
-            carouselIndex = (carouselIndex + 1) % allFeedback.length;
-            const offset = -carouselIndex * 100;
-            track.style.transform = `translateX(${offset}%)`;
-        }
-
-        function getTimeAgo(timestamp) {
-            if (!timestamp) return 'เพิ่งเดี๋ยวนี้';
-            try {
-                const date = new Date(timestamp);
-                const now = new Date();
-                const diff = Math.floor((now - date) / 1000);
-
-                if (diff < 60) return 'เพิ่งเดี๋ยวนี้';
-                if (diff < 3600) return `${Math.floor(diff / 60)} นาทีแล้ว`;
-                if (diff < 86400) return `${Math.floor(diff / 3600)} ชั่วโมงแล้ว`;
-                return `${Math.floor(diff / 86400)} วันแล้ว`;
-            } catch (e) {
-                return 'เพิ่งเดี๋ยวนี้';
-            }
-        }
-
-        function updateStats() {
-            const feedbackCount = allFeedback.length;
-            const participantsCount = new Set(allFeedback.map(f => f.author)).size;
-            const likesCount = allFeedback.length * 5;
-
-            document.getElementById('people').textContent = participantsCount || 0;
-            document.getElementById('comments').textContent = feedbackCount || 0;
-            document.getElementById('likes').textContent = likesCount || 0;
-        }
-
-        function escapeHtml(text) {
-            const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
-            return text.replace(/[&<>"']/g, m => map[m]);
-        }
-
-        init();
-    </script>
 </body>
 </html>
