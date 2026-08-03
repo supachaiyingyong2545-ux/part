@@ -126,10 +126,10 @@
     </div>
 
     <!-- Small Cards - Already Displayed Feedback -->
-    <div class="w-full">
+    <div class="w-full flex-grow flex flex-col">
         <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 px-1">ความคิดเห็นอื่น ๆ</p>
-        <div id="smallCardsWrapper" class="overflow-x-auto pb-2" style="scroll-behavior: smooth;">
-            <div class="flex gap-3 px-1 min-w-max" id="smallCardsContainer">
+        <div id="smallCardsWrapper" class="flex-grow overflow-y-auto" style="scroll-behavior: smooth;">
+            <div class="flex flex-col gap-3 px-1" id="smallCardsContainer">
                 <!-- Small cards will be displayed here -->
             </div>
         </div>
@@ -426,20 +426,20 @@
         autoScrollTimer = setInterval(() => {
             const cards = document.querySelectorAll('.small-card');
             if (cards.length > 0) {
-                const cardWidth = cards[0].offsetWidth;
+                const cardHeight = cards[0].offsetHeight;
                 const gap = 12;
-                const scrollAmount = cardWidth + gap;
+                const scrollAmount = cardHeight + gap;
 
-                wrapper.scrollLeft += scrollAmount;
+                wrapper.scrollTop += scrollAmount;
 
                 // ถ้าเลื่อนถึงท้าย ให้กลับไปที่ต้น
-                if (wrapper.scrollLeft >= wrapper.scrollWidth - wrapper.clientWidth - 10) {
+                if (wrapper.scrollTop >= wrapper.scrollHeight - wrapper.clientHeight - 10) {
                     setTimeout(() => {
-                        wrapper.scrollLeft = 0;
+                        wrapper.scrollTop = 0;
                     }, 500);
                 }
             }
-        }, 4000);
+        }, 3500);
     }
 
     function renderFeaturedCard() {
@@ -489,7 +489,7 @@
 
     function renderSmallCards() {
         const container = document.getElementById('smallCardsContainer');
-        const items = allFeedback.slice(1, 9);
+        const items = allFeedback.slice(1, 20);
 
         if (items.length === 0) {
             container.innerHTML = '';
@@ -500,12 +500,12 @@
             const pillarKey = Object.keys(PILLAR_NAMES).find(k => PILLAR_NAMES[k] === item.pillar);
             const colors = PILLAR_COLORS[pillarKey] || { bg: '#f3f4f6', text: '#1769C2', icon: '💬', bar: '#1769C2' };
             return `
-                <div class="small-card rounded-xl p-4 w-[240px] lg:w-[280px] shrink-0 list-enter" style="background: ${colors.bg}; animation-delay: ${idx * 0.08}s">
-                    <div class="flex items-start gap-2 mb-3">
+                <div class="small-card rounded-xl p-4 w-full shrink-0 list-enter" style="background: ${colors.bg}; animation-delay: ${idx * 0.08}s; min-height: 100px;">
+                    <div class="flex items-start gap-2 mb-2">
                         <span class="text-2xl">${colors.icon}</span>
                         <div class="flex-1 min-w-0">
                             <p class="text-xs text-slate-500 font-medium uppercase">${item.pillar || '-'}</p>
-                            <p class="font-bold text-slate-700 text-sm line-clamp-2">${escapeHtml(item.text)}</p>
+                            <p class="font-bold text-slate-700 text-sm line-clamp-3">${escapeHtml(item.text)}</p>
                         </div>
                     </div>
                     <div class="space-y-1 text-xs text-slate-600 border-t" style="border-color: rgba(0,0,0,0.05); padding-top: 0.75rem;">
