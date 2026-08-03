@@ -1578,7 +1578,9 @@
         let currentScrollPosition = 0;
         const AUTO_SCROLL_SPEED = 20; // ms between scrolls
         const SCROLL_AMOUNT = 5; // pixels per scroll
-        const PAUSE_TIME = 2000; // ms pause at each card
+        const PAUSE_TIME = 1500; // ms pause at each card (reduced)
+        let pendingUpdates = [];
+        let updateProcessing = false;
 
         const pillarLabels = {
             'pillar1': 'เสาหลักที่ 1',
@@ -1779,7 +1781,7 @@
                             .select('*')
                             .eq('status', 'approved')
                             .order('created_at', { ascending: false })
-                            .limit(50); // Load only 50 recent comments for speed
+                            .limit(20); // Load only 20 recent for max speed
 
                         console.log('Supabase response:', { data, error });
                         if (error) throw error;
@@ -1800,7 +1802,17 @@
                             await initializeBoard();
                         }
 
-                        // Set up real-time subscription
+                        // Set up real-time subscription with batching for performance
+                        let updateBatch = [];
+                        let batchTimeout = null;
+
+                        const processBatch = () => {
+                            if (updateBatch.length === 0) return;
+                            updateBatch.forEach(update => update());
+                            updateBatch = [];
+                            updateProcessing = false;
+                        };
+
                         supabase
                             .channel('comments')
                             .on('postgres_changes',
@@ -1816,35 +1828,41 @@
                                             createdAt: new Date(payload.new.created_at),
                                             status: payload.new.status
                                         };
-                                        addNewCard(newF);
-                                        allFeedback.unshift(newF);
+                                        updateBatch.push(() => {
+                                            addNewCard(newF);
+                                            allFeedback.unshift(newF);
+                                        });
+                                        clearTimeout(batchTimeout);
+                                        batchTimeout = setTimeout(processBatch, 500);
                                     }
                                 }
                             )
                             .on('postgres_changes',
                                 { event: 'UPDATE', schema: 'public', table: 'comments' },
                                 (payload) => {
-                                    // Handle status changes for approved/hidden
-                                    if (payload.new.status === 'approved' && !displayedCardIds.has(payload.new.id)) {
-                                        const newF = {
-                                            id: payload.new.id,
-                                            name: payload.new.author,
-                                            message: payload.new.message,
-                                            pillar: payload.new.pillar,
-                                            staffType: payload.new.staff_type,
-                                            createdAt: new Date(payload.new.created_at),
-                                            status: payload.new.status
-                                        };
-                                        addNewCard(newF);
-                                        allFeedback.unshift(newF);
-                                    } else if (payload.new.status !== 'approved' && displayedCardIds.has(payload.new.id)) {
-                                        // Remove card if it's no longer approved
-                                        const cardEl = document.getElementById(`card-${payload.new.id}`);
-                                        if (cardEl) cardEl.remove();
-                                        displayedCardIds.delete(payload.new.id);
-                                        allFeedback = allFeedback.filter(f => f.id !== payload.new.id);
-                                        feedbackCountEl.textContent = allFeedback.length;
-                                    }
+                                    updateBatch.push(() => {
+                                        if (payload.new.status === 'approved' && !displayedCardIds.has(payload.new.id)) {
+                                            const newF = {
+                                                id: payload.new.id,
+                                                name: payload.new.author,
+                                                message: payload.new.message,
+                                                pillar: payload.new.pillar,
+                                                staffType: payload.new.staff_type,
+                                                createdAt: new Date(payload.new.created_at),
+                                                status: payload.new.status
+                                            };
+                                            addNewCard(newF);
+                                            allFeedback.unshift(newF);
+                                        } else if (payload.new.status !== 'approved' && displayedCardIds.has(payload.new.id)) {
+                                            const cardEl = document.getElementById(`card-${payload.new.id}`);
+                                            if (cardEl) cardEl.remove();
+                                            displayedCardIds.delete(payload.new.id);
+                                            allFeedback = allFeedback.filter(f => f.id !== payload.new.id);
+                                            feedbackCountEl.textContent = allFeedback.length;
+                                        }
+                                    });
+                                    clearTimeout(batchTimeout);
+                                    batchTimeout = setTimeout(processBatch, 500);
                                 }
                             )
                             .subscribe();
