@@ -135,6 +135,22 @@
     .indexer{font-size:9px;right:12px;bottom:14px;}
     .tag{font-size:13px;}
   }
+  /* Accordion contact */
+  .acc-wrap{margin-top:28px;display:flex;flex-direction:column;gap:10px;width:100%;}
+  .acc-item{border:1.5px solid rgba(31,143,224,.2);border-radius:14px;overflow:hidden;}
+  .acc-hd{display:flex;align-items:center;gap:14px;padding:16px 20px;cursor:pointer;background:rgba(31,143,224,.04);transition:background .2s;-webkit-tap-highlight-color:transparent;}
+  .acc-hd:hover,.acc-hd.open{background:rgba(31,143,224,.12);}
+  .acc-num{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--a1);opacity:.75;flex:0 0 26px;}
+  .acc-title{flex:1;font-size:clamp(12.5px,2.2vw,14.5px);font-weight:600;color:var(--txt);line-height:1.5;}
+  .acc-arrow{font-size:16px;color:var(--a1);transition:transform .3s;flex:0 0 16px;}
+  .acc-hd.open .acc-arrow{transform:rotate(90deg);}
+  .acc-body{max-height:0;overflow:hidden;transition:max-height .38s ease;}
+  .acc-body.open{max-height:500px;}
+  .c-card{display:flex;flex-direction:column;gap:5px;padding:14px 20px;border-top:1px solid rgba(31,143,224,.12);}
+  .c-card+.c-card{border-top:1px solid rgba(31,143,224,.12);}
+  .c-name{font-weight:700;font-size:clamp(13px,2.2vw,15px);color:var(--txt);}
+  .c-role{font-size:12px;opacity:.6;color:var(--txt);line-height:1.45;}
+  .c-tel{font-family:var(--mono);font-size:13px;color:var(--a1);text-decoration:none;font-weight:700;display:inline-block;margin-top:4px;}
 </style>
 </head>
 <body>
@@ -397,16 +413,130 @@
 <section class="sec-light" data-tab="11 / CONTACT">
   <div class="eyebrow">11 · Contact — ช่องทางติดต่อ</div>
   <div class="giant kinetic">ติดต่อ<br>สอบถาม</div>
-  <p class="body-txt" style="margin-top:28px;">ช่องทางการติดต่อสำหรับแต่ละเสาหลักยุทธศาสตร์วิจัยและนวัตกรรม</p>
-  <div class="klist">
-    <div class="row"><span class="idx">01</span><span class="txt">เสาหลักที่ 1: พัฒนาศักยภาพการบริการตรวจวินิจฉัยโรคเพื่อความมั่นคงทางสุขภาพ</span></div>
-    <div class="row"><span class="idx">02</span><span class="txt">เสาหลักที่ 2: เสริมสร้างความเข้มแข็งและยกระดับมาตรฐานอุตสาหกรรมชีวเภสัชภัณฑ์ วัคซีน และผลิตภัณฑ์การแพทย์ขั้นสูง</span></div>
-    <div class="row"><span class="idx">03</span><span class="txt">เสาหลักที่ 3: พัฒนาศูนย์ทดสอบมาตรฐานเครื่องมือแพทย์ระดับชาติแบบครบวงจร</span></div>
-    <div class="row"><span class="idx">04</span><span class="txt">เสาหลักที่ 4: สนับสนุนและพัฒนาศักยภาพอุตสาหกรรมอาหารใหม่ของประเทศไทย</span></div>
-    <div class="row"><span class="idx">05</span><span class="txt">เสาหลักที่ 5: ยกระดับสมุนไพรไทยสู่ยาและผลิตภัณฑ์สุขภาพระดับสากล</span></div>
-    <div class="row"><span class="idx">06</span><span class="txt">เสาหลักที่ 6: สนับสนุนเส้นทางการท่องเที่ยวสุขภาพแบบครบวงจร</span></div>
+  <p class="body-txt" style="margin-top:20px;opacity:.7;">แตะที่เสาหลักเพื่อดูรายชื่อผู้ติดต่อ</p>
+  <div class="acc-wrap">
+
+    <div class="acc-item">
+      <div class="acc-hd" onclick="toggleAcc(this)">
+        <span class="acc-num">01</span>
+        <span class="acc-title">พัฒนาศักยภาพการบริการตรวจวินิจฉัยโรคของประเทศไทย</span>
+        <span class="acc-arrow">›</span>
+      </div>
+      <div class="acc-body">
+        <div class="c-card">
+          <div class="c-name">นางพิไลลักษณ์ อัคคไพบูลย์ โอกาดะ</div>
+          <div class="c-role">ผู้อำนวยการสถาบันวิจัยวิทยาศาสตร์สาธารณสุข</div>
+          <a class="c-tel" href="tel:029510000">02-951-0000 ต่อ 99200</a>
+        </div>
+        <div class="c-card">
+          <div class="c-name">นางสาววราวรรณ วงษ์บุตร</div>
+          <div class="c-role">สถาบันวิจัยวิทยาศาสตร์สาธารณสุข</div>
+          <a class="c-tel" href="tel:029510000">02-951-0000 ต่อ 99200</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc-item">
+      <div class="acc-hd" onclick="toggleAcc(this)">
+        <span class="acc-num">02</span>
+        <span class="acc-title">เสริมสร้างความเข้มแข็งและยกระดับมาตรฐานอุตสาหกรรมชีวเภสัชภัณฑ์ วัคซีน และผลิตภัณฑ์การแพทย์ขั้นสูง</span>
+        <span class="acc-arrow">›</span>
+      </div>
+      <div class="acc-body">
+        <div class="c-card">
+          <div class="c-name">นางสาวจุฑามาศ สมชาติ</div>
+          <div class="c-role">ผู้อำนวยการสถาบันชีววิทยาศาสตร์ทางการแพทย์</div>
+          <a class="c-tel" href="tel:029510000">02-951-0000 ต่อ 99334</a>
+        </div>
+        <div class="c-card">
+          <div class="c-name">นางสาวปฐมาพร ปรึกษากร</div>
+          <div class="c-role">สถาบันชีววิทยาศาสตร์ทางการแพทย์</div>
+          <a class="c-tel" href="tel:029510000">02-951-0000 ต่อ 99363</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc-item">
+      <div class="acc-hd" onclick="toggleAcc(this)">
+        <span class="acc-num">03</span>
+        <span class="acc-title">พัฒนาศูนย์ทดสอบมาตรฐานเครื่องมือแพทย์ระดับชาติแบบครบวงจร</span>
+        <span class="acc-arrow">›</span>
+      </div>
+      <div class="acc-body">
+        <div class="c-card">
+          <div class="c-name">นายธรรมรัตน์ บุญสูง</div>
+          <div class="c-role">ผู้อำนวยการสำนักรังสีและเครื่องมือแพทย์</div>
+          <a class="c-tel" href="tel:029510000">02-951-0000 ต่อ 99086</a>
+        </div>
+        <div class="c-card">
+          <div class="c-name">นางสาวอริณญา พงศธรพิศุทธิ์</div>
+          <div class="c-role">สำนักรังสีและเครื่องมือแพทย์</div>
+          <a class="c-tel" href="tel:029510000">02-951-0000 ต่อ 99663</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc-item">
+      <div class="acc-hd" onclick="toggleAcc(this)">
+        <span class="acc-num">04</span>
+        <span class="acc-title">สนับสนุนและพัฒนาศักยภาพอุตสาหกรรมอาหารใหม่ของประเทศไทย</span>
+        <span class="acc-arrow">›</span>
+      </div>
+      <div class="acc-body">
+        <div class="c-card">
+          <div class="c-name">นางวิชาดา จงมีวาสนา</div>
+          <div class="c-role">ผู้อำนวยการสำนักคุณภาพและความปลอดภัยอาหาร</div>
+          <a class="c-tel" href="tel:029510000">02-951-0000 ต่อ 99518</a>
+        </div>
+        <div class="c-card">
+          <div class="c-name">นางกรรณิการ์ นิ่มเล็ก</div>
+          <div class="c-role">สำนักคุณภาพและความปลอดภัยอาหาร</div>
+          <a class="c-tel" href="tel:029510000">02-951-0000 ต่อ 99526</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc-item">
+      <div class="acc-hd" onclick="toggleAcc(this)">
+        <span class="acc-num">05</span>
+        <span class="acc-title">ยกระดับสมุนไพรไทยสู่ยาและผลิตภัณฑ์สุขภาพระดับสากล</span>
+        <span class="acc-arrow">›</span>
+      </div>
+      <div class="acc-body">
+        <div class="c-card">
+          <div class="c-name">นายสันตกิจ นิลอุดมศักดิ์</div>
+          <div class="c-role">ผู้อำนวยการสถาบันวิจัยสมุนไพร</div>
+          <a class="c-tel" href="tel:029510000">02-951-0000 ต่อ 99274</a>
+        </div>
+        <div class="c-card">
+          <div class="c-name">นายจำรัส กาญจนไพบูลย์</div>
+          <div class="c-role">สถาบันวิจัยสมุนไพร</div>
+          <a class="c-tel" href="tel:029510000">02-951-0000 ต่อ 99376</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc-item">
+      <div class="acc-hd" onclick="toggleAcc(this)">
+        <span class="acc-num">06</span>
+        <span class="acc-title">สนับสนุนเส้นทางการท่องเที่ยวสุขภาพแบบครบวงจร</span>
+        <span class="acc-arrow">›</span>
+      </div>
+      <div class="acc-body">
+        <div class="c-card">
+          <div class="c-name">นางสาวจิราภรณ์ เพชรรักษ์</div>
+          <div class="c-role">ผู้อำนวยการศูนย์วิทยาศาสตร์การแพทย์ที่ 11 สุราษฎร์ธานี</div>
+          <a class="c-tel" href="tel:029510000">02-951-0000 ต่อ 911105</a>
+        </div>
+        <div class="c-card">
+          <div class="c-name">นางสาวเขมิกา เหมโลหะ</div>
+          <div class="c-role">ศูนย์วิทยาศาสตร์การแพทย์ที่ 11 สุราษฎร์ธานี</div>
+          <a class="c-tel" href="tel:029510000">02-951-0000 ต่อ 911112</a>
+        </div>
+      </div>
+    </div>
+
   </div>
-  <div class="tag">เบอร์โทร / อีเมล: ดูในไฟล์ PDF ต้นฉบับ (อยู่ในรูปแบบกราฟิก)</div>
 </section>
 
 <!-- 12 CLOSING -->
@@ -468,6 +598,16 @@
     });
   },{threshold:.5});
   counters.forEach(c=>cntObs.observe(c));
+
+  function toggleAcc(hd){
+    const isOpen=hd.classList.contains('open');
+    document.querySelectorAll('.acc-hd').forEach(h=>h.classList.remove('open'));
+    document.querySelectorAll('.acc-body').forEach(b=>b.classList.remove('open'));
+    if(!isOpen){
+      hd.classList.add('open');
+      hd.nextElementSibling.classList.add('open');
+    }
+  }
 </script>
 </body>
 </html>
