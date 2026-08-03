@@ -1098,8 +1098,11 @@
 
     <!-- Main Script -->
     <script type="module">
-        // ===== FIREBASE CONFIGURATION =====
-        // Replace these with your Firebase credentials
+        // ===== GOOGLE APPS SCRIPT ENDPOINT =====
+        const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwJLxRLl8nbyo3nxTCqOAANyMOKh9mQG5yJcOR8UWsaPQNEZI71G-f7TpZoHg6RgMXKBA/exec';
+
+        // ===== FIREBASE CONFIGURATION (Optional - for admin auth only) =====
+        // Replace these with your Firebase credentials if you want to use Firebase for admin authentication
         const firebaseConfig = {
             apiKey: "PUT_YOUR_API_KEY_HERE",
             authDomain: "PUT_YOUR_AUTH_DOMAIN_HERE",
@@ -1111,6 +1114,7 @@
 
         // ===== DEMO MODE =====
         const DEMO_MODE = false; // Set to true for demo with sample data
+        const USE_GAS_ONLY = true; // Set to true to use Google Sheets + GAS (no Firebase)
 
         // ===== UTILITY FUNCTIONS =====
         function sanitizeText(text) {
@@ -1252,7 +1256,7 @@
             spinner.classList.remove('hidden');
 
             try {
-                if (DEMO_MODE || !firebaseReady) {
+                if (DEMO_MODE) {
                     // Demo mode: use localStorage
                     const feedback = {
                         id: generateDisplaySeed(Date.now().toString()),
@@ -1266,7 +1270,24 @@
                     const demoData = JSON.parse(localStorage.getItem('demoFeedback') || '[]');
                     demoData.push(feedback);
                     localStorage.setItem('demoFeedback', JSON.stringify(demoData));
-                } else {
+                } else if (USE_GAS_ONLY) {
+                    // Save to Google Sheets via GAS
+                    const formData = new FormData();
+                    formData.append('action', 'addFeedback');
+                    formData.append('text', message);
+                    formData.append('author', name || 'ผู้เข้าร่วมงาน');
+                    formData.append('organization', organization);
+
+                    const response = await fetch(GAS_ENDPOINT, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const result = await response.json();
+                    if (!result.success) {
+                        throw new Error(result.message || 'Failed to save feedback');
+                    }
+                } else if (firebaseReady) {
                     // Real Firebase
                     const { addDoc, collection, updateDoc, doc, serverTimestamp } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
                     const docRef = await addDoc(collection(db, 'comments'), {
@@ -1280,6 +1301,8 @@
 
                     const displaySeed = generateDisplaySeed(docRef.id);
                     await updateDoc(doc(db, 'comments', docRef.id), { displaySeed });
+                } else {
+                    throw new Error('ระบบยังไม่ได้ตั้งค่า กรุณาติดต่อผู้ดูแลระบบ');
                 }
 
                 showSuccessModal();
@@ -1416,7 +1439,7 @@
         }
 
         function setupBoardListener() {
-            if (DEMO_MODE || !firebaseReady) {
+            if (DEMO_MODE) {
                 // Demo mode board
                 const loadDemoData = () => {
                     const demoData = JSON.parse(localStorage.getItem('demoFeedback') || '[]');
@@ -1429,35 +1452,67 @@
 
                 // Re-load on storage change
                 window.addEventListener('storage', loadDemoData);
-            } else {
+            } else if (USE_GAS_ONLY) {
+                // Fetch from Google Sheets via GAS
+                const loadGASData = async () => {
+                    try {
+                        boardLoading.classList.add('show');
+                        const response = await fetch(`${GAS_ENDPOINT}?action=getAll`);
+                        const result = await response.json();
+
+                        if (result.success && result.feedback) {
+                            allFeedback = result.feedback.map(f => ({
+                                id: f.id || f.timestamp,
+                                name: f.author,
+                                message: f.text,
+                                organization: f.organization || '',
+                                createdAt: new Date(f.timestamp),
+                                status: 'approved',
+                                displaySeed: generateDisplaySeed(f.id || f.timestamp)
+                            }));
+                            allFeedback.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                        }
+                        boardLoading.classList.remove('show');
+                        updateBoardDisplay();
+                    } catch (error) {
+                        console.error('GAS board listener error:', error);
+                        emptyState.classList.add('show');
+                        boardLoading.classList.remove('show');
+                    }
+                };
+
+                // Initial load
+                loadGASData();
+
+                // Poll every 5 seconds
+                setInterval(loadGASData, 5000);
+            } else if (firebaseReady && db) {
                 // Real Firebase listener
-                if (db) {
-                    (async () => {
-                        const { collection, query, where, onSnapshot } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
-                        const q = query(collection(db, 'comments'), where('status', '==', 'approved'));
-                        onSnapshot(q,
-                            (snapshot) => {
-                                allFeedback = [];
-                                snapshot.forEach((doc) => {
-                                    allFeedback.push({ id: doc.id, ...doc.data() });
-                                });
+                (async () => {
+                    const { collection, query, where, onSnapshot } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
+                    const q = query(collection(db, 'comments'), where('status', '==', 'approved'));
+                    onSnapshot(q,
+                        (snapshot) => {
+                            allFeedback = [];
+                            snapshot.forEach((doc) => {
+                                allFeedback.push({ id: doc.id, ...doc.data() });
+                            });
 
-                                allFeedback.sort((a, b) => {
-                                    const timeA = a.createdAt?.toDate?.() || new Date(0);
-                                    const timeB = b.createdAt?.toDate?.() || new Date(0);
-                                    return timeB - timeA;
-                                });
+                            allFeedback.sort((a, b) => {
+                                const timeA = a.createdAt?.toDate?.() || new Date(0);
+                                const timeB = b.createdAt?.toDate?.() || new Date(0);
+                                return timeB - timeA;
+                            });
 
-                                updateBoardDisplay();
-                            },
-                            (error) => {
-                                console.error('Board listener error:', error);
-                                emptyState.classList.add('show');
-                                boardLoading.classList.remove('show');
-                            }
-                        );
-                    })();
-                }
+                            updateBoardDisplay();
+                        },
+                        (error) => {
+                            console.error('Board listener error:', error);
+                            emptyState.classList.add('show');
+                            boardLoading.classList.remove('show');
+                        }
+                    );
+                })();
             }
         }
 
@@ -1504,29 +1559,57 @@
         }
 
         function loadAdminFeedback() {
-            if (DEMO_MODE || !firebaseReady) {
+            if (DEMO_MODE) {
                 // Demo mode admin
                 allAdminFeedback = JSON.parse(localStorage.getItem('demoFeedback') || '[]');
                 updateAdminStats();
                 renderAdminList();
-            } else {
+            } else if (USE_GAS_ONLY) {
+                // Load from Google Sheets via GAS
+                const loadGASAdminData = async () => {
+                    try {
+                        const response = await fetch(`${GAS_ENDPOINT}?action=getAll`);
+                        const result = await response.json();
+
+                        if (result.success && result.feedback) {
+                            allAdminFeedback = result.feedback.map(f => ({
+                                id: f.id || f.timestamp,
+                                name: f.author,
+                                message: f.text,
+                                organization: f.organization || '',
+                                createdAt: new Date(f.timestamp),
+                                status: 'approved', // Google Sheets doesn't have status field
+                                displaySeed: generateDisplaySeed(f.id || f.timestamp)
+                            }));
+                        }
+                        updateAdminStats();
+                        renderAdminList();
+                    } catch (error) {
+                        console.error('GAS admin listener error:', error);
+                    }
+                };
+
+                // Initial load
+                loadGASAdminData();
+
+                // Poll every 5 seconds
+                setInterval(loadGASAdminData, 5000);
+            } else if (firebaseReady && db) {
                 // Real Firebase
-                if (db) {
-                    (async () => {
-                        const { collection, onSnapshot } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
-                        onSnapshot(collection(db, 'comments'),
-                            (snapshot) => {
-                                allAdminFeedback = [];
-                                snapshot.forEach((doc) => {
-                                    allAdminFeedback.push({ id: doc.id, ...doc.data() });
-                                });
-                                updateAdminStats();
-                                renderAdminList();
-                            },
-                            (error) => console.error('Admin listener error:', error)
-                        );
-                    })();
-                }
+                (async () => {
+                    const { collection, onSnapshot } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
+                    onSnapshot(collection(db, 'comments'),
+                        (snapshot) => {
+                            allAdminFeedback = [];
+                            snapshot.forEach((doc) => {
+                                allAdminFeedback.push({ id: doc.id, ...doc.data() });
+                            });
+                            updateAdminStats();
+                            renderAdminList();
+                        },
+                        (error) => console.error('Admin listener error:', error)
+                    );
+                })();
             }
         }
 
@@ -1558,26 +1641,34 @@
                 );
             }
 
-            feedbackList.innerHTML = list.map(feedback => `
-                <div class="feedback-item">
-                    <div class="feedback-item-content">
-                        <div class="feedback-item-header">
-                            <span class="feedback-item-title">${escapeHtml(feedback.name || 'ผู้เข้าร่วมงาน')}</span>
-                            <span class="feedback-status status-${feedback.status}">${feedback.status}</span>
-                        </div>
-                        <div class="feedback-meta">
-                            ${feedback.organization ? `หน่วยงาน: ${escapeHtml(feedback.organization)} | ` : ''}
-                            ${formatDate(feedback.createdAt)}
-                        </div>
-                        <div class="feedback-message">${escapeHtml(feedback.message)}</div>
-                        <div class="feedback-actions">
-                            ${feedback.status !== 'approved' ? `<button class="btn-success" onclick="approveComment('${feedback.id}')">อนุมัติ</button>` : ''}
-                            ${feedback.status !== 'hidden' ? `<button class="btn-secondary" onclick="hideComment('${feedback.id}')">ซ่อน</button>` : ''}
-                            <button class="btn-error" onclick="deleteComment('${feedback.id}')">ลบ</button>
+            feedbackList.innerHTML = list.map(feedback => {
+                // Don't show action buttons if using Google Sheets (GAS only)
+                const showActions = !USE_GAS_ONLY;
+                const actionsHTML = showActions ? `
+                    <div class="feedback-actions">
+                        ${feedback.status !== 'approved' ? `<button class="btn-success" onclick="approveComment('${feedback.id}')">อนุมัติ</button>` : ''}
+                        ${feedback.status !== 'hidden' ? `<button class="btn-secondary" onclick="hideComment('${feedback.id}')">ซ่อน</button>` : ''}
+                        <button class="btn-error" onclick="deleteComment('${feedback.id}')">ลบ</button>
+                    </div>
+                ` : `<p style="color: #999; font-size: 12px; margin-top: 8px;">Google Sheets: จัดการโดยแก้ไขชีตโดยตรง</p>`;
+
+                return `
+                    <div class="feedback-item">
+                        <div class="feedback-item-content">
+                            <div class="feedback-item-header">
+                                <span class="feedback-item-title">${escapeHtml(feedback.name || 'ผู้เข้าร่วมงาน')}</span>
+                                <span class="feedback-status status-${feedback.status}">${feedback.status}</span>
+                            </div>
+                            <div class="feedback-meta">
+                                ${feedback.organization ? `หน่วยงาน: ${escapeHtml(feedback.organization)} | ` : ''}
+                                ${formatDate(feedback.createdAt)}
+                            </div>
+                            <div class="feedback-message">${escapeHtml(feedback.message)}</div>
+                            ${actionsHTML}
                         </div>
                     </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         // Filter buttons
@@ -1609,26 +1700,30 @@
 
         // Admin actions
         window.approveComment = async (id) => {
-            if (DEMO_MODE || !firebaseReady) {
+            if (DEMO_MODE) {
                 const demoData = JSON.parse(localStorage.getItem('demoFeedback') || '[]');
                 const feedback = demoData.find(f => f.id == id);
                 if (feedback) feedback.status = 'approved';
                 localStorage.setItem('demoFeedback', JSON.stringify(demoData));
                 loadAdminFeedback();
-            } else if (db) {
+            } else if (USE_GAS_ONLY) {
+                showErrorModal('Google Sheets ไม่รองรับการอนุมัติความคิดเห็น กรุณาใช้ Firebase หรือแก้ไขชีตโดยตรง');
+            } else if (firebaseReady && db) {
                 const { doc, updateDoc } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
                 await updateDoc(doc(db, 'comments', id), { status: 'approved' });
             }
         };
 
         window.hideComment = async (id) => {
-            if (DEMO_MODE || !firebaseReady) {
+            if (DEMO_MODE) {
                 const demoData = JSON.parse(localStorage.getItem('demoFeedback') || '[]');
                 const feedback = demoData.find(f => f.id == id);
                 if (feedback) feedback.status = 'hidden';
                 localStorage.setItem('demoFeedback', JSON.stringify(demoData));
                 loadAdminFeedback();
-            } else if (db) {
+            } else if (USE_GAS_ONLY) {
+                showErrorModal('Google Sheets ไม่รองรับการซ่อนความคิดเห็น กรุณาใช้ Firebase หรือลบแถวโดยตรง');
+            } else if (firebaseReady && db) {
                 const { doc, updateDoc } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
                 await updateDoc(doc(db, 'comments', id), { status: 'hidden' });
             }
@@ -1637,13 +1732,15 @@
         window.deleteComment = async (id) => {
             if (!confirm('ต้องการลบความคิดเห็นนี้ใช่หรือไม่?')) return;
 
-            if (DEMO_MODE || !firebaseReady) {
+            if (DEMO_MODE) {
                 const demoData = JSON.parse(localStorage.getItem('demoFeedback') || '[]');
                 const index = demoData.findIndex(f => f.id == id);
                 if (index > -1) demoData.splice(index, 1);
                 localStorage.setItem('demoFeedback', JSON.stringify(demoData));
                 loadAdminFeedback();
-            } else if (db) {
+            } else if (USE_GAS_ONLY) {
+                showErrorModal('Google Sheets ไม่รองรับการลบความคิดเห็น กรุณาลบแถวในชีตโดยตรง');
+            } else if (firebaseReady && db) {
                 const { doc, deleteDoc } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
                 await deleteDoc(doc(db, 'comments', id));
             }
