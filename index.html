@@ -1710,20 +1710,21 @@
         function startAutoScroll() {
             if (autoScrollInterval) clearInterval(autoScrollInterval);
 
-            let scrollAmount = 300; // pixels to scroll each time
+            let scrollAmount = 400; // pixels to scroll each time
 
             autoScrollInterval = setInterval(() => {
-                const maxScroll = boardContainer.scrollHeight - boardContainer.clientHeight;
+                const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
 
-                if (boardContainer.scrollTop >= maxScroll - 10) {
-                    // Reset to top
-                    boardContainer.scrollTop = 0;
+                if (window.scrollY >= maxScroll - 100) {
+                    // Reset to board top
+                    const boardSection = document.getElementById('board');
+                    boardSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 } else {
                     // Scroll down
-                    boardContainer.scrollBy(0, scrollAmount);
+                    window.scrollBy({ top: scrollAmount, behavior: 'smooth' });
                 }
 
-                console.log('Auto-scroll:', { currentScroll: boardContainer.scrollTop, maxScroll });
+                console.log('Auto-scroll:', { currentScroll: window.scrollY, maxScroll });
             }, AUTO_SCROLL_SPEED);
         }
 
