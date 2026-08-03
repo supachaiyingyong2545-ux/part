@@ -538,6 +538,7 @@
         .board-container {
             width: 100%;
             overflow-y: auto;
+            overflow-x: hidden;
             padding-top: 200px;
             padding-left: 40px;
             padding-right: 40px;
@@ -546,6 +547,8 @@
             visibility: hidden;
             opacity: 0;
             transition: opacity 0.5s ease;
+            scroll-behavior: smooth;
+            max-height: 100%;
         }
 
         .board-container.ready {
@@ -1706,15 +1709,17 @@
                 if (cards.length === 0) return;
 
                 const cardHeight = cards[0].offsetHeight + 20; // 20px gap
+                const maxScroll = boardContainer.scrollHeight - boardContainer.clientHeight;
+
                 currentScrollPosition += cardHeight;
 
                 // Reset to top when reaching end
-                const maxScroll = boardContainer.scrollHeight - boardContainer.clientHeight;
-                if (currentScrollPosition >= maxScroll) {
+                if (currentScrollPosition > maxScroll) {
                     currentScrollPosition = 0;
                 }
 
-                boardContainer.scrollTop = currentScrollPosition;
+                boardContainer.scrollTop = Math.min(currentScrollPosition, maxScroll);
+                console.log('Auto-scroll:', { currentScrollPosition, maxScroll, cardCount: cards.length });
             }, AUTO_SCROLL_SPEED);
         }
 
