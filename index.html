@@ -558,11 +558,17 @@
 
         .board-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(4, 1fr);
             gap: 20px;
-            max-width: 1200px;
+            max-width: 100%;
             margin: 0 auto;
             padding: 0 20px;
+        }
+
+        @media (max-width: 1400px) {
+            .board-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
         }
 
         @media (max-width: 768px) {
@@ -715,9 +721,9 @@
         }
 
         .card-message {
-            font-size: 16px;
-            line-height: 1.5;
-            font-weight: 500;
+            font-size: 18px;
+            line-height: 1.6;
+            font-weight: 600;
             color: var(--text);
             margin-bottom: 12px;
             overflow: hidden;
@@ -1704,22 +1710,20 @@
         function startAutoScroll() {
             if (autoScrollInterval) clearInterval(autoScrollInterval);
 
-            autoScrollInterval = setInterval(() => {
-                const cards = document.querySelectorAll('.feedback-card');
-                if (cards.length === 0) return;
+            let scrollAmount = 300; // pixels to scroll each time
 
-                const cardHeight = cards[0].offsetHeight + 20; // 20px gap
+            autoScrollInterval = setInterval(() => {
                 const maxScroll = boardContainer.scrollHeight - boardContainer.clientHeight;
 
-                currentScrollPosition += cardHeight;
-
-                // Reset to top when reaching end
-                if (currentScrollPosition > maxScroll) {
-                    currentScrollPosition = 0;
+                if (boardContainer.scrollTop >= maxScroll - 10) {
+                    // Reset to top
+                    boardContainer.scrollTop = 0;
+                } else {
+                    // Scroll down
+                    boardContainer.scrollBy(0, scrollAmount);
                 }
 
-                boardContainer.scrollTop = Math.min(currentScrollPosition, maxScroll);
-                console.log('Auto-scroll:', { currentScrollPosition, maxScroll, cardCount: cards.length });
+                console.log('Auto-scroll:', { currentScroll: boardContainer.scrollTop, maxScroll });
             }, AUTO_SCROLL_SPEED);
         }
 
