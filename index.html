@@ -1335,25 +1335,23 @@
     <!-- QR Code Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <!-- Main Script -->
     <script type="module">
-        // ===== GOOGLE APPS SCRIPT ENDPOINT =====
-        const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwJLxRLl8nbyo3nxTCqOAANyMOKh9mQG5yJcOR8UWsaPQNEZI71G-f7TpZoHg6RgMXKBA/exec';
+        // ===== SUPABASE CONFIGURATION =====
+        // Replace with your Supabase project URL and API key from https://app.supabase.com/
+        const SUPABASE_URL = 'YOUR_SUPABASE_URL'; // e.g., https://your-project.supabase.co
+        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY'; // Get from Supabase Settings > API
 
-        // ===== FIREBASE CONFIGURATION (Optional - for admin auth only) =====
-        // Replace these with your Firebase credentials if you want to use Firebase for admin authentication
-        const firebaseConfig = {
-            apiKey: "PUT_YOUR_API_KEY_HERE",
-            authDomain: "PUT_YOUR_AUTH_DOMAIN_HERE",
-            projectId: "PUT_YOUR_PROJECT_ID_HERE",
-            storageBucket: "PUT_YOUR_STORAGE_BUCKET_HERE",
-            messagingSenderId: "PUT_YOUR_SENDER_ID_HERE",
-            appId: "PUT_YOUR_APP_ID_HERE"
-        };
+        // Initialize Supabase client
+        const { createClient } = window.supabase;
+        const supabase = SUPABASE_URL && SUPABASE_ANON_KEY ?
+            createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
         // ===== DEMO MODE =====
-        const DEMO_MODE = false; // Set to true for demo with sample data
-        const USE_GAS_ONLY = true; // Set to true to use Google Sheets + GAS (no Firebase)
+        const DEMO_MODE = !supabase; // Set to false when Supabase is configured
 
         // ===== UTILITY FUNCTIONS =====
         function sanitizeText(text) {
@@ -1414,37 +1412,28 @@
             showPage(location.hash.slice(1));
         }
 
-        // ===== FIREBASE INITIALIZATION =====
-        let db, auth, currentUser;
-        let firebaseReady = false;
+        // ===== SUPABASE AUTH SETUP =====
+        let currentUser = null;
 
-        if (!DEMO_MODE) {
-            (async () => {
-                try {
-                    const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js');
-                    const { getFirestore, collection, query, where, onSnapshot, addDoc, updateDoc, deleteDoc, doc, serverTimestamp } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
-                    const { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js');
-
-                    const app = initializeApp(firebaseConfig);
-                    db = getFirestore(app);
-                    auth = getAuth(app);
-
-                    firebaseReady = true;
-
-                    // Setup auth listener
-                    onAuthStateChanged(auth, (user) => {
-                        currentUser = user;
-                        updateAdminUI();
-                    });
-                } catch (error) {
-                    console.error('Firebase initialization error:', error);
-                    DEMO_MODE = true;
-                    initDemoMode();
+        if (!DEMO_MODE && supabase) {
+            // Check if user is already logged in
+            supabase.auth.getSession().then(({ data: { session } }) => {
+                if (session?.user) {
+                    currentUser = session.user;
+                    updateAdminUI();
                 }
-            })();
-        } else {
-            // Demo mode setup
-            setTimeout(() => initDemoMode(), 100);
+            });
+
+            // Listen for auth changes
+            supabase.auth.onAuthStateChange((event, session) => {
+                if (session?.user) {
+                    currentUser = session.user;
+                    updateAdminUI();
+                } else {
+                    currentUser = null;
+                    updateAdminUI();
+                }
+            });
         }
 
         // ===== SUBMIT PAGE =====
@@ -1508,48 +1497,31 @@
                         id: generateDisplaySeed(Date.now().toString()),
                         name: 'ผู้เข้าร่วมงาน',
                         pillar,
-                        staffType,
+                        staff_type: staffType,
                         message: sanitizeText(message),
                         status: 'approved',
-                        createdAt: new Date(),
-                        displaySeed: generateDisplaySeed(Date.now().toString())
+                        created_at: new Date(),
                     };
                     const demoData = JSON.parse(localStorage.getItem('demoFeedback') || '[]');
                     demoData.push(feedback);
                     localStorage.setItem('demoFeedback', JSON.stringify(demoData));
-                } else if (USE_GAS_ONLY) {
-                    // Save to Google Sheets via GAS
-                    const formData = new FormData();
-                    formData.append('action', 'addFeedback');
-                    formData.append('text', message);
-                    formData.append('pillar', pillar);
-                    formData.append('staffType', staffType);
-                    formData.append('author', 'ผู้เข้าร่วมงาน');
+                } else if (supabase) {
+                    // Save to Supabase
+                    const { data, error } = await supabase
+                        .from('feedback')
+                        .insert([
+                            {
+                                pillar,
+                                staff_type: staffType,
+                                message: sanitizeText(message),
+                                author: 'ผู้เข้าร่วมงาน',
+                                status: 'pending'
+                            }
+                        ]);
 
-                    const response = await fetch(GAS_ENDPOINT, {
-                        method: 'POST',
-                        body: formData
-                    });
-
-                    const result = await response.json();
-                    if (!result.success) {
-                        throw new Error(result.message || 'Failed to save feedback');
+                    if (error) {
+                        throw new Error(error.message || 'Failed to save feedback');
                     }
-                } else if (firebaseReady) {
-                    // Real Firebase
-                    const { addDoc, collection, updateDoc, doc, serverTimestamp } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
-                    const docRef = await addDoc(collection(db, 'comments'), {
-                        name: 'ผู้เข้าร่วมงาน',
-                        pillar,
-                        staffType,
-                        message: sanitizeText(message),
-                        status: 'pending',
-                        createdAt: serverTimestamp(),
-                        displaySeed: 0
-                    });
-
-                    const displaySeed = generateDisplaySeed(docRef.id);
-                    await updateDoc(doc(db, 'comments', docRef.id), { displaySeed });
                 } else {
                     throw new Error('ระบบยังไม่ได้ตั้งค่า กรุณาติดต่อผู้ดูแลระบบ');
                 }
@@ -1708,7 +1680,7 @@
                 const loadDemoData = async () => {
                     const demoData = JSON.parse(localStorage.getItem('demoFeedback') || '[]');
                     const newFeedback = demoData.filter(f => f.status === 'approved')
-                        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
                     if (!boardReady) {
                         allFeedback = newFeedback;
@@ -1725,42 +1697,85 @@
 
                 loadDemoData();
                 window.addEventListener('storage', loadDemoData);
-            } else if (USE_GAS_ONLY) {
-                // Fetch from Google Sheets via GAS
-                let previousIds = new Set();
-
-                const loadGASData = async () => {
+            } else if (supabase) {
+                // Real-time Supabase listener
+                (async () => {
                     try {
-                        const response = await fetch(`${GAS_ENDPOINT}?action=getAll`);
-                        const result = await response.json();
+                        // Initial load
+                        const { data, error } = await supabase
+                            .from('feedback')
+                            .select('*')
+                            .eq('status', 'approved')
+                            .order('created_at', { ascending: false });
 
-                        if (result.success && result.feedback) {
-                            const newFeedback = result.feedback.map(f => ({
-                                id: f.id || f.timestamp,
-                                name: f.author,
-                                message: f.text,
-                                pillar: f.pillar,
-                                staffType: f.staffType,
-                                createdAt: new Date(f.timestamp),
-                                status: 'approved'
-                            })).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                        if (error) throw error;
 
-                            if (!boardReady) {
-                                allFeedback = newFeedback;
-                                await initializeBoard();
-                                newFeedback.forEach(f => previousIds.add(f.id));
-                            } else {
-                                newFeedback.forEach(f => {
-                                    if (!previousIds.has(f.id)) {
-                                        previousIds.add(f.id);
-                                        addNewCard(f);
-                                        allFeedback.unshift(f);
-                                    }
-                                });
-                            }
+                        const newFeedback = data.map(f => ({
+                            id: f.id,
+                            name: f.author,
+                            message: f.message,
+                            pillar: f.pillar,
+                            staffType: f.staff_type,
+                            createdAt: new Date(f.created_at),
+                            status: f.status
+                        }));
+
+                        if (!boardReady) {
+                            allFeedback = newFeedback;
+                            await initializeBoard();
                         }
+
+                        // Set up real-time subscription
+                        supabase
+                            .channel('feedback')
+                            .on('postgres_changes',
+                                { event: 'INSERT', schema: 'public', table: 'feedback' },
+                                (payload) => {
+                                    if (payload.new.status === 'approved') {
+                                        const newF = {
+                                            id: payload.new.id,
+                                            name: payload.new.author,
+                                            message: payload.new.message,
+                                            pillar: payload.new.pillar,
+                                            staffType: payload.new.staff_type,
+                                            createdAt: new Date(payload.new.created_at),
+                                            status: payload.new.status
+                                        };
+                                        addNewCard(newF);
+                                        allFeedback.unshift(newF);
+                                    }
+                                }
+                            )
+                            .on('postgres_changes',
+                                { event: 'UPDATE', schema: 'public', table: 'feedback' },
+                                (payload) => {
+                                    // Handle status changes for approved/hidden
+                                    if (payload.new.status === 'approved' && !displayedCardIds.has(payload.new.id)) {
+                                        const newF = {
+                                            id: payload.new.id,
+                                            name: payload.new.author,
+                                            message: payload.new.message,
+                                            pillar: payload.new.pillar,
+                                            staffType: payload.new.staff_type,
+                                            createdAt: new Date(payload.new.created_at),
+                                            status: payload.new.status
+                                        };
+                                        addNewCard(newF);
+                                        allFeedback.unshift(newF);
+                                    } else if (payload.new.status !== 'approved' && displayedCardIds.has(payload.new.id)) {
+                                        // Remove card if it's no longer approved
+                                        const cardEl = document.getElementById(`card-${payload.new.id}`);
+                                        if (cardEl) cardEl.remove();
+                                        displayedCardIds.delete(payload.new.id);
+                                        allFeedback = allFeedback.filter(f => f.id !== payload.new.id);
+                                        feedbackCountEl.textContent = allFeedback.length;
+                                    }
+                                }
+                            )
+                            .subscribe();
+
                     } catch (error) {
-                        console.error('GAS board listener error:', error);
+                        console.error('Supabase board listener error:', error);
                         if (!boardReady) {
                             boardPreparing.style.display = 'none';
                             boardContainer.classList.add('ready');
@@ -1768,12 +1783,9 @@
                             boardReady = true;
                         }
                     }
-                };
-
-                loadGASData();
-                setInterval(loadGASData, 4000);
+                })();
             } else if (firebaseReady && db) {
-                // Real Firebase listener
+                // Real Firebase listener (kept for backward compatibility)
                 (async () => {
                     const { collection, query, where, onSnapshot } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
                     const q = query(collection(db, 'comments'), where('status', '==', 'approved'));
@@ -1850,51 +1862,44 @@
                 allAdminFeedback = JSON.parse(localStorage.getItem('demoFeedback') || '[]');
                 updateAdminStats();
                 renderAdminList();
-            } else if (USE_GAS_ONLY) {
-                // Load from Google Sheets via GAS
-                const loadGASAdminData = async () => {
+            } else if (supabase) {
+                // Real Supabase
+                (async () => {
                     try {
-                        const response = await fetch(`${GAS_ENDPOINT}?action=getAll`);
-                        const result = await response.json();
+                        const { data, error } = await supabase
+                            .from('feedback')
+                            .select('*')
+                            .order('created_at', { ascending: false });
 
-                        if (result.success && result.feedback) {
-                            allAdminFeedback = result.feedback.map(f => ({
-                                id: f.id || f.timestamp,
-                                name: f.author,
-                                message: f.text,
-                                organization: f.organization || '',
-                                createdAt: new Date(f.timestamp),
-                                status: 'approved', // Google Sheets doesn't have status field
-                                displaySeed: generateDisplaySeed(f.id || f.timestamp)
-                            }));
-                        }
+                        if (error) throw error;
+
+                        allAdminFeedback = data.map(f => ({
+                            id: f.id,
+                            name: f.author,
+                            message: f.message,
+                            pillar: f.pillar,
+                            staffType: f.staff_type,
+                            createdAt: new Date(f.created_at),
+                            status: f.status
+                        }));
+
                         updateAdminStats();
                         renderAdminList();
+
+                        // Set up real-time subscription for admin
+                        supabase
+                            .channel('admin-feedback')
+                            .on('postgres_changes',
+                                { event: '*', schema: 'public', table: 'feedback' },
+                                (payload) => {
+                                    loadAdminFeedback(); // Reload on any change
+                                }
+                            )
+                            .subscribe();
+
                     } catch (error) {
-                        console.error('GAS admin listener error:', error);
+                        console.error('Supabase admin listener error:', error);
                     }
-                };
-
-                // Initial load
-                loadGASAdminData();
-
-                // Poll every 5 seconds
-                setInterval(loadGASAdminData, 5000);
-            } else if (firebaseReady && db) {
-                // Real Firebase
-                (async () => {
-                    const { collection, onSnapshot } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
-                    onSnapshot(collection(db, 'comments'),
-                        (snapshot) => {
-                            allAdminFeedback = [];
-                            snapshot.forEach((doc) => {
-                                allAdminFeedback.push({ id: doc.id, ...doc.data() });
-                            });
-                            updateAdminStats();
-                            renderAdminList();
-                        },
-                        (error) => console.error('Admin listener error:', error)
-                    );
                 })();
             }
         }
@@ -1923,30 +1928,33 @@
                 list = list.filter(f =>
                     f.message.toLowerCase().includes(search) ||
                     (f.name && f.name.toLowerCase().includes(search)) ||
-                    (f.organization && f.organization.toLowerCase().includes(search))
+                    (f.pillar && f.pillar.toLowerCase().includes(search))
                 );
             }
 
             feedbackList.innerHTML = list.map(feedback => {
-                // Don't show action buttons if using Google Sheets (GAS only)
-                const showActions = !USE_GAS_ONLY;
+                const statusLabels = { 'pending': 'รอตรวจสอบ', 'approved': 'อนุมัติแล้ว', 'hidden': 'ซ่อน' };
+                const showActions = !DEMO_MODE;
                 const actionsHTML = showActions ? `
                     <div class="feedback-actions">
                         ${feedback.status !== 'approved' ? `<button class="btn-success" onclick="approveComment('${feedback.id}')">อนุมัติ</button>` : ''}
                         ${feedback.status !== 'hidden' ? `<button class="btn-secondary" onclick="hideComment('${feedback.id}')">ซ่อน</button>` : ''}
                         <button class="btn-error" onclick="deleteComment('${feedback.id}')">ลบ</button>
                     </div>
-                ` : `<p style="color: #999; font-size: 12px; margin-top: 8px;">Google Sheets: จัดการโดยแก้ไขชีตโดยตรง</p>`;
+                ` : `<p style="color: #999; font-size: 12px; margin-top: 8px;">Demo Mode: จัดการข้อมูลได้จาก localStorage</p>`;
+
+                const staffTypeLabel = { 'internal': 'ภายใน', 'external': 'ภายนอก' };
 
                 return `
                     <div class="feedback-item">
                         <div class="feedback-item-content">
                             <div class="feedback-item-header">
                                 <span class="feedback-item-title">${escapeHtml(feedback.name || 'ผู้เข้าร่วมงาน')}</span>
-                                <span class="feedback-status status-${feedback.status}">${feedback.status}</span>
+                                <span class="feedback-status status-${feedback.status}">${statusLabels[feedback.status] || feedback.status}</span>
                             </div>
                             <div class="feedback-meta">
-                                ${feedback.organization ? `หน่วยงาน: ${escapeHtml(feedback.organization)} | ` : ''}
+                                ${feedback.pillar ? `เสาหลัก: ${escapeHtml(feedback.pillar)} | ` : ''}
+                                ${feedback.staffType ? `${escapeHtml(staffTypeLabel[feedback.staffType] || feedback.staffType)} | ` : ''}
                                 ${formatDate(feedback.createdAt)}
                             </div>
                             <div class="feedback-message">${escapeHtml(feedback.message)}</div>
@@ -1992,11 +2000,17 @@
                 if (feedback) feedback.status = 'approved';
                 localStorage.setItem('demoFeedback', JSON.stringify(demoData));
                 loadAdminFeedback();
-            } else if (USE_GAS_ONLY) {
-                showErrorModal('Google Sheets ไม่รองรับการอนุมัติความคิดเห็น กรุณาใช้ Firebase หรือแก้ไขชีตโดยตรง');
-            } else if (firebaseReady && db) {
-                const { doc, updateDoc } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
-                await updateDoc(doc(db, 'comments', id), { status: 'approved' });
+            } else if (supabase) {
+                try {
+                    const { error } = await supabase
+                        .from('feedback')
+                        .update({ status: 'approved' })
+                        .eq('id', id);
+                    if (error) throw error;
+                    loadAdminFeedback();
+                } catch (error) {
+                    showErrorModal(`เกิดข้อผิดพลาด: ${error.message}`);
+                }
             }
         };
 
@@ -2007,11 +2021,17 @@
                 if (feedback) feedback.status = 'hidden';
                 localStorage.setItem('demoFeedback', JSON.stringify(demoData));
                 loadAdminFeedback();
-            } else if (USE_GAS_ONLY) {
-                showErrorModal('Google Sheets ไม่รองรับการซ่อนความคิดเห็น กรุณาใช้ Firebase หรือลบแถวโดยตรง');
-            } else if (firebaseReady && db) {
-                const { doc, updateDoc } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
-                await updateDoc(doc(db, 'comments', id), { status: 'hidden' });
+            } else if (supabase) {
+                try {
+                    const { error } = await supabase
+                        .from('feedback')
+                        .update({ status: 'hidden' })
+                        .eq('id', id);
+                    if (error) throw error;
+                    loadAdminFeedback();
+                } catch (error) {
+                    showErrorModal(`เกิดข้อผิดพลาด: ${error.message}`);
+                }
             }
         };
 
@@ -2024,11 +2044,17 @@
                 if (index > -1) demoData.splice(index, 1);
                 localStorage.setItem('demoFeedback', JSON.stringify(demoData));
                 loadAdminFeedback();
-            } else if (USE_GAS_ONLY) {
-                showErrorModal('Google Sheets ไม่รองรับการลบความคิดเห็น กรุณาลบแถวในชีตโดยตรง');
-            } else if (firebaseReady && db) {
-                const { doc, deleteDoc } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
-                await deleteDoc(doc(db, 'comments', id));
+            } else if (supabase) {
+                try {
+                    const { error } = await supabase
+                        .from('feedback')
+                        .delete()
+                        .eq('id', id);
+                    if (error) throw error;
+                    loadAdminFeedback();
+                } catch (error) {
+                    showErrorModal(`เกิดข้อผิดพลาด: ${error.message}`);
+                }
             }
         };
 
@@ -2040,16 +2066,23 @@
 
             loginError.classList.remove('show');
 
-            if (DEMO_MODE || !firebaseReady) {
+            if (DEMO_MODE) {
                 // Demo mode: accept any credentials
                 currentUser = { email };
                 updateAdminUI();
-            } else if (auth) {
+            } else if (supabase) {
                 try {
-                    const { signInWithEmailAndPassword } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js');
-                    await signInWithEmailAndPassword(auth, email, password);
+                    const { data, error } = await supabase.auth.signInWithPassword({
+                        email: email,
+                        password: password
+                    });
+
+                    if (error) throw error;
+
+                    currentUser = data.user;
+                    updateAdminUI();
                 } catch (error) {
-                    loginError.textContent = 'ข้อมูลเข้าสู่ระบบไม่ถูกต้อง';
+                    loginError.textContent = 'ข้อมูลเข้าสู่ระบบไม่ถูกต้อง หรือบัญชีไม่มีอยู่';
                     loginError.classList.add('show');
                 }
             }
@@ -2057,12 +2090,17 @@
 
         // Logout
         logoutBtn?.addEventListener('click', async () => {
-            if (DEMO_MODE || !firebaseReady) {
+            if (DEMO_MODE) {
                 currentUser = null;
                 updateAdminUI();
-            } else if (auth) {
-                const { signOut } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js');
-                await signOut(auth);
+            } else if (supabase) {
+                try {
+                    await supabase.auth.signOut();
+                    currentUser = null;
+                    updateAdminUI();
+                } catch (error) {
+                    console.error('Logout error:', error);
+                }
             }
         });
 
