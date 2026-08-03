@@ -151,6 +151,16 @@
             border-radius: 8px;
             transition: all 0.3s ease;
             width: 100%;
+            background-color: white;
+        }
+
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234A90E2' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 32px;
         }
 
         input:focus, textarea:focus, select:focus {
@@ -273,6 +283,43 @@
 
         .char-progress-bar.danger {
             background: var(--error);
+        }
+
+        /* Staff Type Selection */
+        .staff-type-group {
+            display: flex;
+            gap: 16px;
+            margin-top: 8px;
+        }
+
+        .staff-type-option {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .staff-type-option input[type="radio"] {
+            width: auto;
+            margin-right: 12px;
+            cursor: pointer;
+            accent-color: var(--primary);
+        }
+
+        .staff-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: var(--text);
+            flex: 1;
+        }
+
+        .star-rating {
+            font-size: 16px;
+            color: var(--warning);
+            font-weight: bold;
+            letter-spacing: 2px;
         }
 
         .button-group {
@@ -964,13 +1011,36 @@
 
                 <form id="feedbackForm">
                     <div class="form-group">
-                        <label for="nameInput">ชื่อของคุณ (ไม่บังคับ)</label>
-                        <input type="text" id="nameInput" name="name" placeholder="เช่น สมชาย" maxlength="50">
+                        <label for="pillarInput">เสาหลัก *</label>
+                        <select id="pillarInput" name="pillar" required>
+                            <option value="">-- เลือกเสาหลัก --</option>
+                            <option value="pillar1">พัฒนาศักยภาพการบริการตรวจวินิจฉัยโรคของประเทศไทย</option>
+                            <option value="pillar2">เสริมสร้างความเข้มแข็งและยกระดับมาตรฐานอุตสาหกรรมชีวเภสัชภัณฑ์ วัคซีน และผลิตภัณฑ์การแพทย์ขั้นสูง</option>
+                            <option value="pillar3">เพื่อความมั่นคงทางสุขภาพ พัฒนาศูนย์ทดสอบมาตรฐานเครื่องมือแพทย์ระดับชาติแบบครบวงจร</option>
+                            <option value="pillar4">สนับสนุนและพัฒนาศักยภาพอุตสาหกรรมอาหารใหม่ของประเทศไทย</option>
+                            <option value="pillar5">ยกระดับสมุนไพรไทยสู่ยาและผลิตภัณฑ์สุขภาพระดับสากล</option>
+                            <option value="pillar6">สนับสนุนเส้นทางการท่องเที่ยวสุขภาพแบบครบวงจร</option>
+                        </select>
                     </div>
 
                     <div class="form-group">
-                        <label for="orgInput">หน่วยงาน (ไม่บังคับ)</label>
-                        <input type="text" id="orgInput" name="organization" placeholder="เช่น DMSc" maxlength="100">
+                        <label>ประเภทหน่วยงาน *</label>
+                        <div class="staff-type-group">
+                            <label class="staff-type-option">
+                                <input type="radio" name="staffType" value="internal" required>
+                                <span class="staff-label">
+                                    <span>ภายใน</span>
+                                    <span class="star-rating">★★</span>
+                                </span>
+                            </label>
+                            <label class="staff-type-option">
+                                <input type="radio" name="staffType" value="external" required>
+                                <span class="staff-label">
+                                    <span>ภายนอก</span>
+                                    <span class="star-rating">★★</span>
+                                </span>
+                            </label>
+                        </div>
                     </div>
 
                     <div class="form-group">
@@ -1013,10 +1083,6 @@
         </div>
 
         <div class="board-container" id="board-container">
-            <div class="board-loading" id="boardLoading">
-                <div class="loading-spinner"></div>
-                <p>กำลังโหลดความคิดเห็น...</p>
-            </div>
             <div class="empty-state" id="emptyState">
                 <div class="empty-state-icon">📝</div>
                 <div class="empty-state-text">ยังไม่มีความคิดเห็น</div>
@@ -1243,12 +1309,22 @@
             e.preventDefault();
 
             const message = messageInput.value.trim();
-            const name = document.getElementById('nameInput').value.trim();
-            const organization = document.getElementById('orgInput').value.trim();
+            const pillar = document.getElementById('pillarInput').value;
+            const staffType = document.querySelector('input[name="staffType"]:checked')?.value;
 
             const validation = validateMessage(message);
             if (!validation.valid) {
                 showErrorModal(validation.error);
+                return;
+            }
+
+            if (!pillar) {
+                showErrorModal('กรุณาเลือกเสาหลัก');
+                return;
+            }
+
+            if (!staffType) {
+                showErrorModal('กรุณาเลือกประเภทหน่วยงาน');
                 return;
             }
 
@@ -1260,8 +1336,9 @@
                     // Demo mode: use localStorage
                     const feedback = {
                         id: generateDisplaySeed(Date.now().toString()),
-                        name: name || 'ผู้เข้าร่วมงาน',
-                        organization,
+                        name: 'ผู้เข้าร่วมงาน',
+                        pillar,
+                        staffType,
                         message: sanitizeText(message),
                         status: 'approved',
                         createdAt: new Date(),
@@ -1275,8 +1352,9 @@
                     const formData = new FormData();
                     formData.append('action', 'addFeedback');
                     formData.append('text', message);
-                    formData.append('author', name || 'ผู้เข้าร่วมงาน');
-                    formData.append('organization', organization);
+                    formData.append('pillar', pillar);
+                    formData.append('staffType', staffType);
+                    formData.append('author', 'ผู้เข้าร่วมงาน');
 
                     const response = await fetch(GAS_ENDPOINT, {
                         method: 'POST',
@@ -1291,8 +1369,9 @@
                     // Real Firebase
                     const { addDoc, collection, updateDoc, doc, serverTimestamp } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
                     const docRef = await addDoc(collection(db, 'comments'), {
-                        name: name || 'ผู้เข้าร่วมงาน',
-                        organization,
+                        name: 'ผู้เข้าร่วมงาน',
+                        pillar,
+                        staffType,
                         message: sanitizeText(message),
                         status: 'pending',
                         createdAt: serverTimestamp(),
@@ -1322,7 +1401,6 @@
         // ===== BOARD PAGE =====
         const boardContainer = document.getElementById('board-container');
         const feedbackCountEl = document.getElementById('feedbackCount');
-        const boardLoading = document.getElementById('boardLoading');
         const emptyState = document.getElementById('emptyState');
         const qrCodeContainer = document.getElementById('qrCode');
 
@@ -1412,14 +1490,12 @@
 
         function updateBoardDisplay() {
             if (allFeedback.length === 0) {
-                boardLoading.classList.remove('show');
                 emptyState.classList.add('show');
                 clearBoard();
                 feedbackCountEl.textContent = '0';
                 return;
             }
 
-            boardLoading.classList.remove('show');
             emptyState.classList.remove('show');
             feedbackCountEl.textContent = allFeedback.length;
 
@@ -1456,7 +1532,6 @@
                 // Fetch from Google Sheets via GAS
                 const loadGASData = async () => {
                     try {
-                        boardLoading.classList.add('show');
                         const response = await fetch(`${GAS_ENDPOINT}?action=getAll`);
                         const result = await response.json();
 
@@ -1472,12 +1547,10 @@
                             }));
                             allFeedback.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
                         }
-                        boardLoading.classList.remove('show');
                         updateBoardDisplay();
                     } catch (error) {
                         console.error('GAS board listener error:', error);
                         emptyState.classList.add('show');
-                        boardLoading.classList.remove('show');
                     }
                 };
 
