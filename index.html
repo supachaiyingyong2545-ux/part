@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>DMSc CONNECT 2026 — Feedback System</title>
-    <meta name="theme-color" content="#1e1b4b">
+    <meta name="theme-color" content="#1769C2">
 
     <!-- Fonts & Libraries -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,7 +12,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
 
     <style>
         :root {
@@ -24,30 +23,18 @@
 
         body {
             font-family: 'Sarabun', sans-serif;
-            background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+            background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 50%, #f0fff8 100%);
             color: #1e293b;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
         }
 
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
-
-        .highlight-card {
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            border: 1px solid rgba(255, 255, 255, 0.9);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), inset 0 1px 1px rgba(255,255,255,1);
-            transition: all 0.3s ease;
-        }
-
-        .highlight-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.1), inset 0 1px 1px rgba(255,255,255,1);
+        .featured-enter {
+            animation: fadeInScale 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
         @keyframes slideInUp {
@@ -59,72 +46,90 @@
             opacity: 0;
         }
 
-        @keyframes fadeInScale {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        .featured-enter {
-            animation: fadeInScale 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
         @keyframes pulseSoft {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.7; transform: scale(0.98); }
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
         }
         .skeleton-pulse {
             animation: pulseSoft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
 
+        .featured-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fffe 100%);
+            border: 2px solid var(--secondary-cyan);
+            box-shadow: 0 20px 50px rgba(56, 189, 248, 0.1);
+            border-radius: 2rem;
+        }
+
+        .featured-card .new-badge {
+            background: linear-gradient(135deg, var(--secondary-cyan) 0%, var(--mint-green) 100%);
+            animation: fadeInScale 0.4s ease forwards;
+        }
+
+        .small-card {
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            backdrop-filter: blur(4px);
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+
+        .small-card:hover {
+            opacity: 0.9;
+            border-color: rgba(56, 189, 248, 0.4);
+        }
+
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        ::-webkit-scrollbar-thumb { background: rgba(56, 189, 248, 0.3); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(56, 189, 248, 0.6); }
     </style>
 </head>
 <body class="min-h-screen flex flex-col select-none overflow-hidden">
 
 <!-- ================= HEADER ================= -->
-<header class="glass-panel py-3 px-4 lg:px-8 flex justify-between items-center relative z-20 shrink-0">
+<header class="bg-white/80 backdrop-blur-sm py-3 px-4 lg:px-8 flex justify-between items-center relative z-20 shrink-0 border-b border-sky-100/50">
     <div class="flex items-center space-x-3 lg:space-x-4 flex-1">
         <div>
-            <h1 class="text-xl lg:text-2xl font-extrabold text-slate-800 tracking-tight leading-normal">
-                DMSc CONNECT Ideas 2026
+            <h1 class="text-xl lg:text-2xl font-bold text-slate-800" style="color: var(--primary-blue);">
+                DMSc CONNECT 2026
             </h1>
-            <p class="text-slate-500 text-xs font-medium mt-0.5">ระบบระดมความคิดเห็นแบบเรียลไทม์</p>
+            <p class="text-slate-500 text-xs font-medium mt-0.5">ระบบระดมความคิดเห็น</p>
         </div>
     </div>
 
     <div class="flex items-center space-x-3 shrink-0">
-        <div class="bg-white/60 px-4 py-2 rounded-2xl flex items-center space-x-3 shadow-sm border border-slate-100 hidden sm:flex">
-            <i data-lucide="clock" class="text-indigo-400 w-5 h-5"></i>
-            <div class="text-right">
-                <div id="clockTime" class="text-sm lg:text-base font-bold text-slate-700 tabular-nums leading-none">--:--:--</div>
-            </div>
+        <div class="bg-white/60 px-4 py-2 rounded-xl flex items-center space-x-2 border border-sky-100 hidden sm:flex">
+            <i data-lucide="clock" class="w-4 h-4" style="color: var(--secondary-cyan);"></i>
+            <div id="clockTime" class="text-sm font-bold text-slate-700 tabular-nums">--:--:--</div>
         </div>
-        <button onclick="toggleMobileForm()" class="w-10 h-10 lg:w-11 lg:h-11 rounded-2xl bg-indigo-50 text-indigo-600 hover:bg-indigo-100 hover:text-indigo-700 hover:scale-105 active:scale-95 transition-all flex items-center justify-center shadow-sm" title="แบบฟอร์ม">
+        <button onclick="toggleMobileForm()" class="w-10 h-10 lg:w-11 lg:h-11 rounded-xl text-white hover:scale-110 active:scale-95 transition-all shadow-md flex items-center justify-center font-bold"
+            style="background: linear-gradient(135deg, var(--secondary-cyan) 0%, var(--mint-green) 100%);" title="แบบฟอร์ม">
             <i data-lucide="edit-3" class="w-5 h-5"></i>
         </button>
-        <button onclick="toggleStatsPage()" class="w-10 h-10 lg:w-11 lg:h-11 rounded-2xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:text-emerald-700 hover:scale-105 active:scale-95 transition-all flex items-center justify-center shadow-sm" title="สถิติ">
+        <button onclick="toggleStatsPage()" class="w-10 h-10 lg:w-11 lg:h-11 rounded-xl text-white hover:scale-110 active:scale-95 transition-all shadow-md flex items-center justify-center font-bold"
+            style="background: var(--primary-blue);" title="สถิติ">
             <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
         </button>
     </div>
 </header>
 
 <!-- ================= MAIN FEEDBACK DISPLAY ================= -->
-<main id="mainPage" class="flex-grow flex flex-col gap-4 p-4 lg:p-6 overflow-y-auto">
+<main id="mainPage" class="flex-grow flex flex-col gap-5 p-4 lg:p-8 overflow-y-auto">
 
-    <!-- Featured Large Card -->
-    <div id="featuredContainer" class="w-full">
-        <div id="featuredCard" class="highlight-card rounded-[2rem] p-8 lg:p-12 min-h-[300px] lg:min-h-[400px] flex flex-col justify-center featured-enter shadow-xl">
-            <div class="skeleton-pulse h-16 w-3/4 bg-slate-100 rounded-lg mb-6"></div>
-            <div class="skeleton-pulse h-4 w-1/2 bg-slate-100 rounded-lg"></div>
+    <!-- Featured Large Card (Latest Feedback) -->
+    <div class="w-full">
+        <div id="featuredCard" class="featured-card p-8 lg:p-12 min-h-[350px] lg:min-h-[450px] flex flex-col justify-center featured-enter">
+            <div class="skeleton-pulse h-16 w-3/4 bg-gradient-to-r from-sky-200 to-emerald-200 rounded-lg mb-6"></div>
+            <div class="skeleton-pulse h-4 w-1/2 bg-sky-100 rounded-lg"></div>
         </div>
     </div>
 
-    <!-- Smaller Cards Carousel Below -->
-    <div class="w-full overflow-x-auto pb-4">
-        <div class="flex gap-4 px-1 min-w-max">
-            <div id="smallCardsContainer">
+    <!-- Small Cards - Already Displayed Feedback -->
+    <div class="w-full">
+        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 px-1">ความคิดเห็นอื่น ๆ</p>
+        <div class="overflow-x-auto pb-2">
+            <div class="flex gap-3 px-1 min-w-max" id="smallCardsContainer">
                 <!-- Small cards will be displayed here -->
             </div>
         </div>
@@ -133,13 +138,13 @@
 </main>
 
 <!-- ================= STATS PAGE ================= -->
-<div id="statsPage" class="hidden fixed inset-0 z-[200] bg-gradient-to-br from-slate-50 to-slate-100 overflow-y-auto">
-    <header class="glass-panel py-3 px-4 lg:px-8 flex justify-between items-center sticky top-0 z-10">
+<div id="statsPage" class="hidden fixed inset-0 z-[200] bg-gradient-to-br from-white via-sky-50 to-emerald-50 overflow-y-auto">
+    <header class="bg-white/80 backdrop-blur-sm py-3 px-4 lg:px-8 flex justify-between items-center sticky top-0 z-10 border-b border-sky-100/50">
         <div>
-            <h1 class="text-xl lg:text-2xl font-extrabold text-slate-800">สถิติความคิดเห็น</h1>
+            <h1 class="text-xl lg:text-2xl font-bold" style="color: var(--primary-blue);">สถิติความคิดเห็น</h1>
             <p class="text-slate-500 text-xs font-medium mt-0.5">DMSc CONNECT 2026</p>
         </div>
-        <button onclick="toggleStatsPage()" class="w-10 h-10 rounded-2xl bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center">
+        <button onclick="toggleStatsPage()" class="w-10 h-10 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center transition-all">
             <i data-lucide="x" class="w-5 h-5"></i>
         </button>
     </header>
@@ -147,46 +152,46 @@
     <div class="p-4 lg:p-8 max-w-[1920px] mx-auto">
         <!-- Stats Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <div class="glass-panel rounded-2xl p-6 text-center">
-                <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mx-auto mb-3">
+            <div class="bg-white/80 backdrop-blur rounded-xl p-6 border border-sky-100 text-center">
+                <div class="w-12 h-12 text-white rounded-lg flex items-center justify-center mx-auto mb-3 font-bold" style="background: linear-gradient(135deg, var(--secondary-cyan) 0%, var(--primary-blue) 100%);">
                     <i data-lucide="users" class="w-6 h-6"></i>
                 </div>
-                <div id="stat_people" class="text-4xl font-bold text-blue-700 leading-none">0</div>
+                <div id="stat_people" class="text-3xl font-bold" style="color: var(--primary-blue);">0</div>
                 <p class="text-sm text-slate-500 font-medium mt-2">ผู้เข้าร่วม</p>
             </div>
 
-            <div class="glass-panel rounded-2xl p-6 text-center">
-                <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center mx-auto mb-3">
+            <div class="bg-white/80 backdrop-blur rounded-xl p-6 border border-emerald-100 text-center">
+                <div class="w-12 h-12 text-white rounded-lg flex items-center justify-center mx-auto mb-3 font-bold" style="background: var(--mint-green);">
                     <i data-lucide="message-circle" class="w-6 h-6"></i>
                 </div>
-                <div id="stat_feedback" class="text-4xl font-bold text-emerald-700 leading-none">0</div>
+                <div id="stat_feedback" class="text-3xl font-bold" style="color: var(--mint-green);">0</div>
                 <p class="text-sm text-slate-500 font-medium mt-2">ความคิดเห็น</p>
             </div>
 
-            <div class="glass-panel rounded-2xl p-6 text-center">
-                <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center mx-auto mb-3">
+            <div class="bg-white/80 backdrop-blur rounded-xl p-6 border border-amber-100 text-center">
+                <div class="w-12 h-12 text-white rounded-lg flex items-center justify-center mx-auto mb-3 font-bold" style="background: var(--accent-orange);">
                     <i data-lucide="heart" class="w-6 h-6"></i>
                 </div>
-                <div id="stat_likes" class="text-4xl font-bold text-amber-700 leading-none">0</div>
+                <div id="stat_likes" class="text-3xl font-bold" style="color: var(--accent-orange);">0</div>
                 <p class="text-sm text-slate-500 font-medium mt-2">ถูกใจ</p>
             </div>
 
-            <div class="glass-panel rounded-2xl p-6 text-center">
-                <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center mx-auto mb-3">
+            <div class="bg-white/80 backdrop-blur rounded-xl p-6 border border-slate-100 text-center">
+                <div class="w-12 h-12 text-white rounded-lg flex items-center justify-center mx-auto mb-3 font-bold" style="background: var(--primary-blue);">
                     <i data-lucide="trending-up" class="w-6 h-6"></i>
                 </div>
-                <div id="stat_latest" class="text-2xl font-bold text-indigo-700 leading-none truncate">-</div>
+                <div id="stat_latest" class="text-lg font-bold text-slate-700 truncate">-</div>
                 <p class="text-sm text-slate-500 font-medium mt-2">เสาหลักล่าสุด</p>
             </div>
         </div>
 
         <!-- Pillar Breakdown -->
-        <div class="glass-panel rounded-2xl p-6 lg:p-8">
-            <h2 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
-                <i data-lucide="bar-chart-3" class="w-6 h-6 text-emerald-600"></i>
+        <div class="bg-white/80 backdrop-blur rounded-xl p-6 lg:p-8 border border-sky-100">
+            <h2 class="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">
+                <span style="color: var(--mint-green);">📊</span>
                 การกระจายตัวตามเสาหลัก
             </h2>
-            <div id="pillarBreakdown" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div id="pillarBreakdown" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <!-- Pillar stats จะแสดงที่นี่ -->
             </div>
         </div>
@@ -195,18 +200,19 @@
 
 <!-- ================= MOBILE FORM (BOTTOM SHEET) ================= -->
 <div id="mobileFormSheet" class="hidden fixed inset-0 z-[100] flex items-end justify-center bg-slate-900/50 backdrop-blur-sm p-4 overflow-y-auto">
-    <div class="bg-white w-full max-w-2xl rounded-t-[2rem] p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+    <div class="bg-white w-full max-w-2xl rounded-t-3xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
         <div class="w-10 h-1 bg-slate-200 rounded-full mx-auto mb-6"></div>
 
         <div class="flex items-center gap-4 mb-6">
-            <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center shrink-0">
+            <div class="w-12 h-12 text-white rounded-xl flex items-center justify-center shrink-0 font-bold"
+                style="background: linear-gradient(135deg, var(--secondary-cyan) 0%, var(--mint-green) 100%);">
                 <i data-lucide="edit-3" class="w-6 h-6"></i>
             </div>
             <div>
                 <h2 class="text-2xl font-bold text-slate-800">แบบฟอร์มความคิดเห็น</h2>
                 <p class="text-sm text-slate-500 mt-1">DMSc CONNECT Ideas 2026</p>
             </div>
-            <button onclick="toggleMobileForm()" class="ml-auto w-9 h-9 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 flex items-center justify-center">
+            <button onclick="toggleMobileForm()" class="ml-auto w-9 h-9 rounded-lg bg-slate-100 text-slate-500 hover:bg-slate-200 flex items-center justify-center">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
         </div>
@@ -215,7 +221,7 @@
             <div>
                 <label class="block text-sm font-bold text-slate-800 mb-2">ความคิดเห็นของคุณ</label>
                 <textarea id="feedbackText" placeholder="แบ่งปันความคิดเห็นของคุณที่นี่..." maxlength="500" required
-                    class="w-full px-4 py-3 border-2 border-slate-200 rounded-2xl focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all resize-none text-slate-700 font-medium"
+                    class="w-full px-4 py-3 border-2 border-sky-200 rounded-xl focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all resize-none text-slate-700 font-medium"
                     rows="4"></textarea>
                 <div class="text-xs text-slate-500 mt-1 text-right"><span id="charCounter">0</span>/500</div>
             </div>
@@ -223,7 +229,7 @@
             <div>
                 <label class="block text-sm font-bold text-slate-800 mb-2">เสาหลักที่เกี่ยวข้อง</label>
                 <select id="pillar" required
-                    class="w-full px-4 py-3 border-2 border-slate-200 rounded-2xl focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all text-slate-700 font-medium">
+                    class="w-full px-4 py-3 border-2 border-sky-200 rounded-xl focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all text-slate-700 font-medium">
                     <option value="">เลือกเสาหลัก...</option>
                     <option value="pillar1">พัฒนาศักยภาพการบริการตรวจวินิจฉัยโรค</option>
                     <option value="pillar2">ชีววัคซีน และผลิตภัณฑ์การแพทย์</option>
@@ -237,7 +243,7 @@
             <div>
                 <label class="block text-sm font-bold text-slate-800 mb-2">ประเภทบุคลากร</label>
                 <select id="staffType" required
-                    class="w-full px-4 py-3 border-2 border-slate-200 rounded-2xl focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all text-slate-700 font-medium">
+                    class="w-full px-4 py-3 border-2 border-sky-200 rounded-xl focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all text-slate-700 font-medium">
                     <option value="">เลือกประเภท...</option>
                     <option value="internal">บุคคลภายใน</option>
                     <option value="external">บุคคลภายนอก</option>
@@ -248,16 +254,17 @@
                 <label class="block text-sm font-bold text-slate-800 mb-2">ชื่อของคุณ (ไม่บังคับ)</label>
                 <div class="flex gap-3">
                     <input type="text" id="author" placeholder="ใส่ชื่อของคุณ..."
-                        class="flex-1 px-4 py-3 border-2 border-slate-200 rounded-2xl focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all text-slate-700 font-medium">
+                        class="flex-1 px-4 py-3 border-2 border-sky-200 rounded-xl focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all text-slate-700 font-medium">
                     <button type="button" id="anonBtn" onclick="toggleAnonymous()"
-                        class="px-5 py-3 bg-slate-100 text-slate-600 font-bold rounded-2xl border-2 border-slate-200 hover:bg-indigo-100 hover:border-indigo-300 hover:text-indigo-600 transition-all active:scale-95 whitespace-nowrap">
+                        class="px-5 py-3 bg-slate-100 text-slate-600 font-bold rounded-lg border-2 border-slate-200 hover:bg-sky-100 hover:border-sky-300 hover:text-blue-600 transition-all active:scale-95 whitespace-nowrap">
                         ไม่ระบุชื่อ
                     </button>
                 </div>
             </div>
 
             <button type="submit"
-                class="w-full py-3 bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-bold rounded-2xl hover:shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2">
+                class="w-full py-3 text-white font-bold rounded-xl hover:shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2"
+                style="background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-cyan) 100%);">
                 <i data-lucide="send" class="w-4 h-4"></i>
                 ส่งความคิดเห็น
             </button>
@@ -269,13 +276,14 @@
 
 <!-- ================= SUCCESS MODAL ================= -->
 <div id="successModal" class="hidden fixed inset-0 z-[120] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
-    <div class="bg-white rounded-[2rem] p-8 max-w-sm w-full text-center shadow-2xl">
-        <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-5">
+    <div class="bg-white rounded-2xl p-8 max-w-sm w-full text-center shadow-2xl">
+        <div class="w-20 h-20 text-white rounded-full flex items-center justify-center mx-auto mb-5 font-bold" style="background: linear-gradient(135deg, var(--secondary-cyan) 0%, var(--mint-green) 100%);">
             <i data-lucide="check-circle" class="w-10 h-10"></i>
         </div>
         <h3 class="text-2xl font-bold text-slate-800 mb-2">ส่งสำเร็จ!</h3>
-        <p class="text-sm text-slate-500 mb-6">ขอบคุณที่ร่วมแสดงความคิดเห็น เชื่อมโยงทุกความคิด</p>
-        <button onclick="closeSuccess()" class="w-full bg-slate-800 text-white font-bold py-3 rounded-xl hover:bg-slate-700 transition-all active:scale-95">
+        <p class="text-sm text-slate-500 mb-6">ขอบคุณที่ร่วมแสดงความคิดเห็น</p>
+        <button onclick="closeSuccess()" class="w-full text-white font-bold py-3 rounded-xl hover:shadow-lg transition-all active:scale-95"
+            style="background: var(--primary-blue);">
             ปิด
         </button>
     </div>
@@ -297,12 +305,12 @@
     };
 
     const PILLAR_COLORS = {
-        'pillar1': { bg: 'bg-blue-50',     bar: 'bg-blue-500',    text: 'text-blue-700', icon: '⚗️' },
-        'pillar2': { bg: 'bg-indigo-50',   bar: 'bg-indigo-500',  text: 'text-indigo-700', icon: '💊' },
-        'pillar3': { bg: 'bg-violet-50',   bar: 'bg-violet-500',  text: 'text-violet-700', icon: '⚙️' },
-        'pillar4': { bg: 'bg-purple-50',   bar: 'bg-purple-500',  text: 'text-purple-700', icon: '🍴' },
-        'pillar5': { bg: 'bg-emerald-50',  bar: 'bg-emerald-500', text: 'text-emerald-700', icon: '🌿' },
-        'pillar6': { bg: 'bg-teal-50',     bar: 'bg-teal-500',    text: 'text-teal-700', icon: '🏥' }
+        'pillar1': { bg: '#E3F2FD', bar: '#1769C2', text: '#1769C2', icon: '⚗️' },
+        'pillar2': { bg: '#E0F7F4', bar: '#38BDF8', text: '#38BDF8', icon: '💊' },
+        'pillar3': { bg: '#F0FFFE', bar: '#38CFA7', text: '#38CFA7', icon: '⚙️' },
+        'pillar4': { bg: '#FFF9E6', bar: '#FFB547', text: '#FFB547', icon: '🍴' },
+        'pillar5': { bg: '#F0FFF8', bar: '#38CFA7', text: '#38CFA7', icon: '🌿' },
+        'pillar6': { bg: '#F3F4F6', bar: '#1769C2', text: '#1769C2', icon: '🏥' }
     };
 
     let allFeedback = [];
@@ -344,13 +352,15 @@
         const btn = document.getElementById('anonBtn');
         const inp = document.getElementById('author');
         if (isAnonymous) {
-            btn.classList.add('bg-indigo-100', 'border-indigo-300', 'text-indigo-600');
-            btn.classList.remove('bg-slate-100', 'border-slate-200', 'text-slate-600');
+            btn.style.background = 'linear-gradient(135deg, #38BDF8 0%, #38CFA7 100%)';
+            btn.style.color = 'white';
+            btn.style.borderColor = '#38BDF8';
             inp.disabled = true;
             inp.value = '';
         } else {
-            btn.classList.remove('bg-indigo-100', 'border-indigo-300', 'text-indigo-600');
-            btn.classList.add('bg-slate-100', 'border-slate-200', 'text-slate-600');
+            btn.style.background = '#f3f4f6';
+            btn.style.color = '#4b5563';
+            btn.style.borderColor = '#e2e8f0';
             inp.disabled = false;
         }
     }
@@ -415,7 +425,7 @@
                 currentFeaturedIndex = (currentFeaturedIndex + 1) % allFeedback.length;
                 renderFeaturedCard();
             }
-        }, 5000); // หมุนทุก 5 วินาที
+        }, 5000);
     }
 
     function renderFeaturedCard() {
@@ -430,27 +440,32 @@
 
         const featured = allFeedback[currentFeaturedIndex];
         const pillarKey = Object.keys(PILLAR_NAMES).find(k => PILLAR_NAMES[k] === featured.pillar);
-        const colors = PILLAR_COLORS[pillarKey] || { text: 'text-slate-700', icon: '💬' };
+        const colors = PILLAR_COLORS[pillarKey] || { text: '#1769C2', icon: '💬', bar: '#1769C2' };
 
         document.getElementById('featuredCard').innerHTML = `
-            <div class="flex flex-col gap-4">
-                <div class="text-sm font-bold text-indigo-600 flex items-center gap-2">
-                    <span class="text-2xl">${colors.icon}</span>
-                    <span>${featured.pillar || 'ไม่ระบุ'}</span>
+            <div class="space-y-6">
+                <div class="flex items-center gap-3">
+                    <span class="text-3xl">${colors.icon}</span>
+                    <div class="flex-1">
+                        <p class="text-sm font-bold text-slate-500 uppercase tracking-wide">${featured.pillar || 'ไม่ระบุ'}</p>
+                    </div>
+                    <div class="new-badge px-3 py-1 rounded-lg text-white text-xs font-bold">✨ ใหม่</div>
                 </div>
-                <p class="text-4xl lg:text-5xl font-bold text-slate-800 leading-snug">${escapeHtml(featured.text)}</p>
-                <div class="flex flex-wrap gap-4 mt-4 pt-4 border-t border-slate-200">
+
+                <p class="text-4xl lg:text-5xl font-bold text-slate-800 leading-tight">${escapeHtml(featured.text)}</p>
+
+                <div class="flex flex-wrap gap-6 pt-6 border-t border-slate-200/50">
                     <div>
-                        <p class="text-xs text-slate-500">โดย</p>
-                        <p class="text-lg font-bold text-slate-700">${featured.author || 'Anonymous'}</p>
+                        <p class="text-xs text-slate-500 uppercase tracking-wide mb-1">โดย</p>
+                        <p class="text-base font-bold text-slate-700">${featured.author || 'Anonymous'}</p>
                     </div>
                     <div>
-                        <p class="text-xs text-slate-500">ประเภท</p>
-                        <p class="text-lg font-bold text-slate-700">${featured.staffType || '-'}</p>
+                        <p class="text-xs text-slate-500 uppercase tracking-wide mb-1">ประเภท</p>
+                        <p class="text-base font-bold text-slate-700">${featured.staffType || '-'}</p>
                     </div>
                     <div class="ml-auto text-right">
-                        <p class="text-xs text-slate-500">ลำดับที่</p>
-                        <p class="text-lg font-bold text-slate-700">${currentFeaturedIndex + 1}/${allFeedback.length}</p>
+                        <p class="text-xs text-slate-500 uppercase tracking-wide mb-1">ลำดับ</p>
+                        <p class="text-lg font-bold" style="color: ${colors.text};">${currentFeaturedIndex + 1}/${allFeedback.length}</p>
                     </div>
                 </div>
             </div>
@@ -469,17 +484,17 @@
 
         container.innerHTML = items.map((item, idx) => {
             const pillarKey = Object.keys(PILLAR_NAMES).find(k => PILLAR_NAMES[k] === item.pillar);
-            const colors = PILLAR_COLORS[pillarKey] || { bg: 'bg-slate-50', text: 'text-slate-700', icon: '💬' };
+            const colors = PILLAR_COLORS[pillarKey] || { bg: '#f3f4f6', text: '#1769C2', icon: '💬', bar: '#1769C2' };
             return `
-                <div class="highlight-card rounded-2xl p-4 w-[280px] lg:w-[320px] shrink-0 flex flex-col list-enter" style="animation-delay: ${idx * 0.08}s">
+                <div class="small-card rounded-xl p-4 w-[240px] lg:w-[280px] shrink-0 list-enter" style="background: ${colors.bg}; animation-delay: ${idx * 0.08}s">
                     <div class="flex items-start gap-2 mb-3">
                         <span class="text-2xl">${colors.icon}</span>
                         <div class="flex-1 min-w-0">
-                            <p class="text-xs text-slate-500 font-medium">${item.pillar || '-'}</p>
+                            <p class="text-xs text-slate-500 font-medium uppercase">${item.pillar || '-'}</p>
                             <p class="font-bold text-slate-700 text-sm line-clamp-2">${escapeHtml(item.text)}</p>
                         </div>
                     </div>
-                    <div class="space-y-1 text-xs text-slate-600 border-t border-slate-100 pt-3">
+                    <div class="space-y-1 text-xs text-slate-600 border-t" style="border-color: rgba(0,0,0,0.05); padding-top: 0.75rem;">
                         <p><span class="text-slate-400">โดย:</span> <span class="font-medium">${item.author || 'Anonymous'}</span></p>
                         <p><span class="text-slate-400">ประเภท:</span> <span class="font-medium">${item.staffType || '-'}</span></p>
                     </div>
@@ -541,17 +556,17 @@
             .map(([pillar, count]) => {
                 const pct = Math.round((count / maxCount) * 100);
                 const pillarKey = Object.keys(PILLAR_NAMES).find(k => PILLAR_NAMES[k] === pillar);
-                const colors = PILLAR_COLORS[pillarKey] || { bg: 'bg-slate-50', bar: 'bg-slate-400', text: 'text-slate-700' };
+                const colors = PILLAR_COLORS[pillarKey] || { bg: '#f3f4f6', bar: '#1769C2', text: '#1769C2' };
                 return `
-                    <div class="${colors.bg} rounded-2xl p-6">
+                    <div style="background: ${colors.bg};" class="rounded-xl p-5 border border-sky-100">
                         <div class="flex justify-between items-center mb-3">
-                            <p class="font-bold text-slate-800 text-lg">${pillar}</p>
-                            <span class="text-3xl font-bold ${colors.text}">${count}</span>
+                            <p class="font-bold text-slate-800">${pillar}</p>
+                            <span class="text-2xl font-bold" style="color: ${colors.text};">${count}</span>
                         </div>
-                        <div class="w-full h-3 bg-slate-200 rounded-full overflow-hidden">
-                            <div class="${colors.bar} h-full rounded-full transition-all" style="width: ${pct}%"></div>
+                        <div class="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+                            <div style="background: ${colors.bar};" class="h-full rounded-full transition-all" style="width: ${pct}%"></div>
                         </div>
-                        <p class="text-xs text-slate-500 mt-2 text-right">${pct}% จากทั้งหมด</p>
+                        <p class="text-xs text-slate-500 mt-2 text-right">${pct}%</p>
                     </div>`;
             }).join('');
         document.getElementById('pillarBreakdown').innerHTML = pillarHtml;
