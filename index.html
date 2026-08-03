@@ -1712,37 +1712,48 @@
         }
 
         function startAutoScroll() {
-            if (autoScrollInterval) clearInterval(autoScrollInterval);
+            if (autoScrollInterval) cancelAnimationFrame(autoScrollInterval);
 
-            let pauseCounter = 0;
-            const pauseFrames = PAUSE_TIME / AUTO_SCROLL_SPEED;
+            let lastScrollTime = Date.now();
+            let pauseEndTime = null;
+            let isPaused = false;
 
-            autoScrollInterval = setInterval(() => {
+            function scroll() {
+                const now = Date.now();
                 const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
 
-                pauseCounter++;
-
-                // Pause at each card
-                if (pauseCounter < pauseFrames) {
-                    return; // Stay still
-                }
-
-                if (window.scrollY >= maxScroll - 100) {
-                    // Reset to board top
-                    pauseCounter = 0;
-                    const boardSection = document.getElementById('board');
-                    boardSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                if (isPaused) {
+                    // Check if pause time is over
+                    if (now >= pauseEndTime) {
+                        isPaused = false;
+                        lastScrollTime = now;
+                    }
                 } else {
-                    // Scroll down smoothly
-                    pauseCounter = 0;
-                    window.scrollBy(0, SCROLL_AMOUNT);
+                    // Scroll if enough time has passed
+                    if (now - lastScrollTime >= AUTO_SCROLL_SPEED) {
+                        if (window.scrollY >= maxScroll - 100) {
+                            // At bottom, pause and reset
+                            isPaused = true;
+                            pauseEndTime = now + PAUSE_TIME;
+                            const boardSection = document.getElementById('board');
+                            boardSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        } else {
+                            // Scroll down smoothly
+                            window.scrollBy(0, SCROLL_AMOUNT);
+                            lastScrollTime = now;
+                        }
+                    }
                 }
-            }, AUTO_SCROLL_SPEED);
+
+                autoScrollInterval = requestAnimationFrame(scroll);
+            }
+
+            autoScrollInterval = requestAnimationFrame(scroll);
         }
 
         function stopAutoScroll() {
             if (autoScrollInterval) {
-                clearInterval(autoScrollInterval);
+                cancelAnimationFrame(autoScrollInterval);
                 autoScrollInterval = null;
             }
         }
