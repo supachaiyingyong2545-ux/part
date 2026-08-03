@@ -59,6 +59,14 @@
             opacity: 0;
         }
 
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .featured-enter {
+            animation: fadeInScale 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
         @keyframes pulseSoft {
             0%, 100% { opacity: 1; transform: scale(1); }
             50% { opacity: 0.7; transform: scale(0.98); }
@@ -73,10 +81,10 @@
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col select-none lg:overflow-hidden">
+<body class="min-h-screen flex flex-col select-none overflow-hidden">
 
 <!-- ================= HEADER ================= -->
-<header class="glass-panel py-3 px-4 lg:px-8 flex justify-between items-center relative z-20 shrink-0 sticky top-0">
+<header class="glass-panel py-3 px-4 lg:px-8 flex justify-between items-center relative z-20 shrink-0">
     <div class="flex items-center space-x-3 lg:space-x-4 flex-1">
         <div>
             <h1 class="text-xl lg:text-2xl font-extrabold text-slate-800 tracking-tight leading-normal">
@@ -91,116 +99,99 @@
             <i data-lucide="clock" class="text-indigo-400 w-5 h-5"></i>
             <div class="text-right">
                 <div id="clockTime" class="text-sm lg:text-base font-bold text-slate-700 tabular-nums leading-none">--:--:--</div>
-                <div id="clockDate" class="hidden lg:block text-xs font-medium text-slate-500 mt-0.5">กำลังโหลด...</div>
             </div>
         </div>
-        <button id="mobileFormBtn" onclick="toggleMobileForm()" class="w-10 h-10 lg:w-11 lg:h-11 rounded-2xl bg-indigo-50 text-indigo-600 hover:bg-indigo-100 hover:text-indigo-700 hover:scale-105 active:scale-95 transition-all flex items-center justify-center shadow-sm" title="แบบฟอร์ม">
+        <button onclick="toggleMobileForm()" class="w-10 h-10 lg:w-11 lg:h-11 rounded-2xl bg-indigo-50 text-indigo-600 hover:bg-indigo-100 hover:text-indigo-700 hover:scale-105 active:scale-95 transition-all flex items-center justify-center shadow-sm" title="แบบฟอร์ม">
             <i data-lucide="edit-3" class="w-5 h-5"></i>
+        </button>
+        <button onclick="toggleStatsPage()" class="w-10 h-10 lg:w-11 lg:h-11 rounded-2xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:text-emerald-700 hover:scale-105 active:scale-95 transition-all flex items-center justify-center shadow-sm" title="สถิติ">
+            <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
         </button>
     </div>
 </header>
 
-<!-- ================= MAIN CONTENT ================= -->
-<main class="flex-grow p-4 lg:p-6 lg:px-8 max-w-[1920px] mx-auto w-full flex flex-col lg:flex-row gap-4 lg:gap-6 lg:h-[calc(100vh-80px)] overflow-y-auto lg:overflow-hidden">
+<!-- ================= MAIN FEEDBACK DISPLAY ================= -->
+<main id="mainPage" class="flex-grow flex flex-col gap-4 p-4 lg:p-6 overflow-y-auto">
 
-    <!-- ฝั่งซ้าย: ความคิดเห็นล่าสุด (65%) -->
-    <section class="w-full lg:w-[65%] flex flex-col lg:h-full min-h-[500px] glass-panel rounded-[2rem] p-5 lg:p-6 relative overflow-hidden">
-        <div class="flex items-center justify-between mb-5 pb-3 border-b border-slate-200/60 z-10 shrink-0">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
-                    <i data-lucide="message-square" class="w-5 h-5"></i>
-                </div>
-                <div>
-                    <h2 class="text-lg lg:text-xl font-bold text-slate-800 flex items-center gap-2">
-                        ความคิดเห็นล่าสุด
-                        <span id="feedbackCountBadge" class="hidden text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full font-semibold">0</span>
-                    </h2>
-                    <p class="text-xs lg:text-xs text-slate-500 font-medium">From Lab to Life: Sciences for Healthy Longevity</p>
-                </div>
-            </div>
-            <div class="text-xs font-semibold text-blue-600 bg-blue-50 px-3 py-1.5 rounded-full border border-blue-100">Real-time</div>
+    <!-- Featured Large Card -->
+    <div id="featuredContainer" class="w-full">
+        <div id="featuredCard" class="highlight-card rounded-[2rem] p-8 lg:p-12 min-h-[300px] lg:min-h-[400px] flex flex-col justify-center featured-enter shadow-xl">
+            <div class="skeleton-pulse h-16 w-3/4 bg-slate-100 rounded-lg mb-6"></div>
+            <div class="skeleton-pulse h-4 w-1/2 bg-slate-100 rounded-lg"></div>
         </div>
+    </div>
 
-        <div id="feedbackHero" class="mb-4 z-10 shrink-0">
-            <div class="bg-white rounded-[1.5rem] p-6 skeleton-pulse border border-slate-100 shadow-sm">
-                <div class="h-8 w-3/4 bg-slate-100 rounded-lg mb-4"></div>
-                <div class="h-4 w-1/2 bg-slate-100 rounded-lg mb-3"></div>
-                <div class="h-4 w-2/3 bg-slate-100 rounded-lg"></div>
+    <!-- Smaller Cards Carousel Below -->
+    <div class="w-full overflow-x-auto pb-4">
+        <div class="flex gap-4 px-1 min-w-max">
+            <div id="smallCardsContainer">
+                <!-- Small cards will be displayed here -->
             </div>
         </div>
+    </div>
 
-        <div class="flex-grow overflow-y-auto pr-2 space-y-3 z-10 pb-4" id="feedbackList">
-            <!-- ความคิดเห็นจะแสดงที่นี่ -->
+</main>
+
+<!-- ================= STATS PAGE ================= -->
+<div id="statsPage" class="hidden fixed inset-0 z-[200] bg-gradient-to-br from-slate-50 to-slate-100 overflow-y-auto">
+    <header class="glass-panel py-3 px-4 lg:px-8 flex justify-between items-center sticky top-0 z-10">
+        <div>
+            <h1 class="text-xl lg:text-2xl font-extrabold text-slate-800">สถิติความคิดเห็น</h1>
+            <p class="text-slate-500 text-xs font-medium mt-0.5">DMSc CONNECT 2026</p>
         </div>
+        <button onclick="toggleStatsPage()" class="w-10 h-10 rounded-2xl bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center">
+            <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+    </header>
 
-        <div class="absolute -bottom-10 -left-10 opacity-5 pointer-events-none z-0">
-            <i data-lucide="lightbulb" class="w-72 h-72 lg:w-96 lg:h-96 text-blue-900"></i>
-        </div>
-    </section>
-
-    <!-- ฝั่งขวา: สถิติและเสาหลัก (35%) -->
-    <section class="w-full lg:w-[35%] flex flex-col lg:h-full min-h-[400px] glass-panel rounded-[2rem] p-5 lg:p-6 relative overflow-hidden">
-        <div class="flex items-center justify-between mb-5 pb-3 border-b border-slate-200/60 z-10 shrink-0">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center">
-                    <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
-                </div>
-                <div>
-                    <h2 class="text-lg lg:text-xl font-bold text-slate-800">สถิติ</h2>
-                    <p class="text-xs lg:text-xs text-slate-500 font-medium">ข้อมูลรวมเรียลไทม์</p>
-                </div>
-            </div>
-            <div class="text-xs font-semibold text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-100">Live</div>
-        </div>
-
+    <div class="p-4 lg:p-8 max-w-[1920px] mx-auto">
         <!-- Stats Grid -->
-        <div class="grid grid-cols-2 gap-3 mb-5 shrink-0">
-            <div class="bg-white rounded-2xl p-4 text-center shadow-sm border border-slate-100 hover:shadow-md hover:-translate-y-0.5 transition-all">
-                <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center mx-auto mb-2">
-                    <i data-lucide="users" class="w-5 h-5"></i>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="glass-panel rounded-2xl p-6 text-center">
+                <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mx-auto mb-3">
+                    <i data-lucide="users" class="w-6 h-6"></i>
                 </div>
-                <div id="stat_people" class="text-2xl font-bold text-blue-700 leading-none">0</div>
-                <p class="text-xs text-slate-500 font-medium mt-1">ผู้เข้าร่วม</p>
+                <div id="stat_people" class="text-4xl font-bold text-blue-700 leading-none">0</div>
+                <p class="text-sm text-slate-500 font-medium mt-2">ผู้เข้าร่วม</p>
             </div>
 
-            <div class="bg-white rounded-2xl p-4 text-center shadow-sm border border-slate-100 hover:shadow-md hover:-translate-y-0.5 transition-all">
-                <div class="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center mx-auto mb-2">
-                    <i data-lucide="message-circle" class="w-5 h-5"></i>
+            <div class="glass-panel rounded-2xl p-6 text-center">
+                <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center mx-auto mb-3">
+                    <i data-lucide="message-circle" class="w-6 h-6"></i>
                 </div>
-                <div id="stat_feedback" class="text-2xl font-bold text-emerald-700 leading-none">0</div>
-                <p class="text-xs text-slate-500 font-medium mt-1">ความคิดเห็น</p>
+                <div id="stat_feedback" class="text-4xl font-bold text-emerald-700 leading-none">0</div>
+                <p class="text-sm text-slate-500 font-medium mt-2">ความคิดเห็น</p>
             </div>
 
-            <div class="bg-white rounded-2xl p-4 text-center shadow-sm border border-slate-100 hover:shadow-md hover:-translate-y-0.5 transition-all">
-                <div class="w-10 h-10 bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center mx-auto mb-2">
-                    <i data-lucide="heart" class="w-5 h-5"></i>
+            <div class="glass-panel rounded-2xl p-6 text-center">
+                <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center mx-auto mb-3">
+                    <i data-lucide="heart" class="w-6 h-6"></i>
                 </div>
-                <div id="stat_likes" class="text-2xl font-bold text-amber-700 leading-none">0</div>
-                <p class="text-xs text-slate-500 font-medium mt-1">ถูกใจ</p>
+                <div id="stat_likes" class="text-4xl font-bold text-amber-700 leading-none">0</div>
+                <p class="text-sm text-slate-500 font-medium mt-2">ถูกใจ</p>
             </div>
 
-            <div class="bg-white rounded-2xl p-4 text-center shadow-sm border border-slate-100 hover:shadow-md hover:-translate-y-0.5 transition-all">
-                <div class="w-10 h-10 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center mx-auto mb-2">
-                    <i data-lucide="trending-up" class="w-5 h-5"></i>
+            <div class="glass-panel rounded-2xl p-6 text-center">
+                <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center mx-auto mb-3">
+                    <i data-lucide="trending-up" class="w-6 h-6"></i>
                 </div>
-                <div id="stat_latest" class="text-lg font-bold text-indigo-700 leading-none truncate">-</div>
-                <p class="text-xs text-slate-500 font-medium mt-1">เสาหลักล่าสุด</p>
+                <div id="stat_latest" class="text-2xl font-bold text-indigo-700 leading-none truncate">-</div>
+                <p class="text-sm text-slate-500 font-medium mt-2">เสาหลักล่าสุด</p>
             </div>
         </div>
 
         <!-- Pillar Breakdown -->
-        <div class="flex-grow overflow-y-auto pr-2 space-y-2 z-10 pb-4">
-            <h3 class="text-sm font-bold text-slate-600 px-2">การกระจายตัวตามเสาหลัก</h3>
-            <div id="pillarBreakdown" class="space-y-2">
+        <div class="glass-panel rounded-2xl p-6 lg:p-8">
+            <h2 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+                <i data-lucide="bar-chart-3" class="w-6 h-6 text-emerald-600"></i>
+                การกระจายตัวตามเสาหลัก
+            </h2>
+            <div id="pillarBreakdown" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <!-- Pillar stats จะแสดงที่นี่ -->
             </div>
         </div>
-
-        <div class="absolute -bottom-10 -right-10 opacity-5 pointer-events-none z-0">
-            <i data-lucide="trending-up" class="w-60 h-60 lg:w-80 lg:h-80 text-emerald-900"></i>
-        </div>
-    </section>
-</main>
+    </div>
+</div>
 
 <!-- ================= MOBILE FORM (BOTTOM SHEET) ================= -->
 <div id="mobileFormSheet" class="hidden fixed inset-0 z-[100] flex items-end justify-center bg-slate-900/50 backdrop-blur-sm p-4 overflow-y-auto">
@@ -224,7 +215,7 @@
             <div>
                 <label class="block text-sm font-bold text-slate-800 mb-2">ความคิดเห็นของคุณ</label>
                 <textarea id="feedbackText" placeholder="แบ่งปันความคิดเห็นของคุณที่นี่..." maxlength="500" required
-                    class="w-full px-4 py-3 border-2 border-slate-200 rounded-2xl focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all resize-none text-slate-700"
+                    class="w-full px-4 py-3 border-2 border-slate-200 rounded-2xl focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all resize-none text-slate-700 font-medium"
                     rows="4"></textarea>
                 <div class="text-xs text-slate-500 mt-1 text-right"><span id="charCounter">0</span>/500</div>
             </div>
@@ -257,7 +248,7 @@
                 <label class="block text-sm font-bold text-slate-800 mb-2">ชื่อของคุณ (ไม่บังคับ)</label>
                 <div class="flex gap-3">
                     <input type="text" id="author" placeholder="ใส่ชื่อของคุณ..."
-                        class="flex-1 px-4 py-3 border-2 border-slate-200 rounded-2xl focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all text-slate-700">
+                        class="flex-1 px-4 py-3 border-2 border-slate-200 rounded-2xl focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all text-slate-700 font-medium">
                     <button type="button" id="anonBtn" onclick="toggleAnonymous()"
                         class="px-5 py-3 bg-slate-100 text-slate-600 font-bold rounded-2xl border-2 border-slate-200 hover:bg-indigo-100 hover:border-indigo-300 hover:text-indigo-600 transition-all active:scale-95 whitespace-nowrap">
                         ไม่ระบุชื่อ
@@ -306,27 +297,28 @@
     };
 
     const PILLAR_COLORS = {
-        'pillar1': { bg: 'bg-blue-50',     bar: 'bg-blue-500',    text: 'text-blue-700' },
-        'pillar2': { bg: 'bg-indigo-50',   bar: 'bg-indigo-500',  text: 'text-indigo-700' },
-        'pillar3': { bg: 'bg-violet-50',   bar: 'bg-violet-500',  text: 'text-violet-700' },
-        'pillar4': { bg: 'bg-purple-50',   bar: 'bg-purple-500',  text: 'text-purple-700' },
-        'pillar5': { bg: 'bg-emerald-50',  bar: 'bg-emerald-500', text: 'text-emerald-700' },
-        'pillar6': { bg: 'bg-teal-50',     bar: 'bg-teal-500',    text: 'text-teal-700' }
+        'pillar1': { bg: 'bg-blue-50',     bar: 'bg-blue-500',    text: 'text-blue-700', icon: '⚗️' },
+        'pillar2': { bg: 'bg-indigo-50',   bar: 'bg-indigo-500',  text: 'text-indigo-700', icon: '💊' },
+        'pillar3': { bg: 'bg-violet-50',   bar: 'bg-violet-500',  text: 'text-violet-700', icon: '⚙️' },
+        'pillar4': { bg: 'bg-purple-50',   bar: 'bg-purple-500',  text: 'text-purple-700', icon: '🍴' },
+        'pillar5': { bg: 'bg-emerald-50',  bar: 'bg-emerald-500', text: 'text-emerald-700', icon: '🌿' },
+        'pillar6': { bg: 'bg-teal-50',     bar: 'bg-teal-500',    text: 'text-teal-700', icon: '🏥' }
     };
 
     let allFeedback = [];
     let isAnonymous = false;
+    let currentFeaturedIndex = 0;
+    let autoRotateTimer = null;
 
     // ================= CLOCK =================
     function updateClock() {
         const now = new Date();
         document.getElementById('clockTime').innerText = now.toLocaleTimeString('th-TH', { hour12: false });
-        document.getElementById('clockDate').innerText = now.toLocaleDateString('th-TH', { day: 'numeric', month: 'long', year: 'numeric' });
     }
     setInterval(updateClock, 1000);
     updateClock();
 
-    // ================= FORM HANDLERS =================
+    // ================= PAGE TOGGLE =================
     function toggleMobileForm() {
         const sheet = document.getElementById('mobileFormSheet');
         sheet.classList.toggle('hidden');
@@ -335,6 +327,18 @@
         }
     }
 
+    function toggleStatsPage() {
+        const page = document.getElementById('statsPage');
+        const main = document.getElementById('mainPage');
+        page.classList.toggle('hidden');
+        if (!page.classList.contains('hidden')) {
+            main.classList.add('hidden');
+        } else {
+            main.classList.remove('hidden');
+        }
+    }
+
+    // ================= FORM HANDLERS =================
     function toggleAnonymous() {
         isAnonymous = !isAnonymous;
         const btn = document.getElementById('anonBtn');
@@ -403,6 +407,88 @@
         document.getElementById('successModal').classList.add('hidden');
     }
 
+    // ================= AUTO-ROTATE FEATURED =================
+    function startAutoRotate() {
+        clearInterval(autoRotateTimer);
+        autoRotateTimer = setInterval(() => {
+            if (allFeedback.length > 0) {
+                currentFeaturedIndex = (currentFeaturedIndex + 1) % allFeedback.length;
+                renderFeaturedCard();
+            }
+        }, 5000); // หมุนทุก 5 วินาที
+    }
+
+    function renderFeaturedCard() {
+        if (allFeedback.length === 0) {
+            document.getElementById('featuredCard').innerHTML = `
+                <div class="text-center text-slate-400">
+                    <i data-lucide="message-square" class="w-16 h-16 mx-auto mb-4 opacity-30"></i>
+                    <p class="text-lg font-medium">ยังไม่มีความคิดเห็นเข้ามา</p>
+                </div>`;
+            return;
+        }
+
+        const featured = allFeedback[currentFeaturedIndex];
+        const pillarKey = Object.keys(PILLAR_NAMES).find(k => PILLAR_NAMES[k] === featured.pillar);
+        const colors = PILLAR_COLORS[pillarKey] || { text: 'text-slate-700', icon: '💬' };
+
+        document.getElementById('featuredCard').innerHTML = `
+            <div class="flex flex-col gap-4">
+                <div class="text-sm font-bold text-indigo-600 flex items-center gap-2">
+                    <span class="text-2xl">${colors.icon}</span>
+                    <span>${featured.pillar || 'ไม่ระบุ'}</span>
+                </div>
+                <p class="text-4xl lg:text-5xl font-bold text-slate-800 leading-snug">${escapeHtml(featured.text)}</p>
+                <div class="flex flex-wrap gap-4 mt-4 pt-4 border-t border-slate-200">
+                    <div>
+                        <p class="text-xs text-slate-500">โดย</p>
+                        <p class="text-lg font-bold text-slate-700">${featured.author || 'Anonymous'}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500">ประเภท</p>
+                        <p class="text-lg font-bold text-slate-700">${featured.staffType || '-'}</p>
+                    </div>
+                    <div class="ml-auto text-right">
+                        <p class="text-xs text-slate-500">ลำดับที่</p>
+                        <p class="text-lg font-bold text-slate-700">${currentFeaturedIndex + 1}/${allFeedback.length}</p>
+                    </div>
+                </div>
+            </div>
+        `;
+        lucide.createIcons();
+    }
+
+    function renderSmallCards() {
+        const container = document.getElementById('smallCardsContainer');
+        const items = allFeedback.filter((_, i) => i !== currentFeaturedIndex).slice(0, 8);
+
+        if (items.length === 0) {
+            container.innerHTML = '';
+            return;
+        }
+
+        container.innerHTML = items.map((item, idx) => {
+            const pillarKey = Object.keys(PILLAR_NAMES).find(k => PILLAR_NAMES[k] === item.pillar);
+            const colors = PILLAR_COLORS[pillarKey] || { bg: 'bg-slate-50', text: 'text-slate-700', icon: '💬' };
+            return `
+                <div class="highlight-card rounded-2xl p-4 w-[280px] lg:w-[320px] shrink-0 flex flex-col list-enter" style="animation-delay: ${idx * 0.08}s">
+                    <div class="flex items-start gap-2 mb-3">
+                        <span class="text-2xl">${colors.icon}</span>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs text-slate-500 font-medium">${item.pillar || '-'}</p>
+                            <p class="font-bold text-slate-700 text-sm line-clamp-2">${escapeHtml(item.text)}</p>
+                        </div>
+                    </div>
+                    <div class="space-y-1 text-xs text-slate-600 border-t border-slate-100 pt-3">
+                        <p><span class="text-slate-400">โดย:</span> <span class="font-medium">${item.author || 'Anonymous'}</span></p>
+                        <p><span class="text-slate-400">ประเภท:</span> <span class="font-medium">${item.staffType || '-'}</span></p>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        lucide.createIcons();
+    }
+
     // ================= DISPLAY FUNCTIONS =================
     async function updateDisplay() {
         try {
@@ -420,59 +506,15 @@
             const data = await res.json();
             if (data.success && data.feedback) {
                 allFeedback = data.feedback;
-                renderDisplay();
+                currentFeaturedIndex = 0;
+                renderFeaturedCard();
+                renderSmallCards();
                 updateStats();
+                startAutoRotate();
             }
         } catch (error) {
             console.error('Error:', error);
         }
-    }
-
-    function renderDisplay() {
-        const heroContainer = document.getElementById('feedbackHero');
-        const listContainer = document.getElementById('feedbackList');
-
-        if (allFeedback.length === 0) {
-            heroContainer.innerHTML = `
-                <div class="bg-white/40 border border-slate-100 border-dashed rounded-[1.5rem] h-32
-                            flex flex-col items-center justify-center gap-2 text-slate-400">
-                    <i data-lucide="message-square" class="w-8 h-8 opacity-40"></i>
-                    <span class="text-sm font-medium">ยังไม่มีความคิดเห็นเข้ามา</span>
-                </div>`;
-            listContainer.innerHTML = '';
-            return;
-        }
-
-        const featured = allFeedback[0];
-        const heroLive = `
-            <div class="highlight-card rounded-[1.5rem] p-5 relative overflow-hidden">
-                <div class="flex items-center justify-between mb-3">
-                    <span class="bg-indigo-600 text-white px-3 py-1 rounded-full text-xs font-bold">ล่าสุด</span>
-                    <span class="text-xs text-slate-500">เพิ่งเดี๋ยวนี้</span>
-                </div>
-                <p class="text-xl font-bold text-slate-800 mb-2 line-clamp-2">${escapeHtml(featured.text)}</p>
-                <div class="space-y-1 text-sm">
-                    <p class="text-indigo-600 font-bold">🏛️ ${featured.pillar || 'ไม่ระบุ'}</p>
-                    <p class="text-slate-600"><span class="text-slate-500">โดย:</span> ${featured.author || 'Anonymous'}</p>
-                    <p class="text-slate-600"><span class="text-slate-500">ประเภท:</span> ${featured.staffType || '-'}</p>
-                </div>
-            </div>`;
-        heroContainer.innerHTML = heroLive;
-
-        const listItems = allFeedback.slice(1).map((item, idx) => `
-            <div class="highlight-card rounded-2xl p-4 list-enter" style="animation-delay: ${Math.min(idx, 20) * 0.06}s">
-                <div class="flex justify-between items-start gap-2 mb-2">
-                    <h3 class="text-sm font-bold text-slate-800 flex-1 line-clamp-2">${escapeHtml(item.text)}</h3>
-                    <span class="text-[10px] text-slate-400 shrink-0">เมื่อสักครู่</span>
-                </div>
-                <div class="flex flex-wrap gap-2 text-xs">
-                    <span class="bg-indigo-100 text-indigo-700 px-2 py-1 rounded-lg font-medium">${item.pillar || '-'}</span>
-                    <span class="bg-slate-100 text-slate-600 px-2 py-1 rounded-lg font-medium">${item.author || 'Anonymous'}</span>
-                </div>
-            </div>
-        `).join('');
-        listContainer.innerHTML = listItems;
-        lucide.createIcons();
     }
 
     function updateStats() {
@@ -485,10 +527,6 @@
         document.getElementById('stat_feedback').textContent = feedbackCount || 0;
         document.getElementById('stat_likes').textContent = likesCount || 0;
         document.getElementById('stat_latest').textContent = latestPillar;
-        document.getElementById('feedbackCountBadge').textContent = feedbackCount;
-        if (feedbackCount > 0) {
-            document.getElementById('feedbackCountBadge').classList.remove('hidden');
-        }
 
         // Pillar breakdown
         const pillarCounts = {};
@@ -497,21 +535,23 @@
             pillarCounts[p] = (pillarCounts[p] || 0) + 1;
         });
 
-        const maxCount = Math.max(...Object.values(pillarCounts));
+        const maxCount = Math.max(...Object.values(pillarCounts), 1);
         const pillarHtml = Object.entries(pillarCounts)
             .sort((a, b) => b[1] - a[1])
             .map(([pillar, count]) => {
                 const pct = Math.round((count / maxCount) * 100);
-                const colors = PILLAR_COLORS[Object.keys(PILLAR_NAMES).find(k => PILLAR_NAMES[k] === pillar)] || { bg: 'bg-slate-50', bar: 'bg-slate-400', text: 'text-slate-700' };
+                const pillarKey = Object.keys(PILLAR_NAMES).find(k => PILLAR_NAMES[k] === pillar);
+                const colors = PILLAR_COLORS[pillarKey] || { bg: 'bg-slate-50', bar: 'bg-slate-400', text: 'text-slate-700' };
                 return `
-                    <div class="text-xs">
-                        <div class="flex justify-between mb-1">
-                            <span class="font-semibold text-slate-700">${pillar}</span>
-                            <span class="font-bold ${colors.text}">${count}</span>
+                    <div class="${colors.bg} rounded-2xl p-6">
+                        <div class="flex justify-between items-center mb-3">
+                            <p class="font-bold text-slate-800 text-lg">${pillar}</p>
+                            <span class="text-3xl font-bold ${colors.text}">${count}</span>
                         </div>
-                        <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
-                            <div class="${colors.bar} h-full rounded-full" style="width: ${pct}%"></div>
+                        <div class="w-full h-3 bg-slate-200 rounded-full overflow-hidden">
+                            <div class="${colors.bar} h-full rounded-full transition-all" style="width: ${pct}%"></div>
                         </div>
+                        <p class="text-xs text-slate-500 mt-2 text-right">${pct}% จากทั้งหมด</p>
                     </div>`;
             }).join('');
         document.getElementById('pillarBreakdown').innerHTML = pillarHtml;
