@@ -3,41 +3,214 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DMSc CONNECT 2026 — Feedback Dashboard</title>
-    <meta name="theme-color" content="#F5F1E8">
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <title>DMSc CONNECT 2026 — Feedback System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
+        /* Global Styles */
+        :root {
+            --primary: #4A90E2;
+            --primary-dark: #2E5C8A;
+            --success: #5CB85C;
+            --error: #E91E63;
+            --warning: #F39C12;
+            --bg: #F5F1E8;
+            --bg-alt: #F9F7F2;
+            --text: #2D2D2D;
+            --text-secondary: #666666;
+            --text-light: #999999;
+            --white: #FFFFFF;
+            --border: #DDD;
+            --shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.12);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Sarabun', sans-serif;
-            background: linear-gradient(135deg, #F5F1E8 0%, #F9F7F2 50%, #F5F1E8 100%);
-            color: #2D2D2D;
-            overflow-x: hidden;
-            min-height: 100vh;
+        html, body {
+            height: 100%;
+            width: 100%;
         }
 
-        /* Smooth animations */
-        @keyframes fadeInScale {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
+        body {
+            font-family: 'Sarabun', 'Noto Sans Thai', sans-serif;
+            background: linear-gradient(135deg, var(--bg) 0%, var(--bg-alt) 50%, var(--bg) 100%);
+            color: var(--text);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Sections */
+        section {
+            display: none;
+            min-height: 100vh;
+            animation: fadeIn 0.3s ease;
+        }
+
+        section.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Typography */
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        h1 { font-size: 48px; }
+        h2 { font-size: 36px; }
+        h3 { font-size: 28px; }
+        h4 { font-size: 24px; }
+        h5 { font-size: 20px; }
+        h6 { font-size: 18px; }
+
+        p {
+            margin-bottom: 16px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Buttons */
+        button, .btn {
+            font-family: 'Sarabun', 'Noto Sans Thai', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        button:disabled, .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        button:hover:not(:disabled), .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, #3A7BC8 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #3A7BC8 0%, #2E5C8A 100%);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text-secondary);
+            border: 2px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--text-secondary);
+            background: #F5F5F5;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #4CAA50;
+        }
+
+        .btn-error {
+            background: var(--error);
+            color: white;
+        }
+
+        .btn-error:hover {
+            background: #C2185B;
+        }
+
+        /* Forms */
+        input, textarea, select {
+            font-family: 'Sarabun', 'Noto Sans Thai', sans-serif;
+            font-size: 14px;
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.8;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        /* ===== SUBMIT PAGE ===== */
+        #submit {
+            flex-direction: column;
+        }
+
+        .submit-header {
+            background: linear-gradient(135deg, var(--bg) 0%, var(--bg-alt) 100%);
+            padding: 60px 40px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .submit-header h1 {
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+
+        .submit-header p {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 0;
+        }
+
+        .submit-container {
+            flex: 1;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            width: 100%;
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+            animation: slideInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         @keyframes slideInUp {
@@ -51,306 +224,1519 @@
             }
         }
 
-        .card-enter {
-            animation: fadeInScale 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        .form-card h2 {
+            font-size: 24px;
+            margin-bottom: 8px;
         }
 
-        .title-enter {
-            animation: slideInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        /* Card Styling */
-        .feedback-card {
-            background: white;
-            border-radius: 24px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-            overflow: hidden;
-            position: relative;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            display: flex;
-            flex-direction: column;
-            padding: 40px;
-            min-height: 280px;
-            border: 1px solid rgba(255, 255, 255, 0.5);
-        }
-
-        .feedback-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
-        }
-
-        .card-label {
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 16px;
-            opacity: 0.7;
-        }
-
-        .card-title {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 16px;
-            line-height: 1.3;
-            color: #2D2D2D;
-        }
-
-        .card-text {
+        .form-card-subtitle {
             font-size: 14px;
-            line-height: 1.6;
+            color: var(--text-light);
             margin-bottom: 24px;
-            flex-grow: 1;
-            color: #555555;
         }
 
-        .card-button {
-            display: inline-flex;
+        .char-count {
+            display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 8px;
+            margin-top: 8px;
             font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            opacity: 0.8;
+            color: var(--text-light);
         }
 
-        .card-button:hover {
-            opacity: 1;
-            transform: translateX(4px);
+        .char-count.warning {
+            color: var(--warning);
         }
 
-        /* Decorative shapes */
-        .card-shape {
-            position: absolute;
-            bottom: -30%;
-            right: -15%;
-            width: 280px;
-            height: 280px;
+        .char-count.danger {
+            color: var(--error);
+        }
+
+        .char-progress {
+            width: 100%;
+            height: 4px;
+            background: #EEE;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        .char-progress-bar {
+            height: 100%;
+            background: var(--primary);
+            transition: width 0.2s ease, background-color 0.2s ease;
+        }
+
+        .char-progress-bar.warning {
+            background: var(--warning);
+        }
+
+        .char-progress-bar.danger {
+            background: var(--error);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 32px;
+        }
+
+        .button-group button {
+            flex: 1;
+            padding: 16px 12px;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
             border-radius: 50%;
-            opacity: 0.15;
-            pointer-events: none;
+            animation: spin 0.8s linear infinite;
+            margin-left: 8px;
         }
 
-        .card-shape.shape-2 {
-            border-radius: 40% 60% 70% 30%;
-            bottom: -20%;
-            right: -10%;
-            width: 240px;
-            height: 240px;
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
-        .card-shape.shape-3 {
-            width: 200px;
-            height: 200px;
-            bottom: -10%;
-            right: -5%;
+        .spinner.hidden {
+            display: none;
         }
 
-        /* Header */
-        header {
-            padding: 60px 40px;
-            text-align: center;
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
         }
 
-        .header-title {
-            font-size: 48px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            color: #2D2D2D;
-            line-height: 1.2;
+        .modal.show {
+            display: flex;
         }
 
-        .header-subtitle {
-            font-size: 18px;
-            color: #666666;
-            font-weight: 400;
-        }
-
-        /* Grid */
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 32px;
+        .modal-content {
+            background: white;
+            border-radius: 16px;
             padding: 40px;
-            max-width: 1400px;
-            margin: 0 auto;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalPop 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        @media (min-width: 1280px) {
-            .cards-grid {
-                grid-template-columns: repeat(2, 1fr);
+        @keyframes modalPop {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
             }
         }
 
-        @media (min-width: 1920px) {
-            .cards-grid {
-                grid-template-columns: repeat(4, 1fr);
+        .modal-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+
+        .modal-message {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .modal-button {
+            background: var(--primary);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            width: 100%;
+        }
+
+        .modal-button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .modal.success .modal-button {
+            background: var(--success);
+        }
+
+        .modal.success .modal-button:hover {
+            background: #4CAA50;
+        }
+
+        .modal.error .modal-button {
+            background: var(--error);
+        }
+
+        .modal.error .modal-button:hover {
+            background: #C2185B;
+        }
+
+        /* ===== BOARD PAGE ===== */
+        #board {
+            position: relative;
+            flex-direction: column;
+        }
+
+        .board-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .board-header-content {
+            flex: 1;
+            text-align: center;
+        }
+
+        .board-header h1 {
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+
+        .board-header p {
+            font-size: 20px;
+            color: var(--text-secondary);
+            margin-bottom: 0;
+        }
+
+        .board-stats {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            background: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .qr-code {
+            position: fixed;
+            top: 40px;
+            left: 40px;
+            width: 120px;
+            height: 120px;
+            background: white;
+            padding: 8px;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            z-index: 101;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qr-code canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .board-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            padding-top: 200px;
+            flex: 1;
+        }
+
+        .sticky-note {
+            position: absolute;
+            width: 280px;
+            height: 280px;
+            padding: 24px;
+            border-radius: 4px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            animation: noteAppear 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .sticky-note:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.16);
+        }
+
+        @keyframes noteAppear {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
             }
         }
 
         /* Pastel Colors */
-        .bg-cream { background: linear-gradient(135deg, #FFF9F0 0%, #FFFBF7 100%); }
-        .bg-blue { background: linear-gradient(135deg, #E8F2FF 0%, #F0F7FF 100%); }
-        .bg-green { background: linear-gradient(135deg, #E8F5F0 0%, #F0FBF8 100%); }
-        .bg-pink { background: linear-gradient(135deg, #FFE8F0 0%, #FFF0F8 100%); }
-        .bg-purple { background: linear-gradient(135deg, #F0E8FF 0%, #F8F0FF 100%); }
-        .bg-yellow { background: linear-gradient(135deg, #FFF8E8 0%, #FFFBF0 100%); }
+        .bg-cream { background: linear-gradient(135deg, #FFF9F0 0%, #FFFBF7 100%); border-left: 4px solid #D4A574; }
+        .bg-blue { background: linear-gradient(135deg, #E8F2FF 0%, #F0F7FF 100%); border-left: 4px solid #4A90E2; }
+        .bg-green { background: linear-gradient(135deg, #E8F5F0 0%, #F0FBF8 100%); border-left: 4px solid #5CB85C; }
+        .bg-pink { background: linear-gradient(135deg, #FFE8F0 0%, #FFF0F8 100%); border-left: 4px solid #E91E63; }
+        .bg-purple { background: linear-gradient(135deg, #F0E8FF 0%, #F8F0FF 100%); border-left: 4px solid #9C27B0; }
+        .bg-yellow { background: linear-gradient(135deg, #FFF8E8 0%, #FFFBF0 100%); border-left: 4px solid #F39C12; }
 
-        .text-cream { color: #D4A574; }
-        .text-blue { color: #4A90E2; }
-        .text-green { color: #5CB85C; }
-        .text-pink { color: #E91E63; }
-        .text-purple { color: #9C27B0; }
-        .text-yellow { color: #F39C12; }
+        .note-author {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.6;
+            margin-bottom: 8px;
+        }
 
-        .shape-cream { background: #D4A574; }
-        .shape-blue { background: #4A90E2; }
-        .shape-green { background: #5CB85C; }
-        .shape-pink { background: #E91E63; }
-        .shape-purple { background: #9C27B0; }
-        .shape-yellow { background: #F39C12; }
+        .note-message {
+            font-size: 18px;
+            line-height: 1.4;
+            font-weight: 500;
+            color: var(--text);
+            flex: 1;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 10;
+            -webkit-box-orient: vertical;
+            word-wrap: break-word;
+            word-break: break-word;
+        }
+
+        .note-time {
+            font-size: 10px;
+            color: var(--text-light);
+            margin-top: 8px;
+            opacity: 0.7;
+        }
+
+        .board-loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 500;
+            display: none;
+        }
+
+        .board-loading.show {
+            display: block;
+        }
+
+        .loading-spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        .empty-state {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: var(--text-light);
+            z-index: 50;
+            display: none;
+        }
+
+        .empty-state.show {
+            display: block;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-state-text {
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .empty-state-subtext {
+            font-size: 14px;
+            opacity: 0.6;
+        }
+
+        /* ===== ADMIN PAGE ===== */
+        #admin {
+            flex-direction: column;
+        }
+
+        .admin-login {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .admin-login.show {
+            display: flex;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: var(--shadow);
+            animation: slideInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .login-card h1 {
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .login-card p {
+            text-align: center;
+            margin-bottom: 32px;
+            color: var(--text-secondary);
+        }
+
+        .login-error {
+            background: rgba(233, 30, 99, 0.1);
+            color: var(--error);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .login-error.show {
+            display: block;
+        }
+
+        .admin-dashboard {
+            display: none;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .admin-dashboard.show {
+            display: flex;
+        }
+
+        .admin-header {
+            background: white;
+            padding: 24px 40px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-header h1 {
+            margin-bottom: 0;
+        }
+
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            padding: 20px 40px;
+            background: white;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #F9F7F2 0%, #F5F1E8 100%);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-card-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-card-label {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        .admin-controls {
+            padding: 20px 40px;
+            background: white;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .search-box input {
+            width: 100%;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .filter-group button {
+            padding: 8px 16px;
+            font-size: 12px;
+        }
+
+        .admin-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 40px;
+        }
+
+        .feedback-item {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 16px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .feedback-item-content {
+            flex: 1;
+        }
+
+        .feedback-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 8px;
+        }
+
+        .feedback-item-title {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .feedback-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-pending {
+            background: rgba(243, 156, 18, 0.2);
+            color: var(--warning);
+        }
+
+        .status-approved {
+            background: rgba(92, 184, 92, 0.2);
+            color: var(--success);
+        }
+
+        .status-hidden {
+            background: rgba(0, 0, 0, 0.1);
+            color: var(--text-light);
+        }
+
+        .feedback-meta {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+
+        .feedback-message {
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .feedback-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .feedback-actions button {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sticky-note {
+                width: 240px;
+                height: 240px;
+                padding: 16px;
+            }
+
+            .note-message {
+                font-size: 16px;
+                -webkit-line-clamp: 8;
+            }
+
+            .board-header {
+                padding: 20px;
+            }
+
+            .board-stats {
+                top: 20px;
+                right: 20px;
+            }
+
+            .qr-code {
+                top: 20px;
+                left: 20px;
+                width: 100px;
+                height: 100px;
+            }
+
+            .admin-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                min-width: 100%;
+            }
+
+            .admin-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 32px; }
+            h2 { font-size: 24px; }
+
+            .sticky-note {
+                width: 200px;
+                height: 200px;
+                padding: 12px;
+            }
+
+            .note-message {
+                font-size: 14px;
+                -webkit-line-clamp: 6;
+            }
+
+            .board-header {
+                padding: 12px;
+            }
+
+            .board-header h1 {
+                font-size: 28px;
+            }
+
+            .board-stats {
+                display: none;
+            }
+
+            .qr-code {
+                width: 80px;
+                height: 80px;
+            }
+
+            .submit-header {
+                padding: 40px 20px;
+            }
+
+            .submit-container {
+                padding: 20px 12px;
+            }
+
+            .form-card {
+                padding: 24px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .admin-header {
+                padding: 16px 20px;
+            }
+
+            .admin-stats {
+                padding: 16px 20px;
+            }
+
+            .admin-controls {
+                padding: 16px 20px;
+            }
+
+            .admin-list {
+                padding: 16px 20px;
+            }
+
+            .feedback-item {
+                flex-direction: column;
+            }
+
+            .feedback-actions {
+                flex-direction: column;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- ===== SUBMIT PAGE ===== -->
+    <section id="submit">
+        <div class="submit-header">
+            <h1>DMSc CONNECT 2026</h1>
+            <p>ร่วมแสดงความคิดเห็น เชื่อมโยงทุกความคิด</p>
+        </div>
 
-<!-- HEADER -->
-<header class="title-enter">
-    <h1 class="header-title">DMSc CONNECT 2026</h1>
-    <p class="header-subtitle">ร่วมแสดงความคิดเห็น เชื่อมโยงทุกความคิด</p>
-</header>
+        <div class="submit-container">
+            <div class="form-card">
+                <h2>ส่งความคิดเห็นของคุณ</h2>
+                <p class="form-card-subtitle">ทุกความคิดเห็นมีค่า เรามีการรับฟังและนำไปปรับปรุง</p>
 
-<!-- CARDS GRID -->
-<div class="cards-grid" id="cardsContainer">
-    <!-- Cards will be generated here -->
-</div>
+                <form id="feedbackForm">
+                    <div class="form-group">
+                        <label for="nameInput">ชื่อของคุณ (ไม่บังคับ)</label>
+                        <input type="text" id="nameInput" name="name" placeholder="เช่น สมชาย" maxlength="50">
+                    </div>
 
-<!-- SCRIPT -->
-<script>
-    lucide.createIcons();
+                    <div class="form-group">
+                        <label for="orgInput">หน่วยงาน (ไม่บังคับ)</label>
+                        <input type="text" id="orgInput" name="organization" placeholder="เช่น DMSc" maxlength="100">
+                    </div>
 
-    const GAS_URL = 'https://script.google.com/macros/s/AKfycbwJLxRLl8nbyo3nxTCqOAANyMOKh9mQG5yJcOR8UWsaPQNEZI71G-f7TpZoHg6RgMXKBA/exec';
+                    <div class="form-group">
+                        <label for="messageInput">ความคิดเห็น *</label>
+                        <textarea id="messageInput" name="message" placeholder="เขียนความคิดเห็นของคุณ..." required maxlength="250"></textarea>
+                        <div class="char-count" id="charCountContainer">
+                            <span id="charCounter">0</span> / 250
+                        </div>
+                        <div class="char-progress">
+                            <div class="char-progress-bar" id="charProgressBar" style="width: 0%"></div>
+                        </div>
+                    </div>
 
-    // Sample data for testing
-    const mockFeedback = [
-        {
-            pillar: 'พัฒนาศักยภาพการบริการตรวจวินิจฉัยโรคของประเทศไทย',
-            text: 'อยากให้มีระบบเชื่อมโยงข้อมูลระหว่างหน่วยงานมากขึ้น เพื่อให้การตรวจวินิจฉัยรวดเร็วและแม่นยำมากขึ้น',
-            author: 'สมศรี',
-            timestamp: new Date().toISOString()
-        },
-        {
-            pillar: 'เสริมสร้างความเข้มแข็งและยกระดับมาตรฐานอุตสาหกรรมชีววัคซีน และผลิตภัณฑ์การแพทย์ขั้นสูง',
-            text: 'ควรมีการนำ AI มาช่วยวิเคราะห์ข้อมูลเพื่อการบริการที่รวดเร็วขึ้น และลดข้อผิดพลาด',
-            author: 'สมชาย',
-            timestamp: new Date(Date.now() - 60000).toISOString()
-        },
-        {
-            pillar: 'พัฒนาศูนย์ทดสอบมาตรฐานเครื่องมือแพทย์ระดับชาติแบบครบวงจร',
-            text: 'อยากให้มี dashboard ที่เข้าใจง่ายและดูทันสมัย พร้อมรายงานแบบเรียลไทม์',
-            author: 'สมหญิง',
-            timestamp: new Date(Date.now() - 120000).toISOString()
-        },
-        {
-            pillar: 'สนับสนุนและพัฒนาศักยภาพอุตสาหกรรมอาหารใหม่ของประเทศไทย',
-            text: 'เสนอให้มีช่องทางรับฟังความคิดเห็นแบบ real-time ในทุกกิจกรรม เพื่อความโปร่งใส',
-            author: 'สมปัญญา',
-            timestamp: new Date(Date.now() - 180000).toISOString()
+                    <div class="button-group">
+                        <button type="submit" class="btn-primary" id="submitBtn">
+                            <span>ส่งความคิดเห็น</span>
+                            <span class="spinner hidden" id="spinner"></span>
+                        </button>
+                        <button type="reset" class="btn-secondary">เคลียร์</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== BOARD PAGE ===== -->
+    <section id="board">
+        <div class="board-header">
+            <div class="qr-code" id="qrCode"></div>
+            <div class="board-header-content">
+                <h1>DMSc CONNECT 2026</h1>
+                <p>ร่วมแสดงความคิดเห็น เชื่อมโยงทุกความคิด</p>
+            </div>
+            <div class="board-stats">
+                <div class="stat-item">
+                    <div class="stat-number" id="feedbackCount">0</div>
+                    <div class="stat-label">ความคิดเห็น</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="board-container" id="board-container">
+            <div class="board-loading" id="boardLoading">
+                <div class="loading-spinner"></div>
+                <p>กำลังโหลดความคิดเห็น...</p>
+            </div>
+            <div class="empty-state" id="emptyState">
+                <div class="empty-state-icon">📝</div>
+                <div class="empty-state-text">ยังไม่มีความคิดเห็น</div>
+                <div class="empty-state-subtext">สแกน QR code เพื่อส่งความคิดเห็นของคุณ</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== ADMIN PAGE ===== -->
+    <section id="admin">
+        <!-- Login Form -->
+        <div class="admin-login" id="adminLogin">
+            <div class="login-card">
+                <h1>Admin Panel</h1>
+                <p>เข้าสู่ระบบเพื่อบริหารจัดการ</p>
+
+                <div class="login-error" id="loginError"></div>
+
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="emailInput">อีเมล</label>
+                        <input type="email" id="emailInput" placeholder="admin@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="passwordInput">รหัสผ่าน</label>
+                        <input type="password" id="passwordInput" placeholder="••••••••" required>
+                    </div>
+
+                    <button type="submit" class="btn-primary" style="width: 100%;">เข้าสู่ระบบ</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Dashboard -->
+        <div class="admin-dashboard" id="adminDashboard">
+            <div class="admin-header">
+                <h1>Admin Panel</h1>
+                <button id="logoutBtn" class="btn-secondary">ออกจากระบบ</button>
+            </div>
+
+            <div class="admin-stats" id="adminStats">
+                <div class="stat-card">
+                    <div class="stat-card-number" id="statTotal">0</div>
+                    <div class="stat-card-label">ทั้งหมด</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-number" id="statPending">0</div>
+                    <div class="stat-card-label">รอตรวจสอบ</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-number" id="statApproved">0</div>
+                    <div class="stat-card-label">อนุมัติแล้ว</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-number" id="statHidden">0</div>
+                    <div class="stat-card-label">ซ่อน</div>
+                </div>
+            </div>
+
+            <div class="admin-controls">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="ค้นหาความคิดเห็น...">
+                </div>
+                <div class="filter-group">
+                    <button id="filterAll" class="btn-primary">ทั้งหมด</button>
+                    <button id="filterPending" class="btn-secondary">รอตรวจสอบ</button>
+                    <button id="filterApproved" class="btn-secondary">อนุมัติแล้ว</button>
+                    <button id="filterHidden" class="btn-secondary">ซ่อน</button>
+                </div>
+            </div>
+
+            <div class="admin-list" id="feedbackList"></div>
+        </div>
+    </section>
+
+    <!-- QR Code Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <!-- Main Script -->
+    <script type="module">
+        // ===== FIREBASE CONFIGURATION =====
+        // Replace these with your Firebase credentials
+        const firebaseConfig = {
+            apiKey: "PUT_YOUR_API_KEY_HERE",
+            authDomain: "PUT_YOUR_AUTH_DOMAIN_HERE",
+            projectId: "PUT_YOUR_PROJECT_ID_HERE",
+            storageBucket: "PUT_YOUR_STORAGE_BUCKET_HERE",
+            messagingSenderId: "PUT_YOUR_SENDER_ID_HERE",
+            appId: "PUT_YOUR_APP_ID_HERE"
+        };
+
+        // ===== DEMO MODE =====
+        const DEMO_MODE = false; // Set to true for demo with sample data
+
+        // ===== UTILITY FUNCTIONS =====
+        function sanitizeText(text) {
+            const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+            return text.replace(/[&<>"']/g, m => map[m]);
         }
-    ];
 
-    const colors = ['cream', 'blue', 'green', 'pink', 'purple', 'yellow'];
-    let allFeedback = [];
-    let displayIndex = 0;
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
 
-    function getColorScheme(index) {
-        return colors[index % colors.length];
-    }
+        function validateMessage(message) {
+            const trimmed = message.trim();
+            if (!trimmed) return { valid: false, error: 'กรุณากรอกความคิดเห็น' };
+            if (trimmed.length < 5) return { valid: false, error: 'ความคิดเห็นต้องมีอย่างน้อย 5 ตัวอักษร' };
+            if (trimmed.length > 250) return { valid: false, error: 'ความคิดเห็นต้องไม่เกิน 250 ตัวอักษร' };
+            return { valid: true };
+        }
 
-    function escapeHtml(text) {
-        const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
-        return text.replace(/[&<>"']/g, m => map[m]);
-    }
+        function formatDate(timestamp) {
+            if (!timestamp) return '';
+            const date = new Date(timestamp.toDate ? timestamp.toDate() : timestamp);
+            return date.toLocaleString('th-TH', { hour: '2-digit', minute: '2-digit', day: 'numeric', month: 'short' });
+        }
 
-    function formatTime(timestamp) {
-        const date = new Date(timestamp);
-        return date.toLocaleString('th-TH', {
-            hour: '2-digit',
-            minute: '2-digit',
-            day: 'numeric',
-            month: 'short'
+        function seededRandom(seed) {
+            const x = Math.sin(seed) * 10000;
+            return x - Math.floor(x);
+        }
+
+        function generateDisplaySeed(feedbackId) {
+            let hash = 0;
+            for (let i = 0; i < feedbackId.length; i++) {
+                hash = ((hash << 5) - hash) + feedbackId.charCodeAt(i);
+                hash = hash & hash;
+            }
+            return Math.abs(hash);
+        }
+
+        // ===== HASH ROUTING =====
+        function showPage(page) {
+            document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+            const section = document.getElementById(page);
+            if (section) section.classList.add('active');
+        }
+
+        window.addEventListener('hashchange', () => {
+            const hash = (location.hash || '#board').slice(1);
+            showPage(hash);
         });
-    }
 
-    function renderCards() {
-        const container = document.getElementById('cardsContainer');
-        const itemsToDisplay = allFeedback.slice(0, 4);
+        // Set default page
+        if (!location.hash) {
+            location.hash = '#board';
+        } else {
+            showPage(location.hash.slice(1));
+        }
 
-        container.innerHTML = itemsToDisplay.map((item, idx) => {
-            const color = getColorScheme(idx);
-            const shortPillar = item.pillar.substring(0, 20) + '...';
-            const shortText = item.text.substring(0, 120) + (item.text.length > 120 ? '...' : '');
+        // ===== FIREBASE INITIALIZATION =====
+        let db, auth, currentUser;
+        let firebaseReady = false;
 
-            return `
-                <div class="feedback-card card-enter ${`bg-${color}`}" style="animation-delay: ${idx * 0.1}s;">
-                    <div class="card-shape ${`shape-${color}`}"></div>
-                    <div class="card-label ${`text-${color}`}">เสาหลัก</div>
-                    <h3 class="card-title">${escapeHtml(shortPillar)}</h3>
-                    <p class="card-text">${escapeHtml(shortText)}</p>
-                    <a href="#" class="card-button ${`text-${color}`}">
-                        อ่านเพิ่มเติม
-                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                    </a>
+        if (!DEMO_MODE) {
+            (async () => {
+                try {
+                    const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js');
+                    const { getFirestore, collection, query, where, onSnapshot, addDoc, updateDoc, deleteDoc, doc, serverTimestamp } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
+                    const { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js');
+
+                    const app = initializeApp(firebaseConfig);
+                    db = getFirestore(app);
+                    auth = getAuth(app);
+
+                    firebaseReady = true;
+
+                    // Setup auth listener
+                    onAuthStateChanged(auth, (user) => {
+                        currentUser = user;
+                        updateAdminUI();
+                    });
+
+                    // Setup board listener
+                    setupBoardListener();
+                } catch (error) {
+                    console.error('Firebase initialization error:', error);
+                    DEMO_MODE = true;
+                    initDemoMode();
+                }
+            })();
+        } else {
+            // Demo mode setup
+            setTimeout(() => initDemoMode(), 100);
+        }
+
+        // ===== SUBMIT PAGE =====
+        const feedbackForm = document.getElementById('feedbackForm');
+        const messageInput = document.getElementById('messageInput');
+        const charCounter = document.getElementById('charCounter');
+        const charProgressBar = document.getElementById('charProgressBar');
+        const charCountContainer = document.getElementById('charCountContainer');
+        const submitBtn = document.getElementById('submitBtn');
+        const spinner = document.getElementById('spinner');
+
+        messageInput?.addEventListener('input', (e) => {
+            const length = e.target.value.length;
+            charCounter.textContent = length;
+            const percent = (length / 250) * 100;
+            charProgressBar.style.width = percent + '%';
+
+            charCountContainer.classList.remove('warning', 'danger');
+            charProgressBar.classList.remove('warning', 'danger');
+
+            if (length > 220) {
+                charCountContainer.classList.add('warning');
+                charProgressBar.classList.add('warning');
+            }
+            if (length > 240) {
+                charCountContainer.classList.add('danger');
+                charProgressBar.classList.add('danger');
+            }
+        });
+
+        feedbackForm?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const message = messageInput.value.trim();
+            const name = document.getElementById('nameInput').value.trim();
+            const organization = document.getElementById('orgInput').value.trim();
+
+            const validation = validateMessage(message);
+            if (!validation.valid) {
+                showErrorModal(validation.error);
+                return;
+            }
+
+            submitBtn.disabled = true;
+            spinner.classList.remove('hidden');
+
+            try {
+                if (DEMO_MODE || !firebaseReady) {
+                    // Demo mode: use localStorage
+                    const feedback = {
+                        id: generateDisplaySeed(Date.now().toString()),
+                        name: name || 'ผู้เข้าร่วมงาน',
+                        organization,
+                        message: sanitizeText(message),
+                        status: 'approved',
+                        createdAt: new Date(),
+                        displaySeed: generateDisplaySeed(Date.now().toString())
+                    };
+                    const demoData = JSON.parse(localStorage.getItem('demoFeedback') || '[]');
+                    demoData.push(feedback);
+                    localStorage.setItem('demoFeedback', JSON.stringify(demoData));
+                } else {
+                    // Real Firebase
+                    const { addDoc, collection, updateDoc, doc, serverTimestamp } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
+                    const docRef = await addDoc(collection(db, 'comments'), {
+                        name: name || 'ผู้เข้าร่วมงาน',
+                        organization,
+                        message: sanitizeText(message),
+                        status: 'pending',
+                        createdAt: serverTimestamp(),
+                        displaySeed: 0
+                    });
+
+                    const displaySeed = generateDisplaySeed(docRef.id);
+                    await updateDoc(doc(db, 'comments', docRef.id), { displaySeed });
+                }
+
+                showSuccessModal();
+                feedbackForm.reset();
+                charCounter.textContent = '0';
+                charProgressBar.style.width = '0%';
+                charCountContainer.classList.remove('warning', 'danger');
+
+            } catch (error) {
+                showErrorModal(`เกิดข้อผิดพลาด: ${error.message}`);
+            } finally {
+                submitBtn.disabled = false;
+                spinner.classList.add('hidden');
+            }
+        });
+
+        // ===== BOARD PAGE =====
+        const boardContainer = document.getElementById('board-container');
+        const feedbackCountEl = document.getElementById('feedbackCount');
+        const boardLoading = document.getElementById('boardLoading');
+        const emptyState = document.getElementById('emptyState');
+        const qrCodeContainer = document.getElementById('qrCode');
+
+        const colors = ['cream', 'blue', 'green', 'pink', 'purple', 'yellow'];
+        let allFeedback = [];
+        let displayedNoteIds = new Set();
+        let rotationIndex = 0;
+
+        function generateQRCode() {
+            try {
+                qrCodeContainer.innerHTML = '';
+                const submitUrl = `${location.origin}${location.pathname}#submit`;
+                new QRCode(qrCodeContainer, {
+                    text: submitUrl,
+                    width: 104,
+                    height: 104,
+                    colorDark: '#2D2D2D',
+                    colorLight: '#FFFFFF',
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+            } catch (error) {
+                console.error('Error generating QR code:', error);
+            }
+        }
+
+        function getColorScheme(index) {
+            return colors[index % colors.length];
+        }
+
+        function calculatePosition(index, totalNotes) {
+            const headerHeight = 200;
+            const margin = 20;
+            const noteWidth = 280;
+            const noteHeight = 280;
+
+            const maxX = Math.max(window.innerWidth - noteWidth - margin, 0);
+            const maxY = Math.max(window.innerHeight - noteHeight - margin - headerHeight, 0);
+            const minY = headerHeight + margin;
+
+            const seed = allFeedback[index]?.displaySeed || index;
+            const rand1 = seededRandom(seed);
+            const rand2 = seededRandom(seed + 1000);
+
+            const x = Math.max(margin, Math.floor(rand1 * maxX));
+            const y = Math.max(minY, Math.floor(rand2 * maxY));
+
+            const rotationSeed = seededRandom(seed + 2000);
+            const rotation = ((rotationSeed * 12) - 6);
+
+            const scaleSeed = seededRandom(seed + 3000);
+            const scale = 0.95 + (scaleSeed * 0.1);
+
+            return { x, y, rotation, scale };
+        }
+
+        function renderNote(feedback, index) {
+            if (displayedNoteIds.has(feedback.id)) return;
+            displayedNoteIds.add(feedback.id);
+
+            const pos = calculatePosition(index, allFeedback.length);
+            const color = getColorScheme(index);
+
+            const noteEl = document.createElement('div');
+            noteEl.className = `sticky-note bg-${color}`;
+            noteEl.id = `note-${feedback.id}`;
+            noteEl.style.left = pos.x + 'px';
+            noteEl.style.top = pos.y + 'px';
+            noteEl.style.transform = `rotate(${pos.rotation}deg) scale(${pos.scale})`;
+            noteEl.style.animationDelay = (index * 0.05) + 's';
+
+            const authorName = feedback.name || 'ผู้เข้าร่วมงาน';
+            const messageText = feedback.message.substring(0, 150);
+
+            noteEl.innerHTML = `
+                <div class="note-author">${escapeHtml(authorName)}</div>
+                <div class="note-message">${escapeHtml(messageText)}</div>
+                <div class="note-time">${formatDate(feedback.createdAt)}</div>
+            `;
+
+            boardContainer.appendChild(noteEl);
+        }
+
+        function clearBoard() {
+            boardContainer.querySelectorAll('.sticky-note').forEach(el => el.remove());
+            displayedNoteIds.clear();
+        }
+
+        function updateBoardDisplay() {
+            if (allFeedback.length === 0) {
+                boardLoading.classList.remove('show');
+                emptyState.classList.add('show');
+                clearBoard();
+                feedbackCountEl.textContent = '0';
+                return;
+            }
+
+            boardLoading.classList.remove('show');
+            emptyState.classList.remove('show');
+            feedbackCountEl.textContent = allFeedback.length;
+
+            let notesToDisplay = allFeedback.length;
+            let startIndex = 0;
+
+            if (allFeedback.length > 30) {
+                notesToDisplay = Math.min(20, allFeedback.length);
+                startIndex = (rotationIndex * notesToDisplay) % allFeedback.length;
+            }
+
+            clearBoard();
+            for (let i = 0; i < notesToDisplay; i++) {
+                const itemIndex = (startIndex + i) % allFeedback.length;
+                renderNote(allFeedback[itemIndex], i);
+            }
+        }
+
+        function setupBoardListener() {
+            if (DEMO_MODE || !firebaseReady) {
+                // Demo mode board
+                const loadDemoData = () => {
+                    const demoData = JSON.parse(localStorage.getItem('demoFeedback') || '[]');
+                    allFeedback = demoData.filter(f => f.status === 'approved')
+                        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                    updateBoardDisplay();
+                };
+
+                loadDemoData();
+
+                // Re-load on storage change
+                window.addEventListener('storage', loadDemoData);
+            } else {
+                // Real Firebase listener
+                if (db) {
+                    (async () => {
+                        const { collection, query, where, onSnapshot } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
+                        const q = query(collection(db, 'comments'), where('status', '==', 'approved'));
+                        onSnapshot(q,
+                            (snapshot) => {
+                                allFeedback = [];
+                                snapshot.forEach((doc) => {
+                                    allFeedback.push({ id: doc.id, ...doc.data() });
+                                });
+
+                                allFeedback.sort((a, b) => {
+                                    const timeA = a.createdAt?.toDate?.() || new Date(0);
+                                    const timeB = b.createdAt?.toDate?.() || new Date(0);
+                                    return timeB - timeA;
+                                });
+
+                                updateBoardDisplay();
+                            },
+                            (error) => {
+                                console.error('Board listener error:', error);
+                                emptyState.classList.add('show');
+                                boardLoading.classList.remove('show');
+                            }
+                        );
+                    })();
+                }
+            }
+        }
+
+        // QR Code on load
+        window.addEventListener('load', () => {
+            generateQRCode();
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            updateBoardDisplay();
+        });
+
+        // Auto-rotate for large screens
+        setInterval(() => {
+            if (allFeedback.length > 30) {
+                rotationIndex++;
+                updateBoardDisplay();
+            }
+        }, 20000);
+
+        // ===== ADMIN PAGE =====
+        const adminLogin = document.getElementById('adminLogin');
+        const adminDashboard = document.getElementById('adminDashboard');
+        const loginForm = document.getElementById('loginForm');
+        const loginError = document.getElementById('loginError');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const searchInput = document.getElementById('searchInput');
+        const feedbackList = document.getElementById('feedbackList');
+
+        let allAdminFeedback = [];
+        let filteredStatus = null;
+        let filteredSearch = '';
+
+        function updateAdminUI() {
+            if (currentUser) {
+                adminLogin.classList.remove('show');
+                adminDashboard.classList.add('show');
+                loadAdminFeedback();
+            } else {
+                adminLogin.classList.add('show');
+                adminDashboard.classList.remove('show');
+            }
+        }
+
+        function loadAdminFeedback() {
+            if (DEMO_MODE || !firebaseReady) {
+                // Demo mode admin
+                allAdminFeedback = JSON.parse(localStorage.getItem('demoFeedback') || '[]');
+                updateAdminStats();
+                renderAdminList();
+            } else {
+                // Real Firebase
+                if (db) {
+                    (async () => {
+                        const { collection, onSnapshot } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
+                        onSnapshot(collection(db, 'comments'),
+                            (snapshot) => {
+                                allAdminFeedback = [];
+                                snapshot.forEach((doc) => {
+                                    allAdminFeedback.push({ id: doc.id, ...doc.data() });
+                                });
+                                updateAdminStats();
+                                renderAdminList();
+                            },
+                            (error) => console.error('Admin listener error:', error)
+                        );
+                    })();
+                }
+            }
+        }
+
+        function updateAdminStats() {
+            const total = allAdminFeedback.length;
+            const pending = allAdminFeedback.filter(f => f.status === 'pending').length;
+            const approved = allAdminFeedback.filter(f => f.status === 'approved').length;
+            const hidden = allAdminFeedback.filter(f => f.status === 'hidden').length;
+
+            document.getElementById('statTotal').textContent = total;
+            document.getElementById('statPending').textContent = pending;
+            document.getElementById('statApproved').textContent = approved;
+            document.getElementById('statHidden').textContent = hidden;
+        }
+
+        function renderAdminList() {
+            let list = allAdminFeedback;
+
+            if (filteredStatus) {
+                list = list.filter(f => f.status === filteredStatus);
+            }
+
+            if (filteredSearch) {
+                const search = filteredSearch.toLowerCase();
+                list = list.filter(f =>
+                    f.message.toLowerCase().includes(search) ||
+                    (f.name && f.name.toLowerCase().includes(search)) ||
+                    (f.organization && f.organization.toLowerCase().includes(search))
+                );
+            }
+
+            feedbackList.innerHTML = list.map(feedback => `
+                <div class="feedback-item">
+                    <div class="feedback-item-content">
+                        <div class="feedback-item-header">
+                            <span class="feedback-item-title">${escapeHtml(feedback.name || 'ผู้เข้าร่วมงาน')}</span>
+                            <span class="feedback-status status-${feedback.status}">${feedback.status}</span>
+                        </div>
+                        <div class="feedback-meta">
+                            ${feedback.organization ? `หน่วยงาน: ${escapeHtml(feedback.organization)} | ` : ''}
+                            ${formatDate(feedback.createdAt)}
+                        </div>
+                        <div class="feedback-message">${escapeHtml(feedback.message)}</div>
+                        <div class="feedback-actions">
+                            ${feedback.status !== 'approved' ? `<button class="btn-success" onclick="approveComment('${feedback.id}')">อนุมัติ</button>` : ''}
+                            ${feedback.status !== 'hidden' ? `<button class="btn-secondary" onclick="hideComment('${feedback.id}')">ซ่อน</button>` : ''}
+                            <button class="btn-error" onclick="deleteComment('${feedback.id}')">ลบ</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Filter buttons
+        document.getElementById('filterAll')?.addEventListener('click', () => {
+            filteredStatus = null;
+            renderAdminList();
+        });
+
+        document.getElementById('filterPending')?.addEventListener('click', () => {
+            filteredStatus = 'pending';
+            renderAdminList();
+        });
+
+        document.getElementById('filterApproved')?.addEventListener('click', () => {
+            filteredStatus = 'approved';
+            renderAdminList();
+        });
+
+        document.getElementById('filterHidden')?.addEventListener('click', () => {
+            filteredStatus = 'hidden';
+            renderAdminList();
+        });
+
+        // Search
+        searchInput?.addEventListener('input', (e) => {
+            filteredSearch = e.target.value;
+            renderAdminList();
+        });
+
+        // Admin actions
+        window.approveComment = async (id) => {
+            if (DEMO_MODE || !firebaseReady) {
+                const demoData = JSON.parse(localStorage.getItem('demoFeedback') || '[]');
+                const feedback = demoData.find(f => f.id == id);
+                if (feedback) feedback.status = 'approved';
+                localStorage.setItem('demoFeedback', JSON.stringify(demoData));
+                loadAdminFeedback();
+            } else if (db) {
+                const { doc, updateDoc } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
+                await updateDoc(doc(db, 'comments', id), { status: 'approved' });
+            }
+        };
+
+        window.hideComment = async (id) => {
+            if (DEMO_MODE || !firebaseReady) {
+                const demoData = JSON.parse(localStorage.getItem('demoFeedback') || '[]');
+                const feedback = demoData.find(f => f.id == id);
+                if (feedback) feedback.status = 'hidden';
+                localStorage.setItem('demoFeedback', JSON.stringify(demoData));
+                loadAdminFeedback();
+            } else if (db) {
+                const { doc, updateDoc } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
+                await updateDoc(doc(db, 'comments', id), { status: 'hidden' });
+            }
+        };
+
+        window.deleteComment = async (id) => {
+            if (!confirm('ต้องการลบความคิดเห็นนี้ใช่หรือไม่?')) return;
+
+            if (DEMO_MODE || !firebaseReady) {
+                const demoData = JSON.parse(localStorage.getItem('demoFeedback') || '[]');
+                const index = demoData.findIndex(f => f.id == id);
+                if (index > -1) demoData.splice(index, 1);
+                localStorage.setItem('demoFeedback', JSON.stringify(demoData));
+                loadAdminFeedback();
+            } else if (db) {
+                const { doc, deleteDoc } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
+                await deleteDoc(doc(db, 'comments', id));
+            }
+        };
+
+        // Login
+        loginForm?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('emailInput').value;
+            const password = document.getElementById('passwordInput').value;
+
+            loginError.classList.remove('show');
+
+            if (DEMO_MODE || !firebaseReady) {
+                // Demo mode: accept any credentials
+                currentUser = { email };
+                updateAdminUI();
+            } else if (auth) {
+                try {
+                    const { signInWithEmailAndPassword } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js');
+                    await signInWithEmailAndPassword(auth, email, password);
+                } catch (error) {
+                    loginError.textContent = 'ข้อมูลเข้าสู่ระบบไม่ถูกต้อง';
+                    loginError.classList.add('show');
+                }
+            }
+        });
+
+        // Logout
+        logoutBtn?.addEventListener('click', async () => {
+            if (DEMO_MODE || !firebaseReady) {
+                currentUser = null;
+                updateAdminUI();
+            } else if (auth) {
+                const { signOut } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js');
+                await signOut(auth);
+            }
+        });
+
+        // ===== MODAL DIALOGS =====
+        function showSuccessModal() {
+            const modal = document.createElement('div');
+            modal.className = 'modal show success';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-icon">✓</div>
+                    <div class="modal-title">ส่งความคิดเห็นสำเร็จ!</div>
+                    <p class="modal-message">ความคิดเห็นของคุณได้รับการบันทึกแล้ว ขอบคุณที่ร่วมแสดงความคิดเห็น</p>
+                    <button class="modal-button">ปิด</button>
                 </div>
             `;
-        }).join('');
-
-        lucide.createIcons();
-    }
-
-    async function updateFeedback() {
-        try {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 10000);
-
-            const res = await fetch(GAS_URL + '?action=getAll', {
-                signal: controller.signal
+            document.body.appendChild(modal);
+            modal.querySelector('.modal-button').addEventListener('click', () => modal.remove());
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
             });
-
-            clearTimeout(timeoutId);
-
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-            const data = await res.json();
-            if (data.success && data.feedback) {
-                allFeedback = data.feedback;
-                renderCards();
-            }
-        } catch (error) {
-            console.error('Error fetching feedback:', error);
-            // Use mock data if fetch fails
-            if (allFeedback.length === 0) {
-                allFeedback = mockFeedback;
-                renderCards();
-            }
         }
-    }
 
-    // Auto-rotate cards every 30 seconds
-    setInterval(() => {
-        if (allFeedback.length > 4) {
-            displayIndex = (displayIndex + 1) % (allFeedback.length - 3);
-            renderCards();
+        function showErrorModal(message) {
+            const modal = document.createElement('div');
+            modal.className = 'modal show error';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-icon">⚠</div>
+                    <div class="modal-title">เกิดข้อผิดพลาด</div>
+                    <p class="modal-message">${escapeHtml(message)}</p>
+                    <button class="modal-button">ปิด</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            modal.querySelector('.modal-button').addEventListener('click', () => modal.remove());
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
+            });
         }
-    }, 30000);
 
-    // Initial load and poll every 5 seconds
-    updateFeedback();
-    setInterval(updateFeedback, 5000);
-</script>
+        // ===== DEMO MODE =====
+        function initDemoMode() {
+            const sampleFeedback = [
+                { id: 1, name: 'สมชาย', organization: 'DMSc', message: 'ความคิดเห็นตัวอย่าง 1', status: 'approved', createdAt: new Date() },
+                { id: 2, name: 'สมหญิง', organization: 'สสน.', message: 'ความคิดเห็นตัวอย่าง 2', status: 'approved', createdAt: new Date() },
+                { id: 3, name: 'สมปัญญา', organization: '', message: 'ความคิดเห็นตัวอย่าง 3', status: 'pending', createdAt: new Date() },
+                // Add more sample data...
+            ];
 
+            if (!localStorage.getItem('demoFeedback')) {
+                localStorage.setItem('demoFeedback', JSON.stringify(sampleFeedback));
+            }
+
+            // For admin demo
+            currentUser = { email: 'demo@example.com' };
+            setupBoardListener();
+        }
+    </script>
 </body>
 </html>

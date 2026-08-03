@@ -1,0 +1,340 @@
+/* Submit Page Styles */
+
+@import 'common.css';
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+header {
+  background: linear-gradient(135deg, #F5F1E8 0%, #F9F7F2 100%);
+  padding: var(--spacing-3xl) var(--spacing-2xl);
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.header-title {
+  font-size: 48px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--color-text-primary);
+  line-height: 1.2;
+}
+
+.header-subtitle {
+  font-size: 18px;
+  color: var(--color-text-secondary);
+  font-weight: 400;
+  margin-bottom: 0;
+}
+
+/* Main Container */
+.container {
+  flex: 1;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: var(--spacing-2xl) var(--spacing-lg);
+  width: 100%;
+}
+
+/* Form Section */
+.form-section {
+  background: var(--color-white);
+  border-radius: 16px;
+  padding: var(--spacing-2xl);
+  box-shadow: var(--shadow-md);
+  animation: slideInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.form-section-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: var(--spacing-lg);
+  color: var(--color-text-primary);
+}
+
+.form-section-subtitle {
+  font-size: 14px;
+  color: var(--color-text-light);
+  margin-bottom: var(--spacing-lg);
+}
+
+/* Form Group */
+.form-group {
+  margin-bottom: var(--spacing-lg);
+}
+
+.form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: var(--spacing-sm);
+  color: var(--color-text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0.8;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  font-size: 16px;
+  padding: var(--spacing-md);
+  border: 2px solid #EEE;
+  border-radius: 8px;
+  transition: all var(--transition-normal);
+  font-family: 'Sarabun', 'Noto Sans Thai', sans-serif;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--color-blue-dark);
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+}
+
+/* Character Counter */
+.char-count {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--spacing-sm);
+  font-size: 12px;
+  color: var(--color-text-light);
+}
+
+.char-count.warning #charCounter {
+  color: #F39C12;
+  font-weight: 600;
+}
+
+.char-count.danger #charCounter {
+  color: #E91E63;
+  font-weight: 600;
+}
+
+/* Progress Bar */
+.char-progress {
+  width: 100%;
+  height: 4px;
+  background: #EEE;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: var(--spacing-xs);
+}
+
+.char-progress-bar {
+  height: 100%;
+  background: var(--color-blue-dark);
+  transition: width 0.2s ease, background-color 0.2s ease;
+}
+
+.char-progress-bar.warning {
+  background: #F39C12;
+}
+
+.char-progress-bar.danger {
+  background: #E91E63;
+}
+
+/* Button Group */
+.button-group {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-2xl);
+}
+
+.btn-submit {
+  flex: 1;
+  background: linear-gradient(135deg, var(--color-blue-dark) 0%, #3A7BC8 100%);
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  padding: var(--spacing-lg) var(--spacing-md);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+}
+
+.btn-submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(74, 144, 226, 0.3);
+}
+
+.btn-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-reset {
+  flex: 1;
+  background: white;
+  color: var(--color-text-secondary);
+  font-size: 16px;
+  font-weight: 700;
+  padding: var(--spacing-lg) var(--spacing-md);
+  border: 2px solid #EEE;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.btn-reset:hover {
+  border-color: var(--color-text-secondary);
+  background: #F5F5F5;
+}
+
+/* Modal */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal.show {
+  display: flex;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 16px;
+  padding: var(--spacing-2xl);
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideInScale 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-icon {
+  font-size: 48px;
+  margin-bottom: var(--spacing-lg);
+}
+
+.modal-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: var(--spacing-md);
+  color: var(--color-text-primary);
+}
+
+.modal-message {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-lg);
+  line-height: 1.6;
+}
+
+.modal-button {
+  background: var(--color-blue-dark);
+  color: white;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  text-transform: uppercase;
+  width: 100%;
+}
+
+.modal-button:hover {
+  background: #3A7BC8;
+  transform: translateY(-2px);
+}
+
+.modal.success .modal-icon {
+  color: #5CB85C;
+}
+
+.modal.success .modal-button {
+  background: #5CB85C;
+}
+
+.modal.success .modal-button:hover {
+  background: #4CAA50;
+}
+
+.modal.error .modal-icon {
+  color: #E91E63;
+}
+
+.modal.error .modal-button {
+  background: #E91E63;
+}
+
+.modal.error .modal-button:hover {
+  background: #C2185B;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  header {
+    padding: var(--spacing-2xl) var(--spacing-lg);
+  }
+
+  .header-title {
+    font-size: 32px;
+  }
+
+  .header-subtitle {
+    font-size: 14px;
+  }
+
+  .container {
+    padding: var(--spacing-lg) var(--spacing-md);
+  }
+
+  .form-section {
+    padding: var(--spacing-lg) var(--spacing-md);
+  }
+
+  .button-group {
+    flex-direction: column;
+  }
+
+  .btn-submit, .btn-reset {
+    width: 100%;
+  }
+}

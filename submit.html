@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DMSc CONNECT 2026 — ส่งความคิดเห็น</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/submit.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <h1 class="header-title">DMSc CONNECT 2026</h1>
+        <p class="header-subtitle">ร่วมแสดงความคิดเห็น เชื่อมโยงทุกความคิด</p>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <div class="form-section slide-in-up">
+            <h2 class="form-section-title">ส่งความคิดเห็นของคุณ</h2>
+            <p class="form-section-subtitle">ทุกความคิดเห็นมีค่า เรามีการรับฟังและนำไปปรับปรุง</p>
+
+            <form id="feedbackForm">
+                <!-- Name (Optional) -->
+                <div class="form-group">
+                    <label for="nameInput">ชื่อของคุณ (ไม่บังคับ)</label>
+                    <input
+                        type="text"
+                        id="nameInput"
+                        name="name"
+                        placeholder="เช่น สมชาย"
+                        maxlength="50"
+                    >
+                </div>
+
+                <!-- Organization (Optional) -->
+                <div class="form-group">
+                    <label for="orgInput">หน่วยงาน (ไม่บังคับ)</label>
+                    <input
+                        type="text"
+                        id="orgInput"
+                        name="organization"
+                        placeholder="เช่น DMSc"
+                        maxlength="100"
+                    >
+                </div>
+
+                <!-- Message (Required, 250 chars max) -->
+                <div class="form-group">
+                    <label for="messageInput">ความคิดเห็น *</label>
+                    <textarea
+                        id="messageInput"
+                        name="message"
+                        placeholder="เขียนความคิดเห็นของคุณ..."
+                        required
+                        maxlength="250"
+                    ></textarea>
+                    <div class="char-count" id="charCountContainer">
+                        <span id="charCounter">0</span> / 250
+                    </div>
+                    <div class="char-progress">
+                        <div class="char-progress-bar" id="charProgressBar" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Button Group -->
+                <div class="button-group">
+                    <button type="submit" class="btn-submit" id="submitBtn">
+                        <span>ส่งความคิดเห็น</span>
+                        <span class="spinner hidden" id="spinner"></span>
+                    </button>
+                    <button type="reset" class="btn-reset" id="resetBtn">เคลียร์</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal success" id="successModal">
+        <div class="modal-content">
+            <div class="modal-icon">✓</div>
+            <div class="modal-title">ส่งความคิดเห็นสำเร็จ!</div>
+            <p class="modal-message" id="successMessage">ความคิดเห็นของคุณได้รับการบันทึกแล้ว ขอบคุณที่ร่วมแสดงความคิดเห็น</p>
+            <button class="modal-button" id="successBtn">ส่งอีกครั้ง</button>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div class="modal error" id="errorModal">
+        <div class="modal-content">
+            <div class="modal-icon">⚠</div>
+            <div class="modal-title">เกิดข้อผิดพลาด</div>
+            <p class="modal-message" id="errorMessage">กรุณาลองอีกครั้ง</p>
+            <button class="modal-button" id="errorBtn">ปิด</button>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module" src="js/submit.js"></script>
+</body>
+</html>
