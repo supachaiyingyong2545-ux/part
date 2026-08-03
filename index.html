@@ -1508,7 +1508,7 @@
                 } else if (supabase) {
                     // Save to Supabase
                     const { data, error } = await supabase
-                        .from('feedback')
+                        .from('comments')
                         .insert([
                             {
                                 pillar,
@@ -1703,7 +1703,7 @@
                     try {
                         // Initial load
                         const { data, error } = await supabase
-                            .from('feedback')
+                            .from('comments')
                             .select('*')
                             .eq('status', 'approved')
                             .order('created_at', { ascending: false });
@@ -1727,9 +1727,9 @@
 
                         // Set up real-time subscription
                         supabase
-                            .channel('feedback')
+                            .channel('comments')
                             .on('postgres_changes',
-                                { event: 'INSERT', schema: 'public', table: 'feedback' },
+                                { event: 'INSERT', schema: 'public', table: 'comments' },
                                 (payload) => {
                                     if (payload.new.status === 'approved') {
                                         const newF = {
@@ -1747,7 +1747,7 @@
                                 }
                             )
                             .on('postgres_changes',
-                                { event: 'UPDATE', schema: 'public', table: 'feedback' },
+                                { event: 'UPDATE', schema: 'public', table: 'comments' },
                                 (payload) => {
                                     // Handle status changes for approved/hidden
                                     if (payload.new.status === 'approved' && !displayedCardIds.has(payload.new.id)) {
@@ -1867,7 +1867,7 @@
                 (async () => {
                     try {
                         const { data, error } = await supabase
-                            .from('feedback')
+                            .from('comments')
                             .select('*')
                             .order('created_at', { ascending: false });
 
@@ -1888,9 +1888,9 @@
 
                         // Set up real-time subscription for admin
                         supabase
-                            .channel('admin-feedback')
+                            .channel('admin-comments')
                             .on('postgres_changes',
-                                { event: '*', schema: 'public', table: 'feedback' },
+                                { event: '*', schema: 'public', table: 'comments' },
                                 (payload) => {
                                     loadAdminFeedback(); // Reload on any change
                                 }
@@ -2003,7 +2003,7 @@
             } else if (supabase) {
                 try {
                     const { error } = await supabase
-                        .from('feedback')
+                        .from('comments')
                         .update({ status: 'approved' })
                         .eq('id', id);
                     if (error) throw error;
