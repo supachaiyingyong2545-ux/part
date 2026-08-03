@@ -315,8 +315,8 @@
 
     let allFeedback = [];
     let isAnonymous = false;
-    let currentFeaturedIndex = 0;
-    let autoRotateTimer = null;
+    let autoScrollPosition = 0;
+    let autoScrollTimer = null;
 
     // ================= CLOCK =================
     function updateClock() {
@@ -417,15 +417,24 @@
         document.getElementById('successModal').classList.add('hidden');
     }
 
-    // ================= AUTO-ROTATE FEATURED =================
-    function startAutoRotate() {
-        clearInterval(autoRotateTimer);
-        autoRotateTimer = setInterval(() => {
-            if (allFeedback.length > 0) {
-                currentFeaturedIndex = (currentFeaturedIndex + 1) % allFeedback.length;
-                renderFeaturedCard();
+    // ================= AUTO-SCROLL SMALL CARDS =================
+    function startAutoScroll() {
+        clearInterval(autoScrollTimer);
+        const container = document.getElementById('smallCardsContainer');
+        if (!container || allFeedback.length <= 1) return;
+
+        autoScrollTimer = setInterval(() => {
+            if (allFeedback.length > 9) {
+                autoScrollPosition = (autoScrollPosition + 1) % (allFeedback.length - 1);
+                renderSmallCards();
+
+                const cards = document.querySelectorAll('.small-card');
+                if (cards.length > 0) {
+                    const cardWidth = cards[0].offsetWidth + 12;
+                    container.parentElement.scrollLeft = autoScrollPosition * cardWidth;
+                }
             }
-        }, 5000);
+        }, 3000);
     }
 
     function renderFeaturedCard() {
@@ -438,7 +447,7 @@
             return;
         }
 
-        const featured = allFeedback[currentFeaturedIndex];
+        const featured = allFeedback[0];
         const pillarKey = Object.keys(PILLAR_NAMES).find(k => PILLAR_NAMES[k] === featured.pillar);
         const colors = PILLAR_COLORS[pillarKey] || { text: '#1769C2', icon: '💬', bar: '#1769C2' };
 
@@ -465,7 +474,7 @@
                     </div>
                     <div class="ml-auto text-right">
                         <p class="text-xs text-slate-500 uppercase tracking-wide mb-1">ลำดับ</p>
-                        <p class="text-lg font-bold" style="color: ${colors.text};">${currentFeaturedIndex + 1}/${allFeedback.length}</p>
+                        <p class="text-lg font-bold" style="color: ${colors.text};">1/${allFeedback.length}</p>
                     </div>
                 </div>
             </div>
@@ -475,7 +484,7 @@
 
     function renderSmallCards() {
         const container = document.getElementById('smallCardsContainer');
-        const items = allFeedback.filter((_, i) => i !== currentFeaturedIndex).slice(0, 8);
+        const items = allFeedback.slice(1, 9);
 
         if (items.length === 0) {
             container.innerHTML = '';
@@ -521,11 +530,11 @@
             const data = await res.json();
             if (data.success && data.feedback) {
                 allFeedback = data.feedback;
-                currentFeaturedIndex = 0;
+                autoScrollPosition = 0;
                 renderFeaturedCard();
                 renderSmallCards();
                 updateStats();
-                startAutoRotate();
+                startAutoScroll();
             }
         } catch (error) {
             console.error('Error:', error);
