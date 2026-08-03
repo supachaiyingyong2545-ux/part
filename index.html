@@ -128,7 +128,7 @@
     <!-- Small Cards - Already Displayed Feedback -->
     <div class="w-full">
         <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 px-1">ความคิดเห็นอื่น ๆ</p>
-        <div class="overflow-x-auto pb-2">
+        <div id="smallCardsWrapper" class="overflow-x-auto pb-2" style="scroll-behavior: smooth;">
             <div class="flex gap-3 px-1 min-w-max" id="smallCardsContainer">
                 <!-- Small cards will be displayed here -->
             </div>
@@ -420,21 +420,26 @@
     // ================= AUTO-SCROLL SMALL CARDS =================
     function startAutoScroll() {
         clearInterval(autoScrollTimer);
-        const container = document.getElementById('smallCardsContainer');
-        if (!container || allFeedback.length <= 1) return;
+        const wrapper = document.getElementById('smallCardsWrapper');
+        if (!wrapper || allFeedback.length <= 1) return;
 
         autoScrollTimer = setInterval(() => {
-            if (allFeedback.length > 9) {
-                autoScrollPosition = (autoScrollPosition + 1) % (allFeedback.length - 1);
-                renderSmallCards();
+            const cards = document.querySelectorAll('.small-card');
+            if (cards.length > 0) {
+                const cardWidth = cards[0].offsetWidth;
+                const gap = 12;
+                const scrollAmount = cardWidth + gap;
 
-                const cards = document.querySelectorAll('.small-card');
-                if (cards.length > 0) {
-                    const cardWidth = cards[0].offsetWidth + 12;
-                    container.parentElement.scrollLeft = autoScrollPosition * cardWidth;
+                wrapper.scrollLeft += scrollAmount;
+
+                // ถ้าเลื่อนถึงท้าย ให้กลับไปที่ต้น
+                if (wrapper.scrollLeft >= wrapper.scrollWidth - wrapper.clientWidth - 10) {
+                    setTimeout(() => {
+                        wrapper.scrollLeft = 0;
+                    }, 500);
                 }
             }
-        }, 3000);
+        }, 4000);
     }
 
     function renderFeaturedCard() {
